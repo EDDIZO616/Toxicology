@@ -834,7 +834,21 @@
     transition: background 0.4s, border-color 0.4s, color 0.4s;
   }
   .tooltip-container:hover .tooltip-bubble { display: block; }
+.back-link {
+    position: fixed;
+    top: 20px;
+    left: 20px;
 
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+
+    padding: 10px 15px;
+    border-radius: 8px;
+
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    z-index: 9999;
+}
   /* RESPONSIVE */
   @media (max-width: 900px) {
     .hero, .content-area { padding-left: 30px; padding-right: 30px; }
@@ -928,11 +942,11 @@
 
 <!-- MAIN CONTENT -->
 <main class="main-content" id="main-content">
-
-  <div class="hero">
+<a class="back-link" href="index.html">← Back to Dashboard</a>
+  <div class="hero">    
     <div class="hero-tag"><span></span> Pharmacology &amp; Toxicology</div>
     <h1>Toxicology &amp;<br><em>Toxicokinetics</em></h1>
-    <p class="prose" style="max-width:600px; margin-top:10px;">A complete study guide covering dose-response relationships, exposure measurement, xenobiotic disposition (ADME), and excretion pathways — everything you need in one place.</p>
+    <p class="prose" style="max-width:600px; margin-top:10px;">A complete study guide covering dose-response relationships, exposure measurement, xenobiotic disposition (ADME), and excretion pathways — everything you need in one place.</p>  
     <div class="hero-meta">
       <div class="hero-meta-item">📖 <strong>8 Sections</strong></div>
       <div class="hero-meta-item">🧪 <strong>Royronald Ongong'a</strong></div>
