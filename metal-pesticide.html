@@ -412,7 +412,18 @@
     white-space: nowrap;
   }
   .cta-btn:hover { background: #00e6c3; transform: translateY(-1px); }
+.back-link {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
 
+    background: #007bff;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 50px;
+    text-decoration: none;
+    z-index: 1000;
+}
   /* ─── FOOTER ─── */
   footer {
     margin: 60px 60px 0;
@@ -551,6 +562,7 @@
 
   <!-- HERO -->
   <div class="hero">
+    <a class="back-link" href="index.html">← Back to Dashboard</a>
     <div class="hero-tag">🔬 MLS Toxicology Notes</div>
     <h1>Metal &amp; Pesticide<br>Toxicology</h1>
     <p>A concise, exam-ready study companion covering metal poisoning mechanisms, clinical presentations, diagnosis, and management — alongside pesticide toxicology from classification to chronic effects.</p>
