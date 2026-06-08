@@ -42,73 +42,59 @@
   }
   .bg-blobs { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
   .blob { position:absolute; border-radius:50%; filter:blur(100px); opacity:0.15; animation:blobFloat 12s ease-in-out infinite; }
-  .blob-1 { width:600px; height:600px; background:#f7c948; top:-200px; left:-150px; animation-delay:0s; }
-  .blob-2 { width:500px; height:500px; background:#4fc3f7; top:40%; right:-200px; animation-delay:-4s; }
-  .blob-3 { width:400px; height:400px; background:#a78bfa; bottom:0; left:20%; animation-delay:-8s; }
-  @keyframes blobFloat {
-    0%,100%{transform:translate(0,0) scale(1);}
-    33%{transform:translate(30px,-40px) scale(1.05);}
-    66%{transform:translate(-20px,20px) scale(0.95);}
-  }
+  .blob-1 { width:500px; height:500px; background:#f7c948; top:-180px; left:-120px; animation-delay:0s; }
+  .blob-2 { width:400px; height:400px; background:#4fc3f7; top:40%; right:-160px; animation-delay:-4s; }
+  .blob-3 { width:350px; height:350px; background:#a78bfa; bottom:0; left:25%; animation-delay:-8s; }
+  @keyframes blobFloat { 0%,100%{transform:translate(0,0) scale(1);} 33%{transform:translate(30px,-40px) scale(1.05);} 66%{transform:translate(-20px,20px) scale(0.95);} }
 
   /* SIDEBAR */
   .sidebar {
-    width:280px; min-height:100vh;
+    width:270px;
+    min-height:100vh;
     background:rgba(14,15,20,0.97);
     border-right:1px solid var(--border);
-    position:fixed; top:0; left:0; z-index:100;
-    display:flex; flex-direction:column;
+    position:fixed;
+    top:0; left:0;
+    z-index:100;
+    display:flex;
+    flex-direction:column;
     transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);
     backdrop-filter:blur(20px);
   }
-  .sidebar.closed { transform:translateX(-280px); }
+  .sidebar.closed { transform:translateX(-270px); }
   .sidebar-header { padding:24px 20px 16px; border-bottom:1px solid var(--border); }
-  .sidebar-logo { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; color:var(--accent1); margin-bottom:4px; }
-  .sidebar-sub { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.12em; }
-  .sidebar-nav { flex:1; overflow-y:auto; padding:16px 12px; }
-  .sidebar-nav::-webkit-scrollbar{width:4px;}
-  .sidebar-nav::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
-  .nav-section-label { font-size:0.62rem; text-transform:uppercase; letter-spacing:0.14em; color:var(--muted); padding:12px 8px 6px; }
+  .sidebar-logo { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; color:var(--accent1); margin-bottom:4px; }
+  .sidebar-sub { font-size:0.68rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.12em; }
+  .sidebar-nav { flex:1; overflow-y:auto; padding:14px 12px; }
+  .sidebar-nav::-webkit-scrollbar { width:4px; }
+  .sidebar-nav::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+  .nav-section-label { font-size:0.62rem; text-transform:uppercase; letter-spacing:0.14em; color:var(--muted); padding:10px 8px 6px; }
   .nav-item {
     display:flex; align-items:center; gap:10px;
-    padding:9px 12px; border-radius:10px; cursor:pointer;
-    font-size:0.82rem; color:var(--muted);
-    transition:all 0.2s; text-decoration:none;
-    margin-bottom:2px;
+    padding:8px 12px; border-radius:10px; cursor:pointer;
+    font-size:0.8rem; color:var(--muted);
+    transition:all 0.2s; text-decoration:none; margin-bottom:2px;
   }
   .nav-item:hover { background:rgba(255,255,255,0.06); color:var(--text); }
   .nav-item.active { background:rgba(247,201,72,0.1); color:var(--accent1); }
   .nav-item .dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
   .nav-item.active .dot { box-shadow:0 0 8px currentColor; }
 
-  /* SCORE PANEL */
-  .score-panel {
-    margin:0 12px 12px;
-    padding:14px;
-    background:rgba(255,255,255,0.04);
-    border-radius:12px;
-    border:1px solid var(--border);
-  }
-  .score-panel .score-label { font-size:0.72rem; color:var(--muted); margin-bottom:6px; }
-  .score-panel .score-num {
-    font-family:'Playfair Display',serif;
-    font-size:1.6rem; font-weight:900; color:var(--accent1);
-  }
-  .score-panel .score-sub { font-size:0.72rem; color:var(--muted); }
+  .score-widget { margin:0 12px 14px; padding:14px; background:rgba(255,255,255,0.04); border-radius:12px; border:1px solid var(--border); }
+  .score-label { font-size:0.7rem; color:var(--muted); margin-bottom:6px; display:flex; justify-content:space-between; }
+  .score-value { font-family:'DM Mono',monospace; font-size:1.4rem; font-weight:500; color:var(--accent4); }
+  .score-max { font-size:0.72rem; color:var(--muted); }
   .progress-bar { height:4px; background:rgba(255,255,255,0.08); border-radius:2px; overflow:hidden; margin-top:8px; }
-  .progress-fill { height:100%; background:linear-gradient(90deg,var(--accent1),var(--accent5)); border-radius:2px; transition:width 0.5s; width:0%; }
+  .progress-fill { height:100%; background:linear-gradient(90deg,var(--accent1),var(--accent4)); border-radius:2px; width:0%; transition:width 0.5s ease; }
 
-  .sidebar-footer { padding:16px 12px; border-top:1px solid var(--border); display:flex; flex-direction:column; gap:8px; }
+  .sidebar-footer { padding:14px 12px; border-top:1px solid var(--border); }
   .back-btn {
-    display:flex; align-items:center; gap:8px;
-    padding:10px 14px; border-radius:10px;
-    background:rgba(255,255,255,0.05); border:1px solid var(--border);
-    color:var(--muted); font-size:0.8rem; cursor:pointer;
-    text-decoration:none; transition:all 0.2s; justify-content:center;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    padding:10px 14px; border-radius:10px; background:rgba(255,255,255,0.05);
+    border:1px solid var(--border); color:var(--muted); font-size:0.8rem;
+    cursor:pointer; text-decoration:none; transition:all 0.2s; width:100%;
   }
   .back-btn:hover { background:rgba(255,255,255,0.09); color:var(--text); }
-  .back-btn.study { background:rgba(79,195,247,0.08); border-color:rgba(79,195,247,0.2); color:var(--accent2); }
-  .back-btn.study:hover { background:rgba(79,195,247,0.15); }
 
   .sidebar-toggle {
     position:fixed; top:20px; left:20px; z-index:200;
@@ -120,257 +106,158 @@
   .sidebar-toggle:hover { background:rgba(247,201,72,0.1); border-color:var(--accent1); }
 
   /* MAIN */
-  .main-content { margin-left:280px; flex:1; padding:0 0 80px; transition:margin-left 0.4s cubic-bezier(0.4,0,0.2,1); min-width:0; }
+  .main-content { margin-left:270px; flex:1; padding:0 0 80px; transition:margin-left 0.4s cubic-bezier(0.4,0,0.2,1); min-width:0; }
   .main-content.expanded { margin-left:0; }
 
   /* HERO */
   .hero { padding:70px 60px 50px; border-bottom:1px solid var(--border); position:relative; overflow:hidden; }
-  .hero::after { content:''; position:absolute; top:0; right:0; width:50%; height:100%; background:radial-gradient(ellipse at top right, rgba(247,201,72,0.08), transparent 70%); pointer-events:none; }
-  .hero-tag {
-    display:inline-flex; align-items:center; gap:6px;
-    font-size:0.7rem; text-transform:uppercase; letter-spacing:0.14em;
-    color:var(--accent1); background:rgba(247,201,72,0.1);
-    border:1px solid rgba(247,201,72,0.25); padding:5px 12px;
-    border-radius:20px; margin-bottom:20px;
-  }
-  .hero-tag span { width:6px; height:6px; border-radius:50%; background:var(--accent1); animation:pulse 2s infinite; }
-  @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.8);}}
-  .hero h1 { font-family:'Playfair Display',serif; font-size:clamp(2rem,4vw,3rem); font-weight:900; line-height:1.1; margin-bottom:14px; letter-spacing:-0.02em; }
-  .hero h1 em { font-style:italic; background:linear-gradient(135deg,var(--accent1),var(--accent5)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .hero::after { content:''; position:absolute; top:0; right:0; width:50%; height:100%; background:radial-gradient(ellipse at top right,rgba(167,139,250,0.1),transparent 70%); pointer-events:none; }
+  .hero-tag { display:inline-flex; align-items:center; gap:6px; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.14em; color:var(--accent3); background:rgba(167,139,250,0.1); border:1px solid rgba(167,139,250,0.25); padding:5px 12px; border-radius:20px; margin-bottom:20px; }
+  .hero-tag span { width:6px; height:6px; border-radius:50%; background:var(--accent3); animation:pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.5;transform:scale(0.8);} }
+  .hero h1 { font-family:'Playfair Display',serif; font-size:clamp(2rem,3.5vw,3rem); font-weight:900; line-height:1.1; margin-bottom:14px; letter-spacing:-0.02em; }
+  .hero h1 em { font-style:italic; background:linear-gradient(135deg,var(--accent3),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
   .hero-meta { display:flex; gap:24px; flex-wrap:wrap; margin-top:16px; }
   .hero-meta-item { font-size:0.78rem; color:var(--muted); display:flex; align-items:center; gap:6px; }
   .hero-meta-item strong { color:var(--text); }
 
+  /* TAB NAV */
+  .tab-nav { display:flex; gap:4px; padding:24px 60px 0; border-bottom:1px solid var(--border); background:rgba(14,15,20,0.6); backdrop-filter:blur(12px); position:sticky; top:0; z-index:50; flex-wrap:wrap; }
+  .tab-btn {
+    padding:12px 20px; border-radius:10px 10px 0 0; font-size:0.82rem; font-weight:500;
+    cursor:pointer; transition:all 0.2s; border:none; background:transparent;
+    color:var(--muted); border-bottom:2px solid transparent; font-family:'DM Sans',sans-serif;
+  }
+  .tab-btn:hover { color:var(--text); background:rgba(255,255,255,0.04); }
+  .tab-btn.active { color:var(--accent3); border-bottom-color:var(--accent3); background:rgba(167,139,250,0.07); }
+  .tab-count { display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; font-size:0.65rem; font-family:'DM Mono',monospace; margin-left:6px; background:rgba(255,255,255,0.07); color:var(--muted); }
+  .tab-btn.active .tab-count { background:rgba(167,139,250,0.2); color:var(--accent3); }
+
   /* CONTENT */
-  .content-area { padding:0 60px; }
+  .content-area { padding:40px 60px; }
+  .section-panel { display:none; }
+  .section-panel.active { display:block; }
 
-  .section { padding:50px 0 20px; border-bottom:1px solid var(--border); }
-  .section:last-child { border-bottom:none; }
-  .section-label { display:inline-flex; align-items:center; gap:8px; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.16em; margin-bottom:14px; }
-  .section-label .num { font-family:'DM Mono',monospace; font-size:0.7rem; background:rgba(255,255,255,0.07); padding:2px 8px; border-radius:4px; color:var(--muted); }
-  .section-title { font-family:'Playfair Display',serif; font-size:clamp(1.4rem,2.5vw,1.9rem); font-weight:700; line-height:1.2; margin-bottom:28px; }
-
-  .prose { font-size:0.88rem; color:#b0b5c8; line-height:1.85; margin-bottom:20px; }
-  .prose strong { color:var(--text); font-weight:600; }
+  .section-intro { padding:20px 24px; background:rgba(167,139,250,0.06); border:1px solid rgba(167,139,250,0.15); border-radius:14px; margin-bottom:32px; }
+  .section-intro p { font-size:0.84rem; color:var(--muted); line-height:1.7; }
+  .section-intro strong { color:var(--text); }
 
   /* MCQ */
-  .mcq-grid { display:flex; flex-direction:column; gap:24px; margin-bottom:32px; }
-  .mcq-item {
-    background:rgba(30,33,48,0.6); border:1px solid var(--border);
-    border-radius:var(--card-radius); padding:24px;
-    backdrop-filter:blur(10px); position:relative; overflow:hidden;
-    transition:all 0.3s;
-  }
-  .mcq-item::before {
-    content:''; position:absolute; top:0; left:0; right:0;
-    height:2px; border-radius:16px 16px 0 0;
-  }
-  .mcq-item.q-yellow::before { background:var(--accent1); }
-  .mcq-item.q-blue::before { background:var(--accent2); }
-  .mcq-item.q-purple::before { background:var(--accent3); }
-  .mcq-item.q-green::before { background:var(--accent4); }
-  .mcq-item.q-orange::before { background:var(--accent5); }
-  .mcq-item.q-pink::before { background:var(--accent6); }
+  .question-block { margin-bottom:28px; background:rgba(30,33,48,0.55); border:1px solid var(--border); border-radius:var(--card-radius); padding:24px; transition:all 0.3s; backdrop-filter:blur(8px); position:relative; }
+  .question-block:hover { border-color:rgba(255,255,255,0.13); }
+  .question-block.correct { border-color:rgba(74,222,128,0.4); background:rgba(74,222,128,0.05); }
+  .question-block.wrong { border-color:rgba(248,113,113,0.4); background:rgba(248,113,113,0.05); }
 
-  .mcq-num {
-    font-family:'DM Mono',monospace; font-size:0.7rem;
-    color:var(--muted); text-transform:uppercase;
-    letter-spacing:0.1em; margin-bottom:10px;
-    display:flex; align-items:center; gap:8px;
-  }
-  .mcq-num .qbadge {
-    padding:2px 8px; border-radius:4px;
-    background:rgba(247,201,72,0.12); color:var(--accent1);
-    font-size:0.68rem; font-weight:600;
-  }
-  .mcq-question { font-size:0.92rem; font-weight:500; color:var(--text); line-height:1.6; margin-bottom:18px; }
-  .mcq-options { display:flex; flex-direction:column; gap:8px; }
-  .mcq-option {
-    display:flex; align-items:flex-start; gap:12px;
-    padding:11px 16px; border-radius:10px;
-    border:1px solid rgba(255,255,255,0.07);
-    background:rgba(255,255,255,0.03);
-    cursor:pointer; transition:all 0.2s; font-size:0.84rem;
-    color:#b0b5c8; line-height:1.5;
-    user-select:none;
-  }
-  .mcq-option:hover:not(.disabled) { border-color:rgba(255,255,255,0.15); background:rgba(255,255,255,0.06); color:var(--text); }
-  .mcq-option input[type=radio] { margin-top:2px; flex-shrink:0; accent-color:var(--accent1); pointer-events:none; }
-  .mcq-option.correct { border-color:rgba(74,222,128,0.4); background:rgba(74,222,128,0.08); color:var(--accent4); }
-  .mcq-option.wrong { border-color:rgba(248,113,113,0.4); background:rgba(248,113,113,0.08); color:var(--red); }
-  .mcq-option.reveal-correct { border-color:rgba(74,222,128,0.4); background:rgba(74,222,128,0.06); color:var(--accent4); }
-  .mcq-option.disabled { pointer-events:none; opacity:0.75; }
-  .mcq-option.correct, .mcq-option.wrong, .mcq-option.reveal-correct { opacity:1 !important; }
+  .q-header { display:flex; gap:14px; align-items:flex-start; margin-bottom:18px; }
+  .q-num { font-family:'DM Mono',monospace; font-size:0.7rem; background:rgba(167,139,250,0.15); color:var(--accent3); padding:3px 10px; border-radius:6px; flex-shrink:0; margin-top:2px; font-weight:500; }
+  .q-text { font-size:0.9rem; line-height:1.7; color:var(--text); font-weight:500; }
 
-  .feedback-box {
-    margin-top:14px; padding:12px 16px; border-radius:10px;
-    font-size:0.82rem; line-height:1.6; display:none;
+  .options-list { display:flex; flex-direction:column; gap:8px; }
+  .option-btn {
+    display:flex; align-items:center; gap:12px;
+    padding:12px 16px; border-radius:10px;
+    border:1px solid var(--border); background:rgba(255,255,255,0.03);
+    cursor:pointer; transition:all 0.2s; text-align:left;
+    font-family:'DM Sans',sans-serif; font-size:0.84rem; color:var(--muted);
+    width:100%;
   }
-  .feedback-box.correct { background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.25); color:var(--accent4); }
-  .feedback-box.wrong { background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.25); color:var(--red); }
-  .feedback-box.show { display:block; }
+  .option-btn:hover:not(:disabled) { background:rgba(167,139,250,0.08); border-color:rgba(167,139,250,0.3); color:var(--text); }
+  .option-btn.selected { border-color:rgba(167,139,250,0.5); background:rgba(167,139,250,0.1); color:var(--accent3); }
+  .option-btn.correct-ans { border-color:rgba(74,222,128,0.5) !important; background:rgba(74,222,128,0.1) !important; color:var(--accent4) !important; }
+  .option-btn.wrong-ans { border-color:rgba(248,113,113,0.5) !important; background:rgba(248,113,113,0.1) !important; color:var(--red) !important; }
+  .option-btn:disabled { cursor:not-allowed; }
+  .opt-letter { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'DM Mono',monospace; font-size:0.72rem; font-weight:600; flex-shrink:0; border:1px solid var(--border); color:var(--muted); }
+  .option-btn.correct-ans .opt-letter { border-color:var(--accent4); color:var(--accent4); }
+  .option-btn.wrong-ans .opt-letter { border-color:var(--red); color:var(--red); }
+  .option-btn.selected .opt-letter { border-color:var(--accent3); color:var(--accent3); }
+
+  .feedback-msg { margin-top:14px; padding:10px 14px; border-radius:8px; font-size:0.8rem; line-height:1.6; display:none; }
+  .feedback-msg.show { display:block; }
+  .feedback-msg.correct { background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.25); color:var(--accent4); }
+  .feedback-msg.wrong { background:rgba(248,113,113,0.1); border:1px solid rgba(248,113,113,0.25); color:var(--red); }
 
   /* SHORT ANSWER */
-  .sa-item {
-    background:rgba(30,33,48,0.6); border:1px solid var(--border);
-    border-radius:var(--card-radius); padding:24px;
-    backdrop-filter:blur(10px); margin-bottom:20px;
-    position:relative; overflow:hidden;
-  }
-  .sa-item::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; border-radius:16px 16px 0 0; background:var(--accent2); }
-  .sa-marks {
-    display:inline-flex; align-items:center; gap:4px;
-    font-family:'DM Mono',monospace; font-size:0.68rem;
-    background:rgba(79,195,247,0.1); color:var(--accent2);
-    padding:3px 10px; border-radius:20px; margin-bottom:10px;
-  }
-  .sa-question { font-size:0.92rem; font-weight:500; color:var(--text); line-height:1.6; margin-bottom:16px; }
-  .sa-textarea {
-    width:100%; min-height:110px; background:rgba(14,15,20,0.7);
-    border:1px solid var(--border); border-radius:10px;
-    padding:14px 16px; color:var(--text);
-    font-family:'DM Sans',sans-serif; font-size:0.84rem;
-    resize:vertical; outline:none; line-height:1.7;
-    transition:border-color 0.2s;
-  }
-  .sa-textarea:focus { border-color:rgba(79,195,247,0.4); }
-  .sa-reveal-btn {
-    margin-top:12px; padding:9px 20px;
-    background:rgba(79,195,247,0.1); border:1px solid rgba(79,195,247,0.25);
-    border-radius:8px; color:var(--accent2); font-size:0.8rem;
-    cursor:pointer; transition:all 0.2s; font-family:'DM Sans',sans-serif;
-  }
-  .sa-reveal-btn:hover { background:rgba(79,195,247,0.18); }
-  .sa-model-answer {
-    margin-top:14px; padding:16px; border-radius:10px;
-    background:rgba(79,195,247,0.05); border:1px solid rgba(79,195,247,0.2);
-    font-size:0.82rem; color:#b0b5c8; line-height:1.75; display:none;
-  }
-  .sa-model-answer.show { display:block; }
-  .sa-model-answer .answer-title {
-    font-family:'DM Mono',monospace; font-size:0.7rem;
-    text-transform:uppercase; letter-spacing:0.1em;
-    color:var(--accent2); margin-bottom:8px;
-  }
-
-  /* CASE STUDY */
-  .case-item {
-    background:rgba(30,33,48,0.6); border:1px solid var(--border);
-    border-radius:var(--card-radius); padding:28px;
-    backdrop-filter:blur(10px); margin-bottom:24px;
-    position:relative; overflow:hidden;
-  }
-  .case-item::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; border-radius:16px 16px 0 0; background:var(--accent3); }
-  .case-scenario {
-    padding:18px 20px; border-radius:12px;
-    background:rgba(167,139,250,0.06); border-left:3px solid var(--accent3);
-    margin-bottom:20px;
-  }
-  .case-scenario .case-tag {
-    font-family:'DM Mono',monospace; font-size:0.68rem;
-    text-transform:uppercase; letter-spacing:0.1em;
-    color:var(--accent3); margin-bottom:8px;
-  }
-  .case-scenario p { font-size:0.86rem; color:#c0c5d8; line-height:1.75; }
-  .case-questions { display:flex; flex-direction:column; gap:14px; }
-  .case-q { font-size:0.88rem; color:var(--text); line-height:1.6; font-weight:500; }
-  .case-q span { color:var(--accent3); font-family:'DM Mono',monospace; font-size:0.78rem; margin-right:6px; }
-  .case-textarea {
-    width:100%; min-height:90px; margin-top:8px;
-    background:rgba(14,15,20,0.7); border:1px solid var(--border);
-    border-radius:10px; padding:12px 16px; color:var(--text);
-    font-family:'DM Sans',sans-serif; font-size:0.84rem;
-    resize:vertical; outline:none; line-height:1.7; transition:border-color 0.2s;
-  }
-  .case-textarea:focus { border-color:rgba(167,139,250,0.4); }
-  .case-reveal-btn {
-    margin-top:14px; padding:9px 20px;
-    background:rgba(167,139,250,0.1); border:1px solid rgba(167,139,250,0.25);
-    border-radius:8px; color:var(--accent3); font-size:0.8rem;
-    cursor:pointer; transition:all 0.2s; font-family:'DM Sans',sans-serif;
-  }
-  .case-reveal-btn:hover { background:rgba(167,139,250,0.18); }
-  .case-model {
-    margin-top:14px; padding:16px; border-radius:10px;
-    background:rgba(167,139,250,0.05); border:1px solid rgba(167,139,250,0.2);
-    font-size:0.82rem; color:#b0b5c8; line-height:1.75; display:none;
-  }
-  .case-model.show { display:block; }
-  .case-model .answer-title { font-family:'DM Mono',monospace; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--accent3); margin-bottom:8px; }
-
-  /* RESULTS SUMMARY */
-  .results-panel {
-    margin:40px 0; padding:36px;
-    background:linear-gradient(135deg, rgba(167,139,250,0.08), rgba(79,195,247,0.08));
-    border:1px solid rgba(167,139,250,0.2); border-radius:20px;
-    text-align:center;
-  }
-  .results-panel h3 { font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:700; margin-bottom:6px; }
-  .results-panel .big-score {
-    font-family:'Playfair Display',serif; font-size:3.5rem; font-weight:900;
-    background:linear-gradient(135deg,var(--accent1),var(--accent5));
-    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-    background-clip:text; line-height:1.1; margin:16px 0 6px;
-  }
-  .results-panel .score-msg { font-size:0.88rem; color:var(--muted); margin-bottom:24px; }
-  .results-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
-  .res-btn {
+  .sa-answer-area { margin-top:16px; }
+  .sa-points { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+  .point-chip { padding:4px 12px; border-radius:20px; font-size:0.74rem; background:rgba(79,195,247,0.08); border:1px solid rgba(79,195,247,0.2); color:var(--accent2); cursor:pointer; transition:all 0.2s; }
+  .point-chip.revealed { background:rgba(79,195,247,0.15); border-color:rgba(79,195,247,0.4); }
+  .model-answer { background:rgba(14,15,20,0.7); border:1px solid var(--border); border-radius:10px; padding:16px; margin-top:12px; display:none; }
+  .model-answer.show { display:block; }
+  .model-answer .ma-title { font-family:'DM Mono',monospace; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--accent2); margin-bottom:10px; }
+  .model-answer ol { padding-left:18px; }
+  .model-answer li { font-size:0.83rem; color:#b0b5c8; line-height:1.75; margin-bottom:6px; }
+  .model-answer li strong { color:var(--text); }
+  .reveal-btn {
     display:inline-flex; align-items:center; gap:8px;
-    padding:12px 28px; border-radius:50px;
-    font-weight:700; font-size:0.88rem; cursor:pointer;
-    text-decoration:none; transition:all 0.3s; border:none;
-    font-family:'DM Sans',sans-serif;
+    padding:9px 18px; border-radius:8px; border:1px solid rgba(79,195,247,0.3);
+    background:rgba(79,195,247,0.07); color:var(--accent2); font-size:0.8rem;
+    cursor:pointer; transition:all 0.2s; font-family:'DM Sans',sans-serif; font-weight:500;
   }
-  .res-btn.primary {
-    background:linear-gradient(135deg,var(--accent3),var(--accent2));
-    color:#0e0f14; box-shadow:0 8px 24px rgba(167,139,250,0.3);
-  }
-  .res-btn.primary:hover { transform:translateY(-2px); box-shadow:0 12px 32px rgba(167,139,250,0.45); }
-  .res-btn.secondary {
-    background:rgba(255,255,255,0.06); color:var(--text);
-    border:1px solid var(--border);
-  }
-  .res-btn.secondary:hover { background:rgba(255,255,255,0.1); }
+  .reveal-btn:hover { background:rgba(79,195,247,0.14); border-color:rgba(79,195,247,0.5); }
+.back-link {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
 
-  /* SUBMIT SECTION */
-  .submit-mcq {
-    margin:28px 0; padding:20px;
-    background:rgba(247,201,72,0.06); border:1px solid rgba(247,201,72,0.2);
-    border-radius:14px; display:flex; align-items:center;
-    justify-content:space-between; flex-wrap:wrap; gap:14px;
+    background: #007bff;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 50px;
+    text-decoration: none;
+    z-index: 1000;
+}
+  /* CASE STUDY */
+  .case-scenario { background:rgba(251,146,60,0.06); border:1px solid rgba(251,146,60,0.2); border-radius:12px; padding:20px 24px; margin-bottom:20px; }
+  .case-label { font-family:'DM Mono',monospace; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.12em; color:var(--accent5); margin-bottom:10px; }
+  .case-text { font-size:0.86rem; color:#c8ccdb; line-height:1.8; }
+  .case-question { font-size:0.88rem; font-weight:600; color:var(--text); margin-bottom:14px; line-height:1.6; }
+  .case-answer-btn {
+    display:inline-flex; align-items:center; gap:8px;
+    padding:9px 18px; border-radius:8px; border:1px solid rgba(251,146,60,0.3);
+    background:rgba(251,146,60,0.07); color:var(--accent5); font-size:0.8rem;
+    cursor:pointer; transition:all 0.2s; font-family:'DM Sans',sans-serif; font-weight:500;
   }
-  .submit-mcq p { font-size:0.86rem; color:#b0b5c8; }
-  .submit-mcq p strong { color:var(--accent1); }
-  .submit-btn {
-    padding:12px 30px; background:linear-gradient(135deg,var(--accent1),var(--accent5));
-    border:none; border-radius:50px; color:#0e0f14;
-    font-weight:700; font-size:0.9rem; cursor:pointer;
-    font-family:'DM Sans',sans-serif; transition:all 0.3s;
-    box-shadow:0 6px 20px rgba(247,201,72,0.25);
+  .case-answer-btn:hover { background:rgba(251,146,60,0.14); border-color:rgba(251,146,60,0.5); }
+  .case-model { background:rgba(14,15,20,0.7); border:1px solid var(--border); border-radius:10px; padding:16px; margin-top:12px; display:none; }
+  .case-model.show { display:block; }
+  .case-model .cm-title { font-family:'DM Mono',monospace; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--accent5); margin-bottom:10px; }
+  .case-model p, .case-model li { font-size:0.83rem; color:#b0b5c8; line-height:1.75; margin-bottom:6px; }
+  .case-model ol { padding-left:18px; }
+  .case-model strong { color:var(--text); }
+  .marks-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 10px; border-radius:20px; font-size:0.7rem; font-family:'DM Mono',monospace; background:rgba(247,201,72,0.1); border:1px solid rgba(247,201,72,0.2); color:var(--accent1); margin-left:auto; flex-shrink:0; }
+
+  /* SCORE SUMMARY */
+  .score-summary { text-align:center; padding:40px 24px; background:rgba(30,33,48,0.6); border:1px solid var(--border); border-radius:20px; margin-top:32px; }
+  .score-summary h3 { font-family:'Playfair Display',serif; font-size:1.4rem; margin-bottom:8px; }
+  .score-big { font-family:'Playfair Display',serif; font-size:4rem; font-weight:900; background:linear-gradient(135deg,var(--accent4),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .score-summary p { color:var(--muted); font-size:0.86rem; margin-top:8px; }
+  .reset-btn {
+    display:inline-flex; align-items:center; gap:8px; margin-top:20px;
+    padding:12px 28px; border-radius:50px; background:linear-gradient(135deg,var(--accent3),var(--accent2));
+    color:#0e0f14; font-weight:700; font-size:0.88rem; cursor:pointer;
+    border:none; font-family:'DM Sans',sans-serif; transition:all 0.3s;
+    box-shadow:0 8px 24px rgba(167,139,250,0.3);
   }
-  .submit-btn:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(247,201,72,0.4); }
+  .reset-btn:hover { transform:translateY(-2px); box-shadow:0 12px 32px rgba(167,139,250,0.45); }
 
   /* FOOTER */
-  footer {
-    background:rgba(14,15,20,0.95); border-top:1px solid var(--border);
-    padding:32px 60px; position:relative; z-index:1;
-  }
+  footer { background:rgba(14,15,20,0.95); border-top:1px solid var(--border); padding:28px 60px; position:relative; z-index:1; }
   .footer-inner { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; }
   .footer-logo { font-family:'Playfair Display',serif; font-weight:700; color:var(--accent1); font-size:0.95rem; }
   .footer-text { font-size:0.76rem; color:var(--muted); line-height:1.6; }
-  .footer-credit { font-size:0.72rem; color:var(--muted); opacity:0.6; }
 
-  /* REVEAL ANIM */
-  .reveal { opacity:0; transform:translateY(24px); transition:opacity 0.6s, transform 0.6s; }
-  .reveal.visible { opacity:1; transform:translateY(0); }
+  /* UTILS */
+  .divider { height:1px; background:linear-gradient(to right,transparent,var(--border),transparent); margin:32px 0; }
+  .section-title-q { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; margin-bottom:24px; display:flex; align-items:center; gap:12px; }
+  .section-title-q .stq-num { font-family:'DM Mono',monospace; font-size:0.7rem; background:rgba(255,255,255,0.07); padding:3px 10px; border-radius:6px; color:var(--muted); font-weight:400; }
 
-  /* RESPONSIVE */
   @media(max-width:900px){
-    .hero,.content-area{padding-left:24px;padding-right:24px;}
-    .main-content{margin-left:0;}
-    .sidebar{transform:translateX(-280px);}
-    .sidebar.open{transform:translateX(0);}
-    footer{padding:24px;}
+    .hero,.content-area { padding-left:24px; padding-right:24px; }
+    .tab-nav { padding:16px 24px 0; }
+    .main-content { margin-left:0; }
+    .sidebar { transform:translateX(-270px); }
+    .sidebar.open { transform:translateX(0); }
+    footer { padding:20px 24px; }
   }
 </style>
 </head>
@@ -382,91 +269,94 @@
   <div class="blob blob-3"></div>
 </div>
 
-<button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar">
+<button class="sidebar-toggle" onclick="toggleSidebar()" title="Toggle Sidebar">
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
     <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
   </svg>
 </button>
 
+<!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-header">
-    <div class="sidebar-logo">🎯 Practice Quiz</div>
+    <a class="back-link" href="index.html">← Back to Dashboard</a>
+    <div class="sidebar-logo">🎯 Practice Questions</div>
     <div class="sidebar-sub">Toxicology Assessment</div>
   </div>
   <nav class="sidebar-nav">
-    <div class="nav-section-label">Sections</div>
-    <a href="#mcq" class="nav-item active"><span class="dot" style="background:var(--accent1)"></span>Multiple Choice (40)</a>
-    <a href="#short" class="nav-item"><span class="dot" style="background:var(--accent2)"></span>Short Answer (10)</a>
-    <a href="#case" class="nav-item"><span class="dot" style="background:var(--accent3)"></span>Case Studies (5)</a>
-
-    <div class="nav-section-label">MCQ Score</div>
-    <div class="score-panel">
-      <div class="score-label">Your score</div>
-      <div class="score-num" id="score-display">—</div>
-      <div class="score-sub" id="score-sub">Submit MCQs to see results</div>
+    <div class="nav-section-label">Question Sets</div>
+    <a href="#" class="nav-item active" onclick="switchTab('mcq',this)">
+      <span class="dot" style="background:var(--accent3)"></span> Multiple Choice (40)
+    </a>
+    <a href="#" class="nav-item" onclick="switchTab('short',this)">
+      <span class="dot" style="background:var(--accent2)"></span> Short Answer (10)
+    </a>
+    <a href="#" class="nav-item" onclick="switchTab('case',this)">
+      <span class="dot" style="background:var(--accent5)"></span> Case Studies (5)
+    </a>
+    <div class="nav-section-label">Your MCQ Score</div>
+    <div class="score-widget">
+      <div class="score-label"><span>Correct</span><span id="score-pct">0%</span></div>
+      <div class="score-value"><span id="score-num">0</span> <span class="score-max">/ 40</span></div>
       <div class="progress-bar"><div class="progress-fill" id="score-bar"></div></div>
     </div>
   </nav>
   <div class="sidebar-footer">
-    <a href="toxicology-study-guide.html" class="back-btn study">📖 Study Guide</a>
-    <a href="dashboard.html" class="back-btn">← Dashboard</a>
+    <a href="dashboard.html" class="back-btn">← Back to Dashboard</a>
   </div>
 </aside>
 
 <main class="main-content" id="main-content">
 
+  <!-- HERO -->
   <div class="hero">
-    <div class="hero-tag"><span></span> Toxicology &amp; Toxicokinetics</div>
+    <div class="hero-tag"><span></span> Assessment Zone</div>
     <h1>Practice <em>Questions</em></h1>
-    <p style="font-size:0.88rem;color:#b0b5c8;max-width:560px;line-height:1.75;margin-top:10px;">Test your mastery with 40 MCQs, 10 short-answer, and 5 case-study questions. MCQs give instant feedback. Model answers available for written questions.</p>
+    <p style="font-size:0.87rem;color:var(--muted);max-width:540px;margin-top:10px;line-height:1.75;">Test your mastery of toxicology and toxicokinetics. Instant feedback on MCQs. Model answers for short and case-study questions.</p>
     <div class="hero-meta">
-      <div class="hero-meta-item">❓ <strong>55 Questions Total</strong></div>
-      <div class="hero-meta-item">⏱ <strong>~45–60 min</strong></div>
-      <div class="hero-meta-item">📊 <strong>Instant MCQ Validation</strong></div>
+      <div class="hero-meta-item">🔵 <strong>40 MCQs</strong></div>
+      <div class="hero-meta-item">📝 <strong>10 Short Answer</strong></div>
+      <div class="hero-meta-item">🧠 <strong>5 Case Studies</strong></div>
+      <div class="hero-meta-item">⭐ <strong>Total: 125 marks</strong></div>
     </div>
+  </div>
+
+  <!-- TAB NAV -->
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTabBtn('mcq',this)">Multiple Choice <span class="tab-count">40</span></button>
+    <button class="tab-btn" onclick="switchTabBtn('short',this)">Short Answer <span class="tab-count">10</span></button>
+    <button class="tab-btn" onclick="switchTabBtn('case',this)">Case Studies <span class="tab-count">5</span></button>
   </div>
 
   <div class="content-area">
 
-    <!-- MCQ SECTION -->
-    <section class="section reveal" id="mcq">
-      <div class="section-label"><span class="num">01</span><span style="color:var(--accent1)">Multiple Choice</span></div>
-      <h2 class="section-title">40 Multiple Choice Questions</h2>
-      <p class="prose">Select an answer for each question. Your selection is validated instantly — green means correct, red means incorrect, and the right answer is always highlighted.</p>
-
-      <div class="mcq-grid" id="mcq-container"></div>
-
-      <div class="submit-mcq">
-        <p>Answered <strong id="answered-count">0</strong> of <strong>40</strong> questions. Submit to calculate your final MCQ score.</p>
-        <button class="submit-btn" onclick="submitMCQ()">Submit &amp; Score MCQs</button>
+    <!-- ===== MCQ PANEL ===== -->
+    <div id="panel-mcq" class="section-panel active">
+      <div class="section-intro">
+        <p><strong>Instructions.</strong> Select the single best answer for each question. Immediate feedback is provided. Each question carries <strong>1 mark</strong>. Total: 40 marks.</p>
       </div>
-    </section>
+      <div id="mcq-container"></div>
+      <div class="score-summary" id="mcq-summary" style="display:none">
+        <h3>MCQ Complete!</h3>
+        <div class="score-big" id="final-score">0/40</div>
+        <p>Review your answers above. Correct answers are highlighted in green.</p>
+        <button class="reset-btn" onclick="resetMCQ()">↺ &nbsp;Reset All MCQs</button>
+      </div>
+    </div>
 
-    <!-- SHORT ANSWER -->
-    <section class="section reveal" id="short">
-      <div class="section-label"><span class="num">02</span><span style="color:var(--accent2)">Short Answer</span></div>
-      <h2 class="section-title">10 Short Answer Questions — 5 Marks Each</h2>
-      <p class="prose">Write concise but complete answers. Each question carries 5 marks. Click <em>Reveal Model Answer</em> to compare your response with a comprehensive answer guide.</p>
-      <div id="sa-container"></div>
-    </section>
+    <!-- ===== SHORT ANSWER PANEL ===== -->
+    <div id="panel-short" class="section-panel">
+      <div class="section-intro">
+        <p><strong>Instructions.</strong> Each question is worth <strong>5 marks</strong>. Reveal the model answer to check your response. Key marking points are listed. Total: 50 marks.</p>
+      </div>
+      <div id="short-container"></div>
+    </div>
 
-    <!-- CASE STUDY -->
-    <section class="section reveal" id="case">
-      <div class="section-label"><span class="num">03</span><span style="color:var(--accent3)">Case Studies</span></div>
-      <h2 class="section-title">5 Applied Case Study Questions — 5 Marks Each</h2>
-      <p class="prose">Each case presents a clinical or environmental scenario. Apply your knowledge of toxicology and toxicokinetics to answer the questions. Reveal the model answer when ready.</p>
+    <!-- ===== CASE STUDY PANEL ===== -->
+    <div id="panel-case" class="section-panel">
+      <div class="section-intro">
+        <p><strong>Instructions.</strong> Read each clinical scenario carefully, then answer the question. Each case is worth <strong>7 marks</strong>. Reveal the model answer after attempting. Total: 35 marks.</p>
+      </div>
       <div id="case-container"></div>
-    </section>
-
-    <!-- RESULTS -->
-    <div class="results-panel reveal" id="results-panel" style="display:none;">
-      <h3>🏆 MCQ Results</h3>
-      <div class="big-score" id="results-score">—</div>
-      <div class="score-msg" id="results-msg">Submit your MCQs to see your score.</div>
-      <div class="results-actions">
-        <button class="res-btn primary" onclick="retryMCQ()">🔄 &nbsp;Retry MCQs</button>
-        <a class="res-btn secondary" href="toxicology-study-guide.html">📖 &nbsp;Back to Study Guide</a>
-      </div>
     </div>
 
   </div>
@@ -474,12 +364,12 @@
   <footer>
     <div class="footer-inner">
       <div>
-        <div class="footer-logo">🎯 Toxicology Practice Quiz</div>
-        <div class="footer-text">Questions derived from lecture notes by <strong>Royronald Ongong'a</strong>.<br>For educational use only. Always verify clinical details with authoritative sources.</div>
+        <div class="footer-logo">📘 Toxicology Study Guide</div>
+        <div class="footer-text">Questions prepared by <strong>Royronald Ongong'a</strong>. For educational use only.</div>
       </div>
-      <div style="text-align:right;">
-        <div class="footer-text">Part of the Toxicology Study Series</div>
-        <div class="footer-credit" style="margin-top:6px;">© 2025 Study Notes Series</div>
+      <div style="text-align:right">
+        <div class="footer-text">Based on lecture material in Toxicology &amp; Toxicokinetics.</div>
+        <div class="footer-text" style="opacity:0.5;font-size:0.7rem;margin-top:4px;">© 2025 Study Notes Series</div>
       </div>
     </div>
   </footer>
@@ -487,321 +377,396 @@
 </main>
 
 <script>
-// ======================== DATA ========================
+// ============================================================
+//  DATA
+// ============================================================
 
-const mcqData = [
-  { q: "According to Paracelsus, what differentiates a poison from a remedy?", opts: ["Chemical structure","The right dose","The route of exposure","Molecular weight"], ans: 1, color:"q-yellow" },
-  { q: "What is the threshold dose in toxicology?", opts: ["The dose causing death in 50% of a population","The maximum safe dose for humans","The minimum dose at which a toxic effect first appears","The dose at which 100% respond"], ans: 2, color:"q-yellow" },
-  { q: "Which type of dose-response curve is typically seen with essential nutrients such as vitamins?", opts: ["Linear (no threshold)","Sigmoidal","U-shaped","Hormetic"], ans: 2, color:"q-yellow" },
-  { q: "Hormesis refers to which phenomenon?", opts: ["Toxic effects at all doses","Stimulatory effects at low doses, adverse effects at high doses","No response at any dose","Lethal effects only at very high doses"], ans: 1, color:"q-yellow" },
-  { q: "For carcinogens, the dose-response relationship is usually assumed to be:", opts: ["U-shaped with a clear threshold","Linear with no safe threshold","Sigmoidal with a high threshold","Hormetic"], ans: 1, color:"q-yellow" },
-  { q: "Fractionating the dose means:", opts: ["Giving a large single dose","Splitting a total dose over time to reduce toxicity","Doubling the dose to increase effect","Delivering the dose by inhalation only"], ans: 1, color:"q-yellow" },
-  { q: "What distinguishes an allergic response from a toxic reaction?", opts: ["Allergic responses follow dose-response assumptions","Toxic reactions involve immune system chemicals","Allergic responses result from the body releasing its own chemicals","Toxic reactions have no threshold"], ans: 2, color:"q-orange" },
-  { q: "Which of the following best defines a xenobiotic?", opts: ["Any naturally occurring hormone","Any endogenous chemical","Any chemical foreign to the body","Any vitamin or mineral"], ans: 2, color:"q-orange" },
-  { q: "The standard unit of dose in toxicology is:", opts: ["Milligram per litre","The gram","Parts per million","The kilogram"], ans: 1, color:"q-orange" },
-  { q: "30 mg of strychnine taken at once could be fatal, but 3 mg/day for 10 days would not. This illustrates:", opts: ["Hormesis","Dose fractionation","The therapeutic index","The LD₅₀ concept"], ans: 1, color:"q-orange" },
-  { q: "The LD₅₀ is defined as:", opts: ["The dose causing adverse effects in 50% of a population","The dose that kills 50% of a test population","The effective dose for 50% of the population","The lowest lethal dose observed"], ans: 1, color:"q-blue" },
-  { q: "A lower LD₅₀ value indicates a substance is:", opts: ["Less potent","More potent and dangerous","Safer to use","More water soluble"], ans: 1, color:"q-blue" },
-  { q: "The Therapeutic Index (TI) is calculated as:", opts: ["ED₅₀ ÷ LD₅₀","LD₅₀ ÷ ED₅₀","NOAEL ÷ LOAEL","LD₀₁ ÷ ED₉₉"], ans: 1, color:"q-blue" },
-  { q: "A drug with a Therapeutic Index of 10 is considered __ compared to a drug with TI = 3:", opts: ["Less safe","More safe","Equally safe","Contraindicated"], ans: 1, color:"q-blue" },
-  { q: "The Margin of Safety (MOS) is calculated as:", opts: ["LD₅₀ ÷ ED₅₀","ED₉₉ ÷ LD₀₁","LD₀₁ ÷ ED₉₉","NOAEL ÷ LOAEL"], ans: 2, color:"q-blue" },
-  { q: "NOAEL stands for:", opts: ["Nominal Observed Adverse Effect Limit","No Observed Adverse Effect Level","New Observable Adverse Exposure Limit","Null Observation After Extreme Loading"], ans: 1, color:"q-blue" },
-  { q: "Pesticides with an oral LD₅₀ below 50 mg/kg are labelled:", opts: ["CAUTION","WARNING","DANGER-POISON (skull and crossbones)","No label required"], ans: 2, color:"q-blue" },
-  { q: "What is 1 ppm equivalent to in mg/kg?", opts: ["0.001 mg/kg","1 mg/kg","1000 mg/kg","0.1 mg/kg"], ans: 1, color:"q-purple" },
-  { q: "Which of the following has the lowest oral LD₅₀ in rats and is therefore most toxic?", opts: ["Ethyl alcohol","Sodium chloride","Nicotine","Morphine sulfate"], ans: 2, color:"q-purple" },
-  { q: "LOAEL stands for:", opts: ["Lowest Observed Adverse Effect Level","Lethal Oral Average Exposure Limit","Lowest Observed Absorptive Effect Level","Lethal Observable Adverse Event Limit"], ans: 0, color:"q-purple" },
-  { q: "Toxicokinetics is best described as:", opts: ["What the toxicant does to the body","Quantitative description of ADME over time","The study of toxic mechanisms at target sites","The classification of poisons by potency"], ans: 1, color:"q-green" },
-  { q: "Toxicodynamics is concerned with:", opts: ["How a drug is absorbed","The ADME time course","What the toxicant does to the body at target tissue","Routes of excretion only"], ans: 2, color:"q-green" },
-  { q: "The first and rate-limiting step in toxicokinetics is:", opts: ["Distribution","Metabolism","Absorption","Excretion"], ans: 2, color:"q-green" },
-  { q: "When a xenobiotic accumulates because its absorption rate exceeds elimination rate, which consequence follows?", opts: ["Rapid detoxification","Toxicity at the target site","Increased plasma protein binding","Faster Phase II metabolism"], ans: 1, color:"q-green" },
-  { q: "In the GI tract, which segment has the largest surface area and is the major absorption site?", opts: ["Stomach","Mouth and oesophagus","Small intestine","Colon"], ans: 2, color:"q-green" },
-  { q: "Weak organic acids are best absorbed in the:", opts: ["Colon (pH ~7.5)","Small intestine (pH 7–8)","Stomach (pH 1–3)","Rectum"], ans: 2, color:"q-green" },
-  { q: "The rate-determining barrier for dermal absorption is the:", opts: ["Dermis","Hypodermis","Stratum corneum","Stratum granulosum"], ans: 2, color:"q-yellow" },
-  { q: "For gas absorption via inhalation, which property is the main determinant of absorption rate?", opts: ["Molecular weight","Solubility in blood","Ionization state","Plasma protein binding"], ans: 1, color:"q-yellow" },
-  { q: "A positive log P value indicates that a chemical is:", opts: ["Water soluble","Highly ionized at physiological pH","Highly lipid soluble","Rapidly excreted in urine"], ans: 2, color:"q-yellow" },
-  { q: "The 'ion trap' phenomenon is clinically useful because:", opts: ["It increases absorption of toxicants","Altering urine pH traps ionized xenobiotics, accelerating excretion","It enhances hepatic metabolism","It prevents plasma protein binding"], ans: 1, color:"q-yellow" },
-  { q: "Which transport mechanism requires no energy and no carrier protein, driven only by concentration gradient?", opts: ["Active transport","Facilitated diffusion","Passive diffusion","Phagocytosis"], ans: 2, color:"q-orange" },
-  { q: "P-glycoprotein (P-gp) is an efflux transporter that contributes to:", opts: ["Enhanced drug absorption","Resistance to anticancer drugs in chemotherapy","Faster renal excretion","Facilitated diffusion of lipid-soluble compounds"], ans: 1, color:"q-orange" },
-  { q: "In endocytosis, 'cell eating' (engulfment of solid particles) is specifically called:", opts: ["Pinocytosis","Facilitated diffusion","Phagocytosis","Active transport"], ans: 2, color:"q-orange" },
-  { q: "Displacement of one drug from albumin binding sites by another drug with higher affinity can result in:", opts: ["Reduced toxicity of the displaced drug","A 100-fold increase in the free active concentration of the displaced drug","Faster renal clearance without toxicity","Increased plasma protein binding of both drugs"], ans: 1, color:"q-blue" },
-  { q: "Lead (Pb) is stored primarily in which tissue, serving as a long-term depot?", opts: ["Fat (adipose tissue)","Bone","Liver","Brain"], ans: 1, color:"q-blue" },
-  { q: "The blood-brain barrier (BBB) is NOT fully developed at birth. What does this mean clinically?", opts: ["Newborns absorb less through the GI tract","Newborns may be more vulnerable to neurotoxic substances than adults","The BBB in adults allows all xenobiotics to pass","Active transport is absent in neonates"], ans: 1, color:"q-blue" },
-  { q: "Thalidomide's disaster in 1960 disproved which prior assumption?", opts: ["That the liver metabolises all drugs","That the blood-brain barrier was impermeable","That the placenta was an absolute barrier to drugs and chemicals","That LD₅₀ values were species-independent"], ans: 2, color:"q-purple" },
-  { q: "In renal excretion, approximately what percentage of the glomerular filtrate is reabsorbed into blood?", opts: ["50%","75%","99%","25%"], ans: 2, color:"q-purple" },
-  { q: "Enterohepatic circulation prolongs a xenobiotic's half-life because:", opts: ["It increases Phase I metabolism","Gut bacteria cleave conjugates, making metabolites lipophilic for reabsorption","It enhances glomerular filtration","It prevents biliary excretion"], ans: 1, color:"q-purple" },
-  { q: "Breast milk is slightly more __ than plasma, which promotes accumulation of __ xenobiotics:", opts: ["Alkaline; water-soluble","Acidic; lipid-soluble","Alkaline; ionized","Acidic; water-soluble"], ans: 1, color:"q-purple" },
+const MCQs = [
+  // Dose-Response (1-8)
+  { q:"What is the fundamental principle upon which the science of toxicology is based?", opts:["The route of exposure determines the type of toxic effect","There is a quantitative relationship between dose and toxic response","Allergic reactions are the most common form of toxicity","All chemicals are inherently toxic at any dose"], ans:1, exp:"Toxicology rests on the dose-response relationship — the greater the dose, the greater the response. This is the core principle established by Paracelsus." },
+  { q:"The threshold dose in toxicology refers to:", opts:["The dose at which 50% of the population dies","The dose below which no measurable response occurs","The dose that produces the maximum possible response","The dose at which cancer risk becomes zero"], ans:1, exp:"The threshold is the minimum dose where toxicity first appears — where the body's ability to detoxify or repair is exceeded." },
+  { q:"How does an allergic response differ fundamentally from a direct toxic effect?", opts:["Allergic responses are always more severe","Allergic responses follow standard dose-response rules","Allergic responses result from the body releasing its own chemicals, not from direct cell damage","Allergic responses occur only at very high doses"], ans:2, exp:"In an allergic reaction, the chemical stimulates the body to release endogenous mediators (histamine etc.) which cause the effects. This is not a direct toxic action on cells." },
+  { q:"A dose-response curve for most toxicants has which characteristic shape?", opts:["Linear (straight line through origin)","J-shaped","S-shaped (sigmoidal)","Bell-shaped"], ans:2, exp:"The sigmoidal (S-shaped) curve reflects the threshold, the rising slope as increasing proportions of the population respond, and the plateau at maximum effect." },
+  { q:"Fractionating a total lethal dose (e.g. 30 mg given as 3 mg/day for 10 days instead of all at once) reduces toxicity because:", opts:["Smaller individual doses are absorbed more slowly from the GI tract","The body has time to detoxify and repair between doses","The chemical is destroyed in the environment between doses","Divided doses bypass the liver's first-pass metabolism"], ans:1, exp:"When doses are spread over time, metabolic and repair processes can prevent accumulation of the toxicant to harmful concentrations at the target site." },
+  { q:"The U-shaped dose-response curve is characteristically seen with:", opts:["Carcinogens","Essential nutrients such as vitamins and essential metals","Non-essential industrial chemicals","All drugs used therapeutically"], ans:1, exp:"Essential nutrients (e.g. vitamins A, D; selenium; iron) produce harm at both deficiency and excess, creating a U-shaped curve with an optimal mid-range zone." },
+  { q:"Hormesis describes a situation where a substance:", opts:["Causes identical effects at all doses","Produces stimulatory effects at low doses but adverse effects at high doses","Has no safe threshold at any dose","Is only harmful when inhaled"], ans:1, exp:"Hormesis involves a biphasic response — apparent stimulation or benefit at low doses and inhibition or harm at higher doses. Observed with hormones and some other chemicals." },
+  { q:"For chemical carcinogens, risk assessment assumes which type of dose-response model?", opts:["Threshold model with a safe dose","U-shaped model","Linear model intercepting zero (no safe threshold)","Sigmoidal model with a defined NOAEL"], ans:2, exp:"Cancer risk is assumed linear through zero — any dose theoretically increases risk. The cancer slope factor quantifies probability of cancer per unit of exposure." },
+
+  // Measures of Exposure (9-14)
+  { q:"Which unit correctly expresses dose in standard toxicological comparisons across species?", opts:["mg/L","mg/m³","mg/kg body weight","mmol/L"], ans:2, exp:"mg/kg body weight normalises dose to body mass, allowing valid comparisons across species of different sizes and between chemicals." },
+  { q:"One part per million (1 ppm) in water is equivalent to approximately:", opts:["1 teaspoon per 10 gallons","1 teaspoon per 1,000 gallons","1 teaspoon per 1,000,000 gallons","1 mg per litre"], ans:1, exp:"1 ppm = 1 mg/kg. In water, this is approximately 1 teaspoon per 1,000 gallons, a useful practical reference." },
+  { q:"The 'absorbed dose' is best defined as:", opts:["The total dose received over the entire exposure period","The amount of a xenobiotic encountered in the environment","The actual amount of the exposed dose that enters the body","The quantity administered by injection"], ans:2, exp:"Absorbed dose is the fraction of the exposure dose that actually crosses body barriers and enters systemic circulation — always less than or equal to the exposure dose." },
+  { q:"A dosage unit of mg/kg/day is used because it:", opts:["Is easier to calculate than mg/kg","Includes both dose and exposure duration, important for chronic exposures","Is the international SI unit for all substances","Avoids the need to know body weight"], ans:1, exp:"Adding the time dimension (per day) allows characterisation of chronic or repeated exposures and calculation of cumulative intake over time." },
+  { q:"Which of the following correctly pairs a medium with its standard concentration unit?", opts:["Air: mg/g","Liquids: mg/m³","Solids: mg/g","Water: mg/m³"], ans:2, exp:"Solid media (e.g. soil, food) use mg/g; liquids use mg/L; air uses mg/m³. Knowing these units is essential for environmental risk assessment." },
+  { q:"30 mg of strychnine administered all at once could be fatal, but 3 mg daily for ten days would not. This best illustrates:", opts:["The concept of threshold dose","The principle of dose fractionation reducing toxicity","The difference between absorbed and administered dose","Hormesis at sub-lethal doses"], ans:1, exp:"Dose fractionation allows time for the body to metabolise and eliminate each smaller dose before the next, preventing accumulation to fatal concentrations." },
+
+  // LD50 / Dose Estimates (15-22)
+  { q:"The LD₅₀ is defined as:", opts:["The lowest dose that kills any member of a test population","The dose killing exactly one animal in a study","The statistically derived dose expected to kill 50% of a test population","The dose above which all test animals die"], ans:2, exp:"LD₅₀ (Lethal Dose 50%) is derived statistically from dose-response data and represents the dose expected to be lethal to half of a defined test population under specified conditions." },
+  { q:"A chemical with an LD₅₀ of 0.001 mg/kg compared to one with an LD₅₀ of 4,000 mg/kg is:", opts:["Less potent — it requires more to cause death","Equally potent — LD₅₀ does not indicate potency","More potent — it requires far less dose to kill","More potent only in rodents, not humans"], ans:2, exp:"Lower LD₅₀ = greater potency. 0.001 mg/kg (like dioxin TCDD) is extremely toxic, requiring minute amounts; 4,000 mg/kg (like table salt) is relatively harmless." },
+  { q:"The No Observed Adverse Effect Level (NOAEL) is:", opts:["The dose at which 50% of animals show no effects","The highest dose tested at which no toxic effects are observed","The lowest dose at which any effect is first detected","Equal to the LD₀ in all studies"], ans:1, exp:"NOAEL is the highest experimental dose at which no statistically or biologically significant adverse effects are detected. It forms the basis for deriving safe exposure limits." },
+  { q:"LOAEL stands for:", opts:["Lethal Observed Adverse Effect Level","Lowest Observed Adverse Effect Level","Lowest Optimal Absorption Exposure Limit","Lethal Oral Absorption Effect Level"], ans:1, exp:"LOAEL = Lowest Observed Adverse Effect Level — the lowest dose in a study at which an adverse effect is first detected. It is the dose just above the NOAEL." },
+  { q:"The Therapeutic Index (TI) is calculated as:", opts:["ED₅₀ ÷ LD₅₀","LD₅₀ ÷ ED₅₀","NOAEL ÷ LOAEL","ED₉₉ ÷ LD₀₁"], ans:1, exp:"TI = LD₅₀ / ED₅₀. A higher ratio means a wider margin between the therapeutic dose and the lethal dose, making the drug safer." },
+  { q:"A drug with a Therapeutic Index of 3 compared to one with a TI of 10:", opts:["Is equally safe but cheaper to produce","Is safer because smaller doses are needed","Is more dangerous — its toxic dose is closer to its effective dose","Has a broader dose-response curve"], ans:2, exp:"A lower TI means the lethal dose is only slightly higher than the effective dose, leaving little margin for dosing error. A TI of 10 is significantly safer than a TI of 3." },
+  { q:"The Margin of Safety (MOS) uses which specific dose estimates?", opts:["LD₅₀ and ED₅₀","LD₀₁ and ED₉₉","NOAEL and LOAEL","LD₁₀ and ED₁₀"], ans:1, exp:"MOS = LD₀₁ / ED₉₉ — the ratio of the lethal dose for the most sensitive individual to the effective dose for the most resistant. MOS < 1 signals extreme clinical danger." },
+  { q:"A pesticide labelled 'DANGER-POISON' with a skull and crossbones symbol falls in which EPA toxicity category?", opts:["Category IV (LD₅₀ > 2,000 mg/kg)","Category III (LD₅₀ 500-2,000 mg/kg)","Category II (LD₅₀ 51-500 mg/kg)","Category I (LD₅₀ < 50 mg/kg)"], ans:3, exp:"Category I is the most toxic class with oral LD₅₀ < 50 mg/kg. It requires the DANGER-POISON label with skull and crossbones under EPA pesticide regulations." },
+
+  // Toxicokinetics Overview (23-25)
+  { q:"Toxicokinetics is best described as:", opts:["The study of how toxicants damage target organs","The quantitative description of the time course of ADME of a xenobiotic in the body","The analysis of dose-response relationships in populations","The classification of chemicals by their inherent potency"], ans:1, exp:"Toxicokinetics = what the body does to the substance. It characterises the rates and extent of Absorption, Distribution, Metabolism (biotransformation), and Excretion over time." },
+  { q:"Toxicodynamics differs from toxicokinetics in that it describes:", opts:["How quickly a toxicant is absorbed","What the body does to the toxicant","What the toxicant does to the body at target tissues","The rate of urinary excretion of toxicants"], ans:2, exp:"Toxicodynamics concerns mechanisms and effects at the target site — receptor binding, enzyme inhibition, DNA damage — essentially what the toxicant does to the body." },
+  { q:"If the rate of absorption of a xenobiotic greatly exceeds its rate of elimination, the consequence is:", opts:["More rapid detoxification","Accumulation at target sites leading to potential toxicity","Immediate excretion via the kidney","Redistribution to the placenta only"], ans:1, exp:"Accumulation occurs when absorption outpaces elimination. Concentration builds at the target site until it reaches a critical threshold that produces toxic effects." },
+
+  // Transmembrane Transport (26-28)
+  { q:"Simple (passive) diffusion of xenobiotics across cell membranes is driven by:", opts:["ATP hydrolysis and carrier proteins","The concentration gradient from high to low concentration","Specific receptor-mediated endocytosis","Active transport against the electrochemical gradient"], ans:1, exp:"Passive diffusion requires no energy or carriers. The concentration gradient alone drives movement of lipid-soluble molecules across the lipid bilayer." },
+  { q:"P-glycoprotein (P-gp) is clinically important because:", opts:["It facilitates absorption of nutrients in the small intestine","It is an efflux transporter that pumps chemicals out of cells, contributing to drug resistance","It is the primary receptor for heavy metals in bone","It activates Phase II conjugation reactions in the liver"], ans:1, exp:"P-gp is an ATP-dependent efflux pump (ABC transporter) that expels chemicals from cells. In cancer, it pumps out chemotherapy drugs, contributing to multidrug resistance." },
+  { q:"Endocytosis (phagocytosis and pinocytosis) is the primary transport mechanism for:", opts:["Small lipid-soluble molecules","All water-soluble drugs","Large molecules and particles that cannot cross membranes by diffusion","Ions and electrolytes"], ans:2, exp:"Endocytosis engulfs particles (phagocytosis) or liquid droplets/very small particles (pinocytosis) — the only way large macromolecules and particles can enter cells." },
+
+  // Absorption Factors (29-32)
+  { q:"The Henderson-Hasselbalch equation predicts that weak acids are best absorbed in the:", opts:["Colon (pH 7-8)","Small intestine (pH 7-8)","Stomach (pH 1-3)","Plasma (pH 7.4)"], ans:2, exp:"Weak acids are predominantly non-ionised (and thus lipid-soluble) in the acidic stomach, favouring membrane crossing. In the alkaline intestine they become ionised and less absorbed." },
+  { q:"The 'ion trap' phenomenon is clinically exploited to:", opts:["Increase plasma protein binding of drugs in overdose","Accelerate elimination of toxicants by altering urine pH","Prevent first-pass metabolism in the liver","Increase the volume of distribution of polar compounds"], ans:1, exp:"By alkalinising urine (e.g. sodium bicarbonate for aspirin overdose), weak acid toxicants become ionised in the tubular lumen and cannot be reabsorbed, accelerating excretion." },
+  { q:"The rate-limiting barrier for dermal absorption of chemicals is:", opts:["The dermis (connective tissue layer)","The stratum corneum (outermost layer of the epidermis)","The capillary endothelium beneath the skin","The subcutaneous fat layer"], ans:1, exp:"The stratum corneum — a tough, keratinised outer layer — is the primary barrier to skin absorption. Its thickness, hydration, and lipid content determine permeability." },
+  { q:"Which property of a chemical most strongly promotes its absorption through cell membranes?", opts:["High water solubility and large molecular weight","Low molecular weight and high lipid solubility","Strong ionisation at physiological pH","High molecular weight and negative log P"], ans:1, exp:"Lipid-soluble (positive log P), small molecules diffuse readily through the phospholipid bilayer. Ionised or large hydrophilic molecules are poorly absorbed via this route." },
+
+  // Distribution (33-36)
+  { q:"Plasma protein binding of a xenobiotic tends to:", opts:["Increase its free (active) fraction immediately","Shorten its half-life in the body","Prolong its half-life and reduce its free active fraction","Enhance its excretion by glomerular filtration"], ans:2, exp:"Protein-bound xenobiotics are sequestered in plasma, cannot be filtered or act on receptors, and are slowly released — thus half-life is prolonged and the active free fraction is reduced." },
+  { q:"Lead (Pb) is initially distributed to the liver, then redistributed to bone. This illustrates:", opts:["Bioavailability","Enterohepatic circulation","Redistribution to high-affinity storage sites over time","First-pass metabolism"], ans:2, exp:"Redistribution describes the time-dependent movement of a xenobiotic from its initial distribution compartment to other sites with higher affinity — as seen with lead accumulating in bone over weeks." },
+  { q:"The blood-brain barrier (BBB) restricts entry of most xenobiotics because:", opts:["It lacks any blood supply","Capillary endothelial cells form tight junctions supported by astrocytes, limiting paracellular permeability","It actively pumps all xenobiotics back into the blood","It is surrounded by bone, which acts as a physical barrier"], ans:1, exp:"The BBB is formed by tightly-junctioned endothelial cells with astrocyte support, severely limiting paracellular and transcellular passage. Only lipid-soluble, low-MW substances cross freely." },
+  { q:"The placental barrier was formerly believed to be absolute until:", opts:["DDT was found in breast milk in the 1950s","The thalidomide disaster of 1960 proved xenobiotics cross to the fetus","Lead poisoning of children in the 1970s demonstrated fetal transfer","Ethanol was detected in cord blood in the 1980s"], ans:1, exp:"Thalidomide — a drug given for morning sickness — crossed the placenta and caused severe limb defects (phocomelia) in thousands of babies, ending the myth of the placenta as an absolute barrier." },
+
+  // Excretion (37-40)
+  { q:"In renal excretion, which process is responsible for excreting protein-bound xenobiotics and polar conjugates that cannot be filtered at the glomerulus?", opts:["Glomerular filtration","Tubular reabsorption at the distal tubule","Active tubular secretion at the proximal tubule","Passive diffusion from the collecting duct"], ans:2, exp:"Active tubular secretion at the proximal tubule uses energy-dependent transporters to secrete protein-bound and polar compounds directly into the tubular lumen for excretion." },
+  { q:"Enterohepatic circulation prolongs the half-life of a xenobiotic because:", opts:["It prevents Phase I metabolism in the liver","It increases glomerular filtration rate","Gut bacteria deconjugate biliary metabolites, making them lipophilic for reabsorption into portal blood, returning them to the liver","It stimulates P-glycoprotein efflux in the intestinal wall"], ans:2, exp:"After biliary excretion into the gut, intestinal bacteria cleave glucuronide/sulfate conjugates, restoring lipophilicity. Reabsorption returns the compound to the liver via the portal vein, recycling it." },
+  { q:"Excretion of xenobiotics in breast milk is clinically significant because:", opts:["It eliminates the substance from the mother's body more rapidly","Lipid-soluble xenobiotics can be transferred to nursing infants who are more vulnerable","Breast milk is more alkaline than plasma, trapping ionised weak acids","It prevents enterohepatic circulation of the xenobiotic"], ans:1, exp:"Breast milk (slightly acidic, pH ~6.5, with high fat content) accumulates lipid-soluble xenobiotics. Nursing infants thus receive doses they cannot efficiently metabolise or excrete." },
+  { q:"For volatile substances such as ethanol, the primary excretion route is:", opts:["Biliary/fecal excretion","Urinary renal excretion","Respiratory (exhalation) via the lungs","Excretion in sweat"], ans:2, exp:"Volatile compounds and their gaseous metabolites are excreted by passive diffusion across alveolar membranes. This is the basis of the breathalyser test for blood alcohol." }
 ];
 
-const saData = [
-  { q: "Explain the dose-response relationship and describe two key assumptions that underpin it. (5 marks)", marks:5,
-    model:"The dose-response relationship is the quantitative cause-and-effect link between the amount of a chemical (dose) and the harmful reaction it produces (response). It forms the foundation of toxicology. Key assumption 1: there is almost always a dose below which no response occurs (the threshold); the body's capacity to detoxify or repair the damage is not exceeded below this dose. Key assumption 2: a single chemical is responsible for the effect. Above the threshold, as dose increases, the proportion of the population responding increases in a sigmoidal (S-shaped) pattern until a maximum response is reached. This relationship allows derivation of dose estimates (LD₅₀, NOAEL, LOAEL) and comparison of chemical potencies." },
-  { q: "Define LD₅₀ and explain why it is important in comparing the toxicity of different chemicals. (5 marks)", marks:5,
-    model:"LD₅₀ (Lethal Dose 50%) is a statistically derived dose of a substance at which 50% of a test population is expected to die under defined experimental conditions. It is expressed in mg/kg body weight, allowing comparison across different animal species and body sizes. Its importance: (1) It provides an objective, quantitative index of acute toxicity — a lower LD₅₀ indicates greater potency (e.g., dioxin LD₅₀ = 0.001 mg/kg vs. ethanol = 10,000 mg/kg). (2) It forms the basis of pesticide and chemical hazard labelling categories. (3) It allows calculation of the Therapeutic Index (LD₅₀ ÷ ED₅₀), which guides clinical drug safety decisions. (4) It enables cross-species extrapolation in risk assessment." },
-  { q: "Describe the four main routes of xenobiotic absorption and identify one key factor influencing absorption at each route. (5 marks)", marks:5,
-    model:"(1) Oral/GI tract: The primary route for food, water contaminants, and drugs. Key factor: pH — the stomach (pH 1–3) favours weak acid absorption, while the small intestine (pH 7–8, surface area 200 m²) is the dominant site for most xenobiotics. (2) Inhalation/Lung: Important for gases, vapours, and aerosols. Key factor: particle size — particles less than 1 µm reach the alveoli and enter the bloodstream directly; larger particles are trapped in the upper airways. (3) Dermal/Skin: Relevant for occupational chemicals and pesticides. Key factor: lipid solubility — lipophilic compounds penetrate the stratum corneum (rate-limiting layer) more readily. Skin hydration and body region also matter. (4) Parenteral (e.g., IV, IM): Bypasses absorption barriers. Key factor: for IV, bioavailability is 100% (no absorption step needed)." },
-  { q: "Compare and contrast passive diffusion, facilitated diffusion, and active transport as mechanisms of transmembrane xenobiotic transport. (5 marks)", marks:5,
-    model:"Passive diffusion: The most common mechanism. No energy or carrier protein required. Driven by the concentration gradient (high to low). Lipid-soluble compounds diffuse through the lipid bilayer; small hydrophilic molecules (MW less than 600) cross through aqueous pores. Facilitated diffusion: Uses a protein carrier (solute carriers such as OAT, OCT) but requires no energy and does not transport against a concentration gradient. It follows the same directional rules as passive diffusion but is faster and more selective. Active transport: Uses specific carrier proteins (ABC transporters, e.g., P-glycoprotein, MRP) and requires ATP energy. Critically, it can transport xenobiotics against a concentration gradient. P-gp acts as an efflux pump, removing drugs from cells — a key mechanism of anticancer drug resistance. MRP handles conjugated xenobiotic metabolites." },
-  { q: "Explain the concept of enterohepatic circulation and its toxicological significance. (5 marks)", marks:5,
-    model:"Enterohepatic circulation is a recycling loop in which xenobiotics (or their metabolites/conjugates) excreted via bile into the intestinal lumen are subsequently reabsorbed back into the portal circulation and returned to the liver. Mechanism: The liver conjugates xenobiotics (Phase II — glucuronidation, sulfation) and excretes them in bile into the duodenum. In the intestine, hydrolytic enzymes of the gut microflora cleave these polar conjugates, regenerating lipophilic (uncharged) forms that are readily reabsorbed across the intestinal epithelium via passive diffusion, re-entering the portal blood. Toxicological significance: (1) Prolongs the half-life of xenobiotics in the body. (2) Enhances potential toxicity by maintaining higher circulating concentrations for longer. (3) Delays complete elimination. (4) Metals such as arsenic, lead, and mercury are excreted via the biliary route and can undergo enterohepatic recirculation." },
-  { q: "Describe the role of plasma protein binding in the distribution of xenobiotics and explain one clinically important consequence. (5 marks)", marks:5,
-    model:"After absorption, xenobiotics distribute through the bloodstream partly free (unbound) and partly bound to plasma proteins — mainly albumin and globulins. The binding is generally reversible. Only the free (unbound) fraction is pharmacologically and toxicologically active, able to cross membranes and reach target sites. Effects of binding: (1) Prolongs half-life — bound drug is not filtered by the glomerulus or metabolised, acting as a reservoir. (2) Limits distribution to tissues (small Vd). (3) Affects the threshold dose for toxicity. Clinical consequence — drug displacement interaction: When a second drug with higher affinity for albumin is introduced, it displaces the first drug from binding sites. Because bound molecules become free, this can cause a ~100-fold increase in the active free concentration of the displaced drug, converting a therapeutic dose into a toxic one. Example: warfarin displaced by another highly protein-bound drug, increasing anticoagulant effect and risk of bleeding." },
-  { q: "What are physiological barriers to distribution, and why is the blood-brain barrier of special concern in neonates? (5 marks)", marks:5,
-    model:"Physiological barriers are specialised structures that restrict xenobiotic access to certain compartments. The two main barriers are: (1) Blood-brain barrier (BBB): Formed by capillary endothelial cells with extremely tight junctions, supported by astrocytes. It restricts entry of most substances into the brain. Only lipid-soluble xenobiotics cross this barrier readily. (2) Placental barrier: Consists of approximately 6 cell layers separating maternal and fetal circulations. Xenobiotics with MW less than 1000 and high lipid solubility can cross (e.g., ethanol, lead). Neonatal concern with BBB: The BBB is not fully developed at birth. This means that in neonates, xenobiotics that would be excluded from the adult brain can access the central nervous system, making the developing brain considerably more vulnerable to neurotoxic effects. Drugs, metals (lead), and environmental toxicants can cause disproportionately severe neurological damage in newborns and young infants compared to adults." },
-  { q: "Outline the three renal excretion processes and explain how urinary pH manipulation is used in clinical management of acute poisoning. (5 marks)", marks:5,
-    model:"Renal excretion involves three sequential processes in the nephron: (1) Glomerular filtration: Blood is filtered at the glomerulus. Molecules greater than 60 kDa and protein-bound xenobiotics are excluded. Approximately 99% of the filtrate is reabsorbed; only 1% is excreted as urine under normal conditions. (2) Active tubular secretion: At the proximal tubule, active transport mechanisms secrete protein-bound xenobiotics, polar metabolites, and conjugates into the tubular lumen — these are excreted regardless of plasma protein binding. (3) Tubular reabsorption: At the distal tubule, lipophilic (non-ionized) xenobiotics passively diffuse from the lumen back into the bloodstream. pH manipulation in poisoning: By altering urinary pH, the ionization of xenobiotics changes. For weak acid overdose (e.g., aspirin, salicylates): alkalinizing the urine (sodium bicarbonate IV) increases ionization of the weak acid, trapping it in the tubular lumen (ion trap effect) and accelerating excretion. For weak base overdose: acidifying the urine increases ionization and excretion. This is a key intervention in acute toxicology management." },
-  { q: "Distinguish between Phase I and Phase II biotransformation reactions, and explain what is meant by 'bioactivation'. (5 marks)", marks:5,
-    model:"Biotransformation (metabolism) is the enzymatic conversion of xenobiotics, primarily in the liver, into more polar (water-soluble) forms amenable to excretion. Phase I reactions (functionalization): Include oxidation (most common, mediated by cytochrome P450 enzymes), reduction, and hydrolysis. They introduce or expose a functional group on the parent compound, increasing polarity. Phase I metabolites may be inactive, less active, or more active than the parent. Phase II reactions (conjugation): Involve coupling of Phase I metabolites (or occasionally the parent compound) with endogenous polar molecules — glucuronic acid, sulfate, glutathione, amino acids, or acetyl groups. This greatly increases water solubility and typically inactivates the compound, facilitating urinary or biliary excretion. Bioactivation: Refers to the metabolic conversion of a relatively non-toxic parent compound into a more reactive or toxic metabolite. Classic example: paracetamol (acetaminophen) is oxidized in Phase I to the highly reactive metabolite NAPQI, which is hepatotoxic in overdose when glutathione stores are depleted." },
-  { q: "Explain how the toxicokinetic properties of a xenobiotic (ADME) can determine whether or not it causes toxicity, giving examples. (5 marks)", marks:5,
-    model:"ADME collectively determines the effective concentration of a xenobiotic at its target site, which is the ultimate determinant of toxicity — not just inherent potency. Absorption: A highly potent toxicant that is poorly absorbed may cause little or no systemic toxicity because insufficient amounts enter the bloodstream. No absorption = no toxicity. Distribution: If a toxicant distributes broadly to non-target tissues (e.g., fat storage depots for lipophilic compounds), the effective concentration at the target organ is diluted, reducing toxicity. Conversely, storage in bone (lead) or the brain may concentrate toxicity. Metabolism: Two chemicals with equal absorption may differ markedly in toxicity due to biotransformation. Bioactivation can render a non-toxic compound dangerous (paracetamol to NAPQI). Rapid metabolism to non-toxic metabolites reduces toxicity. Excretion: Rapid elimination reduces body burden and toxicity. When absorption rate exceeds elimination rate, accumulation occurs, the xenobiotic reaches a critical concentration at the target site, and toxicity ensues. This is the central kinetic principle underlying chronic toxicity from repeated low-dose exposures." },
+const ShortQs = [
+  { q:"Explain the concept of the dose-response relationship and list four key assumptions that underlie it in non-cancer risk assessment.", marks:5, points:[
+    "<strong>Core concept:</strong> The dose-response relationship is the quantitative link between the amount of a toxicant received (dose) and the magnitude or incidence of the resulting harmful effect (response). It is the foundational principle of toxicology.",
+    "<strong>Assumption 1 — Threshold:</strong> There is almost always a dose below which no response occurs or can be measured. The body's detoxification and repair mechanisms can handle low-level exposure.",
+    "<strong>Assumption 2 — Single chemical causality:</strong> The response observed is caused by the specific chemical under investigation, not by confounding substances.",
+    "<strong>Assumption 3 — Dose-site relationship:</strong> The biological response is related to the concentration of the toxicant at the target site, which is determined by ADME processes.",
+    "<strong>Assumption 4 — Measurable response:</strong> Once the threshold is exceeded, response increases proportionally with dose until a maximum (plateau) is reached. These assumptions do not apply to allergens or carcinogens (linear no-threshold model)."
+  ]},
+  { q:"Define LD₅₀ and explain how the Therapeutic Index (TI) and Margin of Safety (MOS) are calculated and why they are clinically important.", marks:5, points:[
+    "<strong>LD₅₀:</strong> The statistically derived dose expected to kill 50% of a defined test population under specified experimental conditions. It is the most widely used measure of acute toxicity and allows comparison of potency between chemicals. Lower LD₅₀ = greater potency.",
+    "<strong>Therapeutic Index:</strong> TI = LD₅₀ / ED₅₀. It expresses the ratio of the lethal dose to the therapeutically effective dose. A higher TI indicates a wider safety margin — e.g. TI of 10 is safer than TI of 3.",
+    "<strong>Margin of Safety:</strong> MOS = LD₀₁ / ED₉₉. It compares the lethal dose for the most sensitive individual (LD₀₁) to the effective dose for the most resistant (ED₉₉). MOS < 1 is a critical warning for clinicians.",
+    "<strong>Clinical importance of TI:</strong> Guides drug prescribing and dosing decisions; drugs with narrow TI (e.g. digoxin, warfarin, lithium) require therapeutic drug monitoring.",
+    "<strong>Clinical importance of MOS:</strong> MOS captures the real-world worst case — a sensitive patient needing an effective dose that overlaps with the lethal threshold for the same sensitive population."
+  ]},
+  { q:"Describe the four main routes of absorption of xenobiotics, identifying the most important site of absorption for each route and the key factors that determine absorption rate.", marks:5, points:[
+    "<strong>Oral (GI route):</strong> Primary route for food/water contaminants and oral drugs. The small intestine (pH 7-8, surface area ~200 m²) is the dominant absorption site due to its vast surface area. Gastric acid (pH 1-3) absorbs weak acids. Factors: pH, surface area, intestinal motility, ionisation state (pKa).",
+    "<strong>Inhalation (lung route):</strong> Relevant for gases, vapours, and fine aerosols. Alveoli (enormous surface area, thin membrane, rich blood supply) allow direct entry to blood. Particle size determines depth of penetration; particles <1 µm reach alveoli. Factor: blood solubility of gas.",
+    "<strong>Dermal (skin route):</strong> Important for pesticides and occupational chemicals. Rate-limiting barrier is the stratum corneum. Factors: lipid solubility, skin hydration, body region (scrotal skin >> sole of foot).",
+    "<strong>Other routes (IV, IM, SC, IP):</strong> Parenteral routes bypass GI barriers. IV gives 100% bioavailability instantaneously; IM/SC give rapid but partial absorption dependent on blood flow to the injection site.",
+    "<strong>General factors across routes:</strong> Molecular weight (smaller = faster), lipid solubility (higher = better membrane penetration), ionisation (non-ionised form crosses best), blood flow at absorption site, and surface area."
+  ]},
+  { q:"Explain the toxicokinetic concept of distribution, including the roles of plasma protein binding, storage depots (fat, bone, liver), and the blood-brain barrier.", marks:5, points:[
+    "<strong>Distribution basics:</strong> After entering the bloodstream, xenobiotics distribute to organs and tissues. Only the free (unbound) fraction is pharmacologically/toxicologically active. Distribution depends on blood flow, molecular size, lipid solubility, and protein binding.",
+    "<strong>Plasma protein binding:</strong> Xenobiotics (especially lipophilic ones) bind reversibly to albumin and globulins. Binding prolongs half-life, reduces free active fraction, and affects toxicity threshold. Drug displacement interactions can increase free fraction 100-fold, causing toxicity.",
+    "<strong>Fat as storage depot:</strong> Lipid-soluble compounds (DDT, PCBs) accumulate in adipose tissue. Low blood flow makes fat a slow-release depot — mobilised during weight loss or fasting, potentially releasing toxicants back into circulation.",
+    "<strong>Bone as storage depot:</strong> Lead substitutes for calcium and is stored in bone; fluoride causes skeletal fluorosis; radioactive strontium causes osteosarcoma. Bone storage can protect other organs but becomes a chronic internal source.",
+    "<strong>Blood-Brain Barrier:</strong> Capillary endothelial tight junctions with astrocyte support restrict most xenobiotics. Only lipid-soluble, low-MW compounds cross. BBB is incompletely developed at birth, making neonates more susceptible to neurotoxic xenobiotics."
+  ]},
+  { q:"Describe the process of renal excretion of xenobiotics, including all three mechanisms involved, and explain how manipulation of urine pH is used clinically in poisoning management.", marks:5, points:[
+    "<strong>Renal excretion — overview:</strong> The kidney is the primary excretion organ for xenobiotics and their metabolites. Three distinct processes operate in the nephron.",
+    "<strong>1. Glomerular filtration:</strong> Free (unbound) xenobiotics with MW < 60 kDa are filtered passively from blood into the tubular lumen. Protein-bound compounds and large molecules are excluded. About 99% of filtrate is reabsorbed, leaving only 1% as final urine.",
+    "<strong>2. Active tubular secretion:</strong> At the proximal tubule, energy-dependent transporters (OAT, OCT) actively secrete protein-bound xenobiotics and polar conjugates into the lumen against concentration gradients — handling compounds that escaped filtration.",
+    "<strong>3. Tubular reabsorption:</strong> At the distal tubule, non-ionised (lipophilic) xenobiotics passively diffuse back from tubular lumen into blood, reducing excretion. The extent depends on urine pH.",
+    "<strong>Ion trap / pH manipulation:</strong> Alkalinising urine (e.g. IV sodium bicarbonate) ionises weak acids (aspirin, barbiturates) in the tubular lumen, preventing reabsorption and accelerating excretion. Acidifying urine traps weak bases. This is a practical antidotal strategy in acute poisoning."
+  ]},
+  { q:"Compare and contrast Phase I and Phase II biotransformation reactions, and explain the concept of bioactivation with a clinical example.", marks:5, points:[
+    "<strong>Phase I (Functionalization):</strong> Introduces or unmasks a functional group (-OH, -NH₂, -COOH, -SH) via oxidation (most common, by CYP450 enzymes), reduction, or hydrolysis. Products are more polar but may retain or even gain biological activity.",
+    "<strong>Phase II (Conjugation):</strong> Attaches an endogenous polar molecule (glucuronic acid, sulfate, glutathione, glycine, acetyl group) to the Phase I product or directly to the parent compound. Products are highly polar, water-soluble, and generally inactive — readily excreted in urine or bile.",
+    "<strong>Relationship between phases:</strong> Phase I typically precedes Phase II, but not always. Both phases together achieve biotransformation. Phase II usually terminates biological activity.",
+    "<strong>Bioactivation — concept:</strong> When biotransformation converts a relatively inactive parent compound into a metabolite that is MORE toxic than the original. This is the opposite of the usual detoxification goal.",
+    "<strong>Clinical example — Paracetamol (acetaminophen):</strong> At therapeutic doses, paracetamol is conjugated (Phase II) to harmless glucuronide/sulfate metabolites. In overdose, these pathways are saturated and Phase I CYP2E1 converts it to NAPQI, a highly reactive hepatotoxic metabolite. NAPQI depletes glutathione and binds liver proteins, causing acute hepatic necrosis. N-acetylcysteine (NAC) replenishes glutathione and is the antidote."
+  ]},
+  { q:"Describe enterohepatic circulation and explain its toxicological significance, including which types of compounds are affected.", marks:5, points:[
+    "<strong>Definition:</strong> Enterohepatic circulation (EHC) is a recycling loop in which a compound excreted in bile into the small intestine is reabsorbed from the gut and returned to the liver via the portal vein, only to be re-excreted in bile — a cycle that can repeat many times.",
+    "<strong>Mechanism:</strong> The liver conjugates xenobiotics (glucuronidation, sulfation) and secretes them in bile. In the intestine, resident bacterial β-glucuronidases and sulfatases hydrolyse these conjugates, regenerating the lipophilic parent compound, which is then reabsorbed.",
+    "<strong>Consequence for half-life:</strong> EHC dramatically prolongs the half-life of affected compounds because each cycle delays final elimination. A compound excreted in bile would be eliminated in hours without EHC; with EHC it may persist for days.",
+    "<strong>Toxicological significance:</strong> Extended retention amplifies toxicity for compounds that accumulate (e.g. heavy metals: arsenic, lead, mercury; mycotoxins). Interrupting EHC (e.g. with activated charcoal or cholestyramine) can be a therapeutic strategy.",
+    "<strong>Affected compounds:</strong> Lipophilic compounds with MW > ~300-500 Da that undergo hepatic conjugation: heavy metals (As, Pb, Hg), fat-soluble vitamins (e.g. vitamin D), some drugs (morphine, oestrogens), mycotoxins, and organochlorine pesticides."
+  ]},
+  { q:"Explain the mechanisms of transmembrane transport of xenobiotics, distinguishing between passive diffusion, facilitated diffusion, and active transport.", marks:5, points:[
+    "<strong>Overview:</strong> To enter cells and reach target sites, xenobiotics must cross phospholipid bilayer membranes. Four main mechanisms exist; the predominant one depends on the physicochemical properties of the xenobiotic.",
+    "<strong>Passive (simple) diffusion:</strong> Most common. Requires no energy, no carrier. Driven purely by concentration gradient. Lipid-soluble, non-ionised, low-MW compounds diffuse through the lipid domain; small hydrophilic molecules (MW < 600) pass through aqueous pores. Rate proportional to concentration gradient.",
+    "<strong>Facilitated diffusion:</strong> Uses a specific carrier protein (SLC family, e.g. OAT, OCT) but requires no ATP. Transport is down the concentration gradient (cannot move against it). Subject to saturation and competition. Important for organic anions/cations in the liver and kidney.",
+    "<strong>Active transport:</strong> Uses carrier proteins (ABC superfamily, e.g. P-glycoprotein, MRP) and ATP energy. Can transport xenobiotics AGAINST their concentration gradient. Subject to saturation, competition, and inhibition. P-gp is an efflux pump critical in BBB, intestinal epithelium, and multidrug resistance.",
+    "<strong>Endocytosis:</strong> For large molecules and particles unable to cross by any diffusion mechanism. Phagocytosis engulfs solid particles; pinocytosis takes in liquid or very fine particles via membrane invagination. Important for particulate matter and some macromolecules."
+  ]},
+  { q:"Define bioavailability (F) and the volume of distribution (Vd). Explain how plasma protein binding affects each parameter.", marks:5, points:[
+    "<strong>Bioavailability (F):</strong> The fraction of an administered dose that reaches the systemic circulation in an unchanged, pharmacologically active form. F = 1 (100%) for intravenous administration. For oral drugs, F is reduced by incomplete absorption and first-pass hepatic metabolism.",
+    "<strong>Volume of Distribution (Vd):</strong> Apparent Vd (litres) = Dose (mg) / Plasma concentration (mg/L). It is not a real anatomical volume but an apparent volume indicating how extensively a xenobiotic is distributed. Large Vd (e.g. >100 L) means extensive tissue distribution (lipophilic compound). Small Vd (close to plasma volume ~3 L) means the compound stays largely in plasma.",
+    "<strong>Effect of protein binding on Vd:</strong> High plasma protein binding keeps more of the drug in plasma, resulting in a SMALL Vd (drug does not partition extensively into tissues). High tissue protein binding (e.g. digoxin binds Na/K-ATPase) results in a LARGE Vd despite moderate lipophilicity.",
+    "<strong>Effect of protein binding on bioavailability:</strong> Protein-bound drug is not absorbed (for oral administration), not filtered by kidneys, and not metabolised — the bound fraction is pharmacologically inactive. Thus high binding reduces the effective (free) bioavailable fraction at the target.",
+    "<strong>Drug interaction implication:</strong> If drug A (moderate albumin affinity) is displaced by drug B (higher albumin affinity), the free concentration of drug A can increase 100-fold, turning a therapeutic dose into a toxic one — a clinically dangerous displacement interaction."
+  ]},
+  { q:"Describe the non-traditional dose-response relationships (U-shaped curve and hormesis) and explain how cancer dose-response differs from non-cancer toxicants.", marks:5, points:[
+    "<strong>Traditional (monotonic) dose-response:</strong> A sigmoidal curve with a threshold below which no harm occurs, a rising slope, and a plateau. Used for all non-cancer endpoints. NOAEL and LOAEL are derived from this curve.",
+    "<strong>U-shaped dose-response:</strong> Both deficiency and excess cause harm; optimal effect is at mid-range. Characteristic of essential nutrients (vitamins A, D, B₆; essential metals Se, Fe, Zn). The curve dips — adverse effects at the low extreme (deficiency), optimal zone, then adverse effects again at high doses (toxicity).",
+    "<strong>Hormesis:</strong> A biphasic dose-response where low doses produce a stimulatory or apparently beneficial response (>100% of control baseline) while higher doses cause the expected adverse response. Observed with hormones, some pesticides, and ionising radiation. Biological mechanism: low-dose adaptive/compensatory responses (e.g. upregulation of repair pathways).",
+    "<strong>Cancer dose-response — linear no-threshold model:</strong> For genotoxic carcinogens, any exposure theoretically increases cancer risk. No safe threshold is assumed. The dose-response is modelled as linear through the origin (0,0), extrapolated from the lowest tested dose that caused cancer.",
+    "<strong>Cancer slope factor:</strong> The slope of the linear extrapolation (risk per unit dose). It is a plausible upper-bound estimate of individual cancer probability from lifetime exposure. Used by regulatory agencies (EPA) for risk assessment and setting permissible exposure limits for carcinogens."
+  ]}
 ];
 
-const caseData = [
+const CaseQs = [
   {
-    id:1,
-    scenario:"A 35-year-old male is brought to the emergency department after ingesting a large amount of aspirin (salicylate) tablets in a suicide attempt. Blood salicylate levels are critically elevated. The attending physician considers measures to enhance elimination.",
-    questions:[
-      "a) Explain why aspirin (a weak acid, pKa 3.5) is rapidly absorbed in the stomach.",
-      "b) What renal manipulation would you recommend to enhance aspirin excretion, and through what mechanism?",
-      "c) What toxicokinetic process may contribute to prolonged salicylate toxicity if activated charcoal was given insufficiently?"
-    ],
-    model:`a) Aspirin is a weak acid (pKa 3.5). In the stomach (pH 1–3), at this low pH, the majority of aspirin molecules exist in the non-ionized (lipid-soluble) form. The non-ionized form readily diffuses across the gastric mucosa (lipid membrane) into the bloodstream. This is the basis of pH-dependent absorption: weak acids are best absorbed in acidic environments.\n\nb) The physician should alkalinize the urine by administering intravenous sodium bicarbonate. Mechanism (ion trap): Raising urine pH to approximately 7.5–8 increases the ionized fraction of salicylate in the renal tubular lumen. The ionized form is lipid-insoluble and cannot be passively reabsorbed at the distal tubule. It is trapped in the tubular lumen and excreted with urine, dramatically accelerating elimination.\n\nc) Enterohepatic circulation could contribute to prolonged toxicity. If salicylate metabolites are excreted via bile into the intestinal lumen, gut bacteria may hydrolyse conjugates, regenerating lipophilic forms that are reabsorbed, returning the xenobiotic to systemic circulation and extending its half-life.`
+    scenario:"A 24-year-old woman is brought to the emergency department after intentionally ingesting a large quantity of aspirin (salicylate) tablets approximately 2 hours ago. Serum salicylate levels are dangerously elevated. The attending physician considers interventions to accelerate elimination of the drug.",
+    q:"Using your knowledge of toxicokinetics, explain (a) why aspirin is well absorbed after oral ingestion, (b) what renal mechanism allows elimination to be accelerated, (c) what intervention specifically achieves this, and (d) what principle this exploitation is based on.",
+    marks:7,
+    answer:[
+      "<strong>(a) Absorption of aspirin (pKa 3.0):</strong> Aspirin is a weak acid. In the highly acidic stomach (pH 1-3), it is predominantly non-ionised. Non-ionised aspirin is lipid-soluble and diffuses freely across the gastric mucosa via passive diffusion. This is predicted by the Henderson-Hasselbalch equation: at a pH below the pKa, weak acids are preferentially non-ionised. The large surface area of the small intestine additionally enhances absorption of any remaining aspirin.",
+      "<strong>(b) Renal mechanism — tubular reabsorption and its reversal:</strong> At the distal renal tubule, non-ionised (lipophilic) aspirin in the tubular fluid passively diffuses back into the blood, reducing urinary excretion. If the urine is alkalinised, aspirin becomes ionised (charged) within the tubular lumen. Ionised molecules cannot diffuse through the lipid membrane and are 'trapped' in the urine — the ion trap phenomenon.",
+      "<strong>(c) Clinical intervention — urinary alkalinisation:</strong> Intravenous sodium bicarbonate (NaHCO₃) is administered to raise urinary pH to 7.5-8.5. At this pH, salicylate (pKa 3.0) is almost entirely ionised in the urine. It cannot be reabsorbed and is excreted with each voiding. This dramatically accelerates clearance compared to normal (acidic) urine.",
+      "<strong>(d) Underlying principle — ion trapping:</strong> The principle exploited is ion trapping — the pH-dependent ionisation of weak electrolytes. By raising the pH of the compartment into which the drug is being excreted above the drug's pKa, the ionised (non-reabsorbable) form predominates. This principle applies to weak acids (alkaline urine) and in reverse for weak bases (acidic urine traps weak bases). It is a powerful clinical tool in the management of poisoning with salicylates and barbiturates."
+    ]
   },
   {
-    id:2,
-    scenario:"A farm worker presents with acute organophosphate pesticide poisoning after prolonged dermal exposure while spraying crops without protective equipment. The pesticide is highly lipid-soluble with a log P of +3.2.",
-    questions:[
-      "a) Explain why dermal absorption was a significant route of exposure in this case, referencing the relevant pharmacokinetic factors.",
-      "b) Describe how the lipid solubility (log P = +3.2) would affect distribution within the body.",
-      "c) Given the systemic toxicity observed, which physiological barrier failed to protect the central nervous system, and what are the conditions for crossing it?"
-    ],
-    model:`a) Dermal absorption was significant because: (1) The pesticide is highly lipid-soluble (log P +3.2), allowing it to penetrate the stratum corneum — the rate-determining barrier for dermal absorption. (2) Prolonged contact time increases total absorbed dose. (3) Sweating (common in hot agricultural settings) hydrates the stratum corneum, increasing permeability.\n\nb) The high lipid solubility means the organophosphate will extensively distribute into lipid-rich tissues — fat (adipose), brain, and cell membranes. A large Volume of Distribution (Vd) is expected. Fat tissue can act as a slow-release depot, prolonging the duration of toxicity even after exposure ceases.\n\nc) The blood-brain barrier (BBB) failed to protect the CNS. The BBB is composed of endothelial cells with tight junctions supported by astrocytes, and is highly selective. However, it allows passage of lipid-soluble xenobiotics — the fundamental condition for crossing is high lipid solubility. With log P = +3.2, this organophosphate readily crosses the BBB, inhibiting acetylcholinesterase in the CNS.`
+    scenario:"A 35-year-old farmer presents with progressive neurological symptoms after prolonged use of an organochlorine pesticide without protective equipment. Investigations reveal high concentrations of the pesticide in his adipose tissue biopsy. He has lost significant body weight in the past six months due to a concurrent illness.",
+    q:"Explain (a) why organochlorine pesticides accumulate in fat, (b) why the farmer's recent weight loss is clinically concerning in the context of his pesticide exposure, (c) how distribution to tissues other than the target organ influences overall toxicity, and (d) what role the blood-brain barrier plays in his neurological symptoms.",
+    marks:7,
+    answer:[
+      "<strong>(a) Accumulation in adipose tissue:</strong> Organochlorine pesticides (e.g. DDT, dieldrin) have very high lipid solubility (large positive log P) and long half-lives. After absorption through the skin or GI tract, they distribute extensively to adipose tissue, which has high lipid content. The relatively low blood flow to fat makes it a stable, slowly-equilibrating depot. Compounds continue to accumulate over repeated exposures because elimination is slower than absorption.",
+      "<strong>(b) Clinical concern with weight loss:</strong> Adipose tissue acts as a storage depot that sequesters lipophilic xenobiotics, reducing their free plasma concentration and thus reducing acute toxicity. When fat stores are mobilised during weight loss, fasting, or illness, stored pesticide is released back into the bloodstream. This redistribution can suddenly raise free plasma concentrations, delivering a bolus of toxicant to target organs (including the nervous system) — potentially causing acute toxicity from a 'stored' body burden even in the absence of new exposure.",
+      "<strong>(c) Distribution to non-target organs and overall toxicity:</strong> Distribution to tissues other than the nervous system (the target organ) effectively dilutes the toxicant — less reaches the site where harm occurs. Fat, liver, kidney, and bone can serve as storage depots that sequester xenobiotics. This redistribution reduces the dose at the target site and decreases toxicity. However, these depots are reversible; the compound is released over time, prolonging overall exposure duration.",
+      "<strong>(d) Blood-brain barrier and neurological symptoms:</strong> The BBB consists of capillary endothelial cells with tight junctions supported by astrocytes. It prevents most polar and large-MW compounds from entering the CNS. However, organochlorine pesticides are highly lipid-soluble and can cross the BBB by passive diffusion. Once in the CNS, they disrupt neuronal ion channel function (blocking voltage-gated Na⁺ channels and GABA-A receptors), causing the progressive neurological symptoms observed — tremors, seizures, and sensory disturbances."
+    ]
   },
   {
-    id:3,
-    scenario:"A 28-year-old woman, 16 weeks pregnant, is found to have elevated blood lead levels. She lives in an older home with lead paint and uses traditional cookware with lead-glazed ceramics. She is concerned about her unborn baby.",
-    questions:[
-      "a) Describe how lead is absorbed and stored in the human body.",
-      "b) Explain why the fetus is at particular risk from lead exposure in this case.",
-      "c) What toxicokinetic process could cause blood lead to rise later in the pregnancy even if exposure is stopped now?"
-    ],
-    model:`a) Lead absorption: Orally ingested lead is absorbed in the small intestine. Pregnant women absorb a higher percentage of ingested lead than healthy adults. Lead may also be inhaled if lead paint dust is disturbed. Once absorbed, lead enters the blood, then distributes to soft tissues (liver, kidney, brain). Over weeks to months, approximately 90–95% of the body's lead burden is redistributed to bone, where it substitutes for calcium in hydroxyapatite crystals. Bone serves as a long-term storage depot.\n\nb) Fetal risk: The placental barrier is not absolute. Lead crosses the placenta and enters fetal circulation. The fetal blood-brain barrier is incompletely developed, so lead readily enters the developing central nervous system. Lead is particularly neurotoxic to developing neurons — it impairs myelination, synaptogenesis, and neurotransmitter function. Even low fetal lead levels are associated with irreversible cognitive deficits and developmental delay.\n\nc) Redistribution from bone: Even if exposure stops, lead stored in the maternal skeleton can be remobilised. During pregnancy, calcium demands increase and are met partly by bone resorption. Lead stored in bone is released alongside calcium into the bloodstream (since lead mimics calcium), raising blood lead concentrations in both the mother and, via the placenta, in the fetus.`
+    scenario:"A pharmaceutical company is developing a new antibiotic. In preclinical studies, the drug shows: oral bioavailability of 30%, high plasma protein binding (95%), a Volume of Distribution (Vd) of 420 L, and a half-life of 18 hours. The LD₅₀ in rats is 850 mg/kg and the ED₅₀ is 40 mg/kg.",
+    q:"(a) Calculate the Therapeutic Index and interpret its clinical significance. (b) Explain why the oral bioavailability is low and what mechanisms are likely responsible. (c) Interpret the Vd of 420 L and explain what it indicates about the drug's distribution. (d) Explain the implications of 95% plasma protein binding for potential drug interactions.",
+    marks:7,
+    answer:[
+      "<strong>(a) Therapeutic Index calculation:</strong> TI = LD₅₀ / ED₅₀ = 850 / 40 = 21.25. Interpretation: a TI of ~21 indicates a reasonably wide safety margin. The lethal dose is 21 times the effective dose. This is considerably safer than a drug with TI = 3 (where the toxic dose is only 3-fold above therapeutic). However, TI uses animal LD₅₀ data and population medians, so caution is still required in clinical use, especially in sensitive populations.",
+      "<strong>(b) Low oral bioavailability (30%):</strong> 70% of the oral dose is lost before reaching systemic circulation. Possible mechanisms: (1) Incomplete GI absorption — high MW, poor lipid solubility, or ionisation in GI tract limits absorption from the lumen. (2) First-pass hepatic metabolism — absorbed drug passes through portal circulation to the liver where CYP enzymes extensively metabolise it before it reaches the systemic circulation. (3) Intestinal efflux — P-glycoprotein or MRP transporters in the gut wall actively pump the drug back into the intestinal lumen, reducing net absorption.",
+      "<strong>(c) Volume of Distribution (Vd = 420 L):</strong> The total blood volume is ~5 L and total body water ~42 L in a 70 kg adult. A Vd of 420 L is roughly 10 times total body water, indicating the drug distributes extensively BEYOND the vascular compartment into deep tissue compartments (intracellular fluid, fat, muscle). This large Vd suggests strong tissue binding (possibly intracellular). The drug is not retained in plasma — it partitions preferentially into tissues. This also means high plasma concentrations do not reflect total body burden.",
+      "<strong>(d) Implications of 95% plasma protein binding:</strong> Only 5% of circulating drug is free (active). (1) Potency: the protein-bound fraction is inactive — only the 5% free fraction can bind receptors, cross membranes, or be metabolised/excreted. (2) Drug interaction risk: if a second drug with higher albumin affinity displaces this drug, free concentration can rise dramatically (e.g. from 5% free to 10% free = 100% increase in active drug), potentially causing unexpected toxicity without any dose change. (3) Half-life: protein binding protects from glomerular filtration and slows elimination, contributing to the 18-hour half-life. (4) Monitoring: therapeutic drug monitoring should measure free drug concentration, not total, for accurate clinical interpretation."
+    ]
   },
   {
-    id:4,
-    scenario:"A clinical pharmacologist is comparing two new analgesic drugs, Drug A (TI = 12) and Drug B (TI = 2.8), for approval. Both have similar ED₅₀ values. The committee is also presented with data that Drug B undergoes significant enterohepatic circulation.",
-    questions:[
-      "a) What does the Therapeutic Index tell us about these two drugs, and which would you recommend and why?",
-      "b) How does a Margin of Safety (MOS) less than 1 influence clinical prescribing decisions?",
-      "c) How would enterohepatic circulation affect the pharmacokinetics of Drug B and what clinical implication does this have?"
-    ],
-    model:`a) Therapeutic Index (TI) = LD₅₀ ÷ ED₅₀. Drug A (TI = 12): there is a 12-fold difference between the effective and lethal doses — wide therapeutic window, safer to prescribe. Drug B (TI = 2.8): only a 2.8-fold difference — narrow therapeutic window, higher risk that therapeutic doses approach lethal doses. Recommendation: Drug A is clearly preferred. The wider therapeutic index means clinicians have more flexibility in dosing and the risk of serious toxicity from minor dosing errors is significantly lower.\n\nb) MOS = LD₀₁ ÷ ED₉₉. An MOS less than 1 means that the dose required to produce a therapeutic effect in the most resistant patients overlaps with the dose that would be lethal for the most sensitive patients. Such a drug may warrant contraindication in sensitive populations, very strict dosing protocols, and therapeutic drug monitoring.\n\nc) Enterohepatic circulation of Drug B: The drug is conjugated in the liver and excreted in bile. Gut bacteria cleave the conjugate, regenerating the lipophilic active form, which is reabsorbed into portal blood, returning to the liver. Clinical implications: (1) Prolonged half-life. (2) Multiple secondary plasma concentration peaks. (3) Enhanced and sustained toxicity risk. (4) Drug interactions involving gut microbiota (e.g., antibiotics) could unpredictably alter Drug B's pharmacokinetics.`
+    scenario:"A 28-year-old breastfeeding mother works in an industrial facility where she has been unknowingly exposed to a lipid-soluble organochlorine compound for 8 months. A routine health screen finds elevated levels of the compound in her blood. Her 6-month-old infant has since shown signs of neurodevelopmental delay.",
+    q:"Using your knowledge of toxicokinetics, explain: (a) how the mother absorbed the compound in the occupational setting, (b) how the compound reached her breast milk, (c) why her infant is particularly vulnerable, and (d) what principle of toxicokinetics explains why the compound persists for months in both mother and infant.",
+    marks:7,
+    answer:[
+      "<strong>(a) Occupational absorption — dermal route:</strong> In an industrial setting, skin contact is the primary exposure route for liquid or vapour-phase organochlorine compounds. The compound being lipid-soluble (high log P) crosses the stratum corneum (rate-limiting barrier of the skin) by passive diffusion through the lipid-rich keratinised layer. Inhalation of vapour may also contribute — fine particles/vapour enter the alveoli and diffuse directly into pulmonary capillaries. Lipid solubility and long-term repeated exposure led to progressive accumulation.",
+      "<strong>(b) Transfer to breast milk:</strong> Breast milk is slightly more acidic than plasma (~pH 6.5) and has high fat content. Lipid-soluble xenobiotics diffuse passively along their concentration gradient from plasma into the mammary gland and partition into the fat phase of milk during lactation. The relatively higher lipid content of breast milk compared to plasma creates a concentration gradient favouring accumulation. The compound is thus delivered to the infant with each feeding.",
+      "<strong>(c) Infant vulnerability:</strong> Multiple factors amplify toxicity in the infant: (1) The blood-brain barrier is incompletely developed in the newborn, allowing lipid-soluble neurotoxicants to cross more freely into the CNS. (2) The infant's liver (Phase I and II enzymes) and kidneys are immature, severely limiting biotransformation and renal elimination. (3) Body composition: infants have proportionally more brain relative to body weight and developing neuronal networks are exquisitely sensitive to interference. (4) The infant receives the compound at doses disproportionate to body weight because it concentrates in milk.",
+      "<strong>(d) Persistence — storage in adipose tissue and slow elimination:</strong> The toxicokinetic principle is storage depot accumulation. The organochlorine's high lipid solubility drives partitioning into adipose tissue, which serves as a stable, slowly-releasing reservoir. Low blood flow to fat limits the rate of redistribution back into plasma. The compound's half-life is further extended by enterohepatic circulation (biliary excretion → gut deconjugation → reabsorption) and by high plasma protein binding. When rate of absorption (from ongoing exposure) exceeds the slow rate of elimination, progressive bioaccumulation results in rising body burden — persisting for months to years even after exposure ceases."
+    ]
   },
   {
-    id:5,
-    scenario:"A toxicologist is investigating why two workers exposed to equal airborne concentrations of the same volatile solvent (a lipid-soluble compound) show very different degrees of CNS toxicity. Worker 1 is obese; Worker 2 is lean. Both have normal liver and kidney function.",
-    questions:[
-      "a) Explain the role of the Volume of Distribution (Vd) in understanding why the two workers may differ in CNS toxicity.",
-      "b) Which worker is likely to show more acute CNS toxicity immediately after exposure, and why?",
-      "c) Which worker might show more prolonged low-level toxicity after exposure ceases, and explain the toxicokinetic basis?"
-    ],
-    model:`a) Volume of Distribution (Vd) = Dose ÷ Plasma Concentration. It reflects how extensively a xenobiotic distributes into body tissues. For lipid-soluble solvents, a large Vd is expected because the compound partitions into fat rather than remaining in plasma. Worker 1 (obese) has significantly more adipose tissue, providing a larger lipid reservoir — resulting in a larger Vd, lower peak plasma concentration, and lower initial CNS exposure. Worker 2 (lean) has less fat, so more solvent remains in circulation and is available to cross the blood-brain barrier.\n\nb) Worker 2 (lean) would show more acute CNS toxicity immediately after exposure. With less adipose tissue, less solvent is sequestered in fat. A larger proportion of the absorbed dose remains in the blood and reaches the brain. The higher peak plasma and brain concentration translates to more severe acute impairment (dizziness, confusion, narcosis).\n\nc) Worker 1 (obese) may show more prolonged low-level toxicity after cessation of exposure. Lipid-soluble solvents stored in adipose tissue are slowly released back into the blood as the plasma concentration falls (concentration gradient reversal). This slow, steady release from the fat depot maintains sub-clinical but ongoing CNS exposure over hours to days — the 'depot effect'. Worker 1 could continue to experience fatigue, cognitive impairment, or headaches long after leaving the contaminated environment.`
+    scenario:"During a toxicology lecture, a student asks: 'If two chemicals have the same LD₅₀, does that mean they are equally dangerous in real-world exposure?' The lecturer decides to use two examples — Chemical A (rapidly absorbed orally, evenly distributed, short half-life, no bioactivation) and Chemical B (poorly absorbed orally but readily absorbed through skin, undergoes bioactivation to a hepatotoxic metabolite, undergoes extensive enterohepatic circulation).",
+    q:"Answer the student's question comprehensively, using Chemical A and Chemical B to illustrate how toxicokinetic differences can make two chemicals with the same LD₅₀ very different real-world hazards. Cover absorption route, biotransformation, and excretion in your answer.",
+    marks:7,
+    answer:[
+      "<strong>Answer to the student's question:</strong> No — the same LD₅₀ does not mean equal real-world danger. LD₅₀ measures acute oral lethality in a controlled laboratory setting. It does not account for the route of real-world exposure, the nature of metabolites produced, the persistence of the compound in the body, or the target organs affected. Toxicokinetics profoundly modifies the hazard a compound poses.",
+      "<strong>Chemical A — lower real-world risk despite equal LD₅₀:</strong> Rapid oral absorption means hazard is primarily through ingestion. Even distribution ensures no single organ receives dangerously concentrated doses. Short half-life means the body eliminates it before accumulation occurs — the rate of elimination exceeds or matches absorption under realistic exposures. No bioactivation means the parent compound is the toxic entity; any metabolism reduces activity. Overall: predictable, manageable hazard primarily limited to acute oral ingestion.",
+      "<strong>Chemical B — greater real-world risk despite equal LD₅₀:</strong> Poor oral absorption but ready dermal absorption means real-world occupational or environmental skin contact is a significant unrecognised hazard — conventional oral LD₅₀ testing would underestimate it. Bioactivation generates a hepatotoxic metabolite that is more toxic than the parent, meaning the liver (the organ of metabolism) is specifically targeted. Enterohepatic circulation (biliary excretion → bacterial deconjugation in the gut → reabsorption → return to liver via portal vein) prolongs the half-life dramatically, allowing accumulation even from low repeated exposures. Chronic sub-acute liver damage accumulates long before any acute lethal dose is reached.",
+      "<strong>Synthesis — why LD₅₀ alone is insufficient:</strong> The same LD₅₀ masks fundamentally different hazard profiles. Real-world risk assessment must consider: (1) the dominant exposure route in the actual use scenario, (2) whether metabolism creates more or less toxic species (bioactivation vs. detoxification), (3) the rate of elimination and potential for accumulation, and (4) the specific organ(s) targeted. ADME processes — not just inherent potency — determine whether a xenobiotic elicits toxicity in real-world conditions.",
+      "<strong>Regulatory implication:</strong> This is why modern hazard assessment uses multiple parameters — dermal LD₅₀, inhalation LC₅₀, NOAEL, LOAEL, ADME studies, and metabolite identification — rather than relying on a single oral LD₅₀ value. Chemical B would require far more stringent occupational exposure controls than Chemical A, despite sharing the same LD₅₀."
+    ]
   }
 ];
 
-// ======================== STATE ========================
-let answeredCount = 0;
-const userAnswers = new Array(mcqData.length).fill(null);
+// ============================================================
+//  RENDER MCQs
+// ============================================================
+let mcqScore = 0;
+let mcqAnswered = 0;
 
-// ======================== RENDER MCQs ========================
-// FIX: handler moved to onchange on <input>, not onclick on <label>
-// This prevents the double-fire bug that caused blank/broken MCQ rendering
-function renderMCQ() {
+function renderMCQs() {
   const container = document.getElementById('mcq-container');
   container.innerHTML = '';
-  mcqData.forEach((q, i) => {
-    const div = document.createElement('div');
-    div.className = `mcq-item ${q.color}`;
-    div.id = `mcq-${i}`;
-    div.innerHTML = `
-      <div class="mcq-num">
-        <span class="qbadge">Q${i+1}</span>
-        <span>MCQ</span>
+  MCQs.forEach((item, idx) => {
+    const block = document.createElement('div');
+    block.className = 'question-block';
+    block.id = 'mcq-' + idx;
+    const optsHTML = item.opts.map((opt, i) => `
+      <button class="option-btn" onclick="selectMCQ(${idx},${i})" data-q="${idx}" data-opt="${i}">
+        <span class="opt-letter">${String.fromCharCode(65+i)}</span>
+        ${opt}
+      </button>`).join('');
+    block.innerHTML = `
+      <div class="q-header">
+        <span class="q-num">Q${idx+1}</span>
+        <div class="q-text">${item.q}</div>
+        <span class="marks-badge">1 mark</span>
       </div>
-      <div class="mcq-question">${q.q}</div>
-      <div class="mcq-options">
-        ${q.opts.map((o, j) => `
-          <label class="mcq-option" id="opt-${i}-${j}">
-            <input type="radio" name="mcq-${i}" value="${j}" onchange="selectOption(${i},${j})">
-            ${String.fromCharCode(65+j)}. ${o}
-          </label>
-        `).join('')}
-      </div>
-      <div class="feedback-box" id="fb-${i}"></div>
-    `;
-    container.appendChild(div);
+      <div class="options-list" id="opts-${idx}">${optsHTML}</div>
+      <div class="feedback-msg" id="fb-${idx}"></div>`;
+    container.appendChild(block);
   });
 }
 
-function selectOption(qIdx, optIdx) {
-  if (userAnswers[qIdx] !== null) return;
-  userAnswers[qIdx] = optIdx;
-  answeredCount++;
-  document.getElementById('answered-count').textContent = answeredCount;
+function selectMCQ(qIdx, optIdx) {
+  const block = document.getElementById('mcq-' + qIdx);
+  if (block.dataset.answered) return;
+  block.dataset.answered = '1';
+  mcqAnswered++;
 
-  // Disable all options for this question
-  const opts = document.querySelectorAll(`[id^="opt-${qIdx}-"]`);
-  opts.forEach(o => o.classList.add('disabled'));
+  const opts = block.querySelectorAll('.option-btn');
+  const correct = MCQs[qIdx].ans;
+  const fb = document.getElementById('fb-' + qIdx);
 
-  const correct = mcqData[qIdx].ans;
-  const fb = document.getElementById(`fb-${qIdx}`);
+  opts.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === correct) btn.classList.add('correct-ans');
+    if (i === optIdx && optIdx !== correct) btn.classList.add('wrong-ans');
+  });
 
   if (optIdx === correct) {
-    document.getElementById(`opt-${qIdx}-${optIdx}`).classList.add('correct');
-    fb.className = 'feedback-box correct show';
-    fb.innerHTML = '✅ Correct!';
+    mcqScore++;
+    block.classList.add('correct');
+    fb.className = 'feedback-msg correct show';
+    fb.innerHTML = '✔ Correct. ' + MCQs[qIdx].exp;
   } else {
-    document.getElementById(`opt-${qIdx}-${optIdx}`).classList.add('wrong');
-    document.getElementById(`opt-${qIdx}-${correct}`).classList.add('reveal-correct');
-    fb.className = 'feedback-box wrong show';
-    fb.innerHTML = `❌ Incorrect. The correct answer is <strong>${String.fromCharCode(65+correct)}. ${mcqData[qIdx].opts[correct]}</strong>`;
+    block.classList.add('wrong');
+    fb.className = 'feedback-msg wrong show';
+    fb.innerHTML = '✘ Incorrect. The correct answer is <strong>' + String.fromCharCode(65+correct) + '</strong>. ' + MCQs[qIdx].exp;
+  }
+
+  updateScore();
+  if (mcqAnswered === MCQs.length) {
+    document.getElementById('mcq-summary').style.display = 'block';
+    document.getElementById('final-score').textContent = mcqScore + '/40';
   }
 }
 
-function submitMCQ() {
-  let score = 0;
-  userAnswers.forEach((ans, i) => {
-    if (ans === mcqData[i].ans) score++;
-  });
-  const pct = Math.round((score / mcqData.length) * 100);
-  document.getElementById('score-display').textContent = `${score}/${mcqData.length}`;
-  document.getElementById('score-sub').textContent = `${pct}% — ${getGrade(pct)}`;
+function updateScore() {
+  document.getElementById('score-num').textContent = mcqScore;
+  const pct = Math.round(mcqScore / MCQs.length * 100);
+  document.getElementById('score-pct').textContent = pct + '%';
   document.getElementById('score-bar').style.width = pct + '%';
-
-  const rp = document.getElementById('results-panel');
-  rp.style.display = 'block';
-  document.getElementById('results-score').textContent = `${score} / ${mcqData.length}`;
-  document.getElementById('results-msg').textContent = `${pct}% — ${getGrade(pct)}. ${pct >= 70 ? 'Great work! Review any missed questions.' : 'Review the study guide and try again.'}`;
-  rp.scrollIntoView({ behavior:'smooth', block:'center' });
 }
 
-function getGrade(p) {
-  if (p >= 80) return 'Excellent';
-  if (p >= 70) return 'Good';
-  if (p >= 60) return 'Average';
-  if (p >= 50) return 'Below Average';
-  return 'Needs Improvement';
+function resetMCQ() {
+  mcqScore = 0; mcqAnswered = 0;
+  updateScore();
+  document.getElementById('mcq-summary').style.display = 'none';
+  renderMCQs();
 }
 
-function retryMCQ() {
-  userAnswers.fill(null);
-  answeredCount = 0;
-  document.getElementById('answered-count').textContent = '0';
-  document.getElementById('score-display').textContent = '—';
-  document.getElementById('score-sub').textContent = 'Submit MCQs to see results';
-  document.getElementById('score-bar').style.width = '0%';
-  document.getElementById('results-panel').style.display = 'none';
-  renderMCQ();
-  document.getElementById('mcq').scrollIntoView({ behavior:'smooth' });
-}
-
-// ======================== RENDER SHORT ANSWER ========================
-function renderSA() {
-  const container = document.getElementById('sa-container');
-  saData.forEach((q, i) => {
-    const div = document.createElement('div');
-    div.className = 'sa-item';
-    div.innerHTML = `
-      <div class="sa-marks">⭐ ${q.marks} marks</div>
-      <div class="sa-question"><strong>Q${i+1}.</strong> ${q.q}</div>
-      <textarea class="sa-textarea" placeholder="Write your answer here..."></textarea>
-      <button class="sa-reveal-btn" onclick="revealSA(${i})">📋 Reveal Model Answer</button>
-      <div class="sa-model-answer" id="sa-model-${i}">
-        <div class="answer-title">📌 Model Answer</div>
-        ${q.model.replace(/\n\n/g,'<br><br>')}
+// ============================================================
+//  RENDER SHORT ANSWER
+// ============================================================
+function renderShort() {
+  const container = document.getElementById('short-container');
+  container.innerHTML = '';
+  ShortQs.forEach((item, idx) => {
+    const block = document.createElement('div');
+    block.className = 'question-block';
+    const pointsHTML = item.points.map((pt, i) =>
+      `<li>${pt}</li>`).join('');
+    block.innerHTML = `
+      <div class="q-header">
+        <span class="q-num">SA${idx+1}</span>
+        <div class="q-text">${item.q}</div>
+        <span class="marks-badge">${item.marks} marks</span>
       </div>
-    `;
-    container.appendChild(div);
+      <div class="sa-answer-area">
+        <button class="reveal-btn" onclick="revealShort(${idx})">👁 Reveal Model Answer</button>
+        <div class="model-answer" id="sa-ans-${idx}">
+          <div class="ma-title">Model Answer — ${item.marks} marking points</div>
+          <ol>${pointsHTML}</ol>
+        </div>
+      </div>`;
+    container.appendChild(block);
   });
 }
 
-function revealSA(i) {
-  const el = document.getElementById(`sa-model-${i}`);
-  el.classList.toggle('show');
+function revealShort(idx) {
+  const ans = document.getElementById('sa-ans-' + idx);
+  ans.classList.toggle('show');
+  const btn = ans.previousElementSibling;
+  btn.textContent = ans.classList.contains('show') ? '🙈 Hide Answer' : '👁 Reveal Model Answer';
 }
 
-// ======================== RENDER CASE STUDIES ========================
-function renderCase() {
+// ============================================================
+//  RENDER CASE STUDIES
+// ============================================================
+function renderCases() {
   const container = document.getElementById('case-container');
-  caseData.forEach((c, i) => {
-    const div = document.createElement('div');
-    div.className = 'case-item';
-    div.innerHTML = `
-      <div class="mcq-num" style="margin-bottom:16px;">
-        <span class="qbadge" style="background:rgba(167,139,250,0.15);color:var(--accent3)">Case ${c.id}</span>
-        <span>Applied Scenario — 5 marks</span>
+  container.innerHTML = '';
+  CaseQs.forEach((item, idx) => {
+    const block = document.createElement('div');
+    block.className = 'question-block';
+    const ansHTML = item.answer.map(pt => `<li>${pt}</li>`).join('');
+    block.innerHTML = `
+      <div class="q-header">
+        <span class="q-num" style="background:rgba(251,146,60,0.15);color:var(--accent5)">CASE ${idx+1}</span>
+        <div class="q-text" style="font-size:0.82rem;color:var(--muted);font-weight:400">Clinical Scenario</div>
+        <span class="marks-badge">${item.marks} marks</span>
       </div>
       <div class="case-scenario">
-        <div class="case-tag">Clinical/Environmental Scenario</div>
-        <p>${c.scenario}</p>
+        <div class="case-label">📋 Scenario</div>
+        <div class="case-text">${item.scenario}</div>
       </div>
-      <div class="case-questions">
-        ${c.questions.map((q, j) => `
-          <div>
-            <div class="case-q"><span>(${String.fromCharCode(97+j)})</span>${q.substring(3)}</div>
-            <textarea class="case-textarea" placeholder="Your answer for (${String.fromCharCode(97+j)})..."></textarea>
-          </div>
-        `).join('')}
-      </div>
-      <button class="case-reveal-btn" onclick="revealCase(${i})">📋 Reveal Model Answer</button>
-      <div class="case-model" id="case-model-${i}">
-        <div class="answer-title">📌 Model Answer</div>
-        ${c.model.replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>')}
-      </div>
-    `;
-    container.appendChild(div);
+      <div class="case-question">❓ ${item.q}</div>
+      <button class="case-answer-btn" onclick="revealCase(${idx})">🔍 Reveal Model Answer</button>
+      <div class="case-model" id="case-ans-${idx}">
+        <div class="cm-title">Model Answer — Key Points</div>
+        <ol>${ansHTML}</ol>
+      </div>`;
+    container.appendChild(block);
   });
 }
 
-function revealCase(i) {
-  document.getElementById(`case-model-${i}`).classList.toggle('show');
+function revealCase(idx) {
+  const ans = document.getElementById('case-ans-' + idx);
+  ans.classList.toggle('show');
+  const btn = ans.previousElementSibling;
+  btn.textContent = ans.classList.contains('show') ? '🙈 Hide Answer' : '🔍 Reveal Model Answer';
 }
 
-// ======================== SIDEBAR ========================
-const sidebar = document.getElementById('sidebar');
-const mainContent = document.getElementById('main-content');
-let sidebarOpen = window.innerWidth >= 900;
+// ============================================================
+//  TAB SWITCHING
+// ============================================================
+function switchTabBtn(tab, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+}
 
+function switchTab(tab, navEl) {
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  navEl.classList.add('active');
+  document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.remove('active');
+    if (['mcq','short','case'][i] === tab) b.classList.add('active');
+  });
+  return false;
+}
+
+// ============================================================
+//  SIDEBAR
+// ============================================================
+let sidebarOpen = true;
 function toggleSidebar() {
   sidebarOpen = !sidebarOpen;
-  sidebar.classList.toggle('closed', !sidebarOpen);
-  mainContent.classList.toggle('expanded', !sidebarOpen);
+  const sb = document.getElementById('sidebar');
+  const mc = document.getElementById('main-content');
+  if (sidebarOpen) { sb.classList.remove('closed'); mc.classList.remove('expanded'); }
+  else { sb.classList.add('closed'); mc.classList.add('expanded'); }
 }
 
-if (!sidebarOpen) {
-  sidebar.classList.add('closed');
-  mainContent.classList.add('expanded');
+if (window.innerWidth < 900) {
+  sidebarOpen = false;
+  document.getElementById('sidebar').classList.add('closed');
+  document.getElementById('main-content').classList.add('expanded');
 }
 
-// NAV ACTIVE
-document.querySelectorAll('.nav-item').forEach(item => {
-  item.addEventListener('click', () => {
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    item.classList.add('active');
-  });
-});
-
-// SCROLL REVEAL
-const revealObserver = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.06 });
-document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-
-// ======================== INIT (wait for DOM) ========================
-document.addEventListener('DOMContentLoaded', () => {
-  renderMCQ();
-  renderSA();
-  renderCase();
-});
+// ============================================================
+//  INIT
+// ============================================================
+renderMCQs();
+renderShort();
+renderCases();
 </script>
 </body>
 </html>
