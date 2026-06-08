@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Environmental Pollution — Study Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+<style>
+  /* ========== LIGHT THEME ========== */
+  :root,
+  [data-theme="light"] {
+    --air:    #1a6b8a;
+    --water:  #0d7c66;
+    --odour:  #7b3fa0;
+    --indoor: #b5560a;
+    --coral:  #c0392b;
+    --gold:   #d4a017;
+    --bg:     #f7f4ef;
+    --card:   #ffffff;
+    --text:   #1e1e1e;
+    --muted:  #555;
+    --radius: 12px;
+    --table-even: #f7f4ef;
+    --table-hover: #eef5fb;
+    --dash-bg: #ffffff;
+    --dash-nav-hover: #f0f7fb;
+    --dash-border: #f0f0f0;
+    --intro-bg: linear-gradient(120deg,#e8f4f8,#e6f5f0);
+    --intro-text: #333;
+    --hr-color: #ddd;
+    --callout-info-bg: #e8f4f8;
+    --callout-warn-bg: #fdf3e3;
+    --callout-danger-bg: #fdecea;
+    --callout-green-bg: #e6f5f0;
+    --callout-odour-bg: #f5eefa;
+    --types-bg: #ffffff;
+    --types-border: #888;
+    --types-h3: #333;
+    --toggle-bg: #1a6b8a;
+    --toggle-knob: #ffffff;
+    --toggle-icon: '☀️';
+    --shadow: 0 2px 12px rgba(0,0,0,.07);
+    --dash-shadow: 0 8px 32px rgba(0,0,0,.18);
+  }
+
+  /* ========== DARK THEME ========== */
+  [data-theme="dark"] {
+    --air:    #4db8e8;
+    --water:  #26c99e;
+    --odour:  #c07fe0;
+    --indoor: #f0934a;
+    --coral:  #e86b61;
+    --gold:   #f0bc3a;
+    --bg:     #121620;
+    --card:   #1e2535;
+    --text:   #e4e8f0;
+    --muted:  #9aa3b5;
+    --table-even: #171e2e;
+    --table-hover: #243048;
+    --dash-bg: #1a2030;
+    --dash-nav-hover: #243050;
+    --dash-border: #2a3348;
+    --intro-bg: linear-gradient(120deg,#162535,#152a28);
+    --intro-text: #cfd8e8;
+    --hr-color: #2e3a50;
+    --callout-info-bg: #162535;
+    --callout-warn-bg: #2a2010;
+    --callout-danger-bg: #2a1518;
+    --callout-green-bg: #122a22;
+    --callout-odour-bg: #22153a;
+    --types-bg: #1e2535;
+    --types-border: #4a5568;
+    --types-h3: #e4e8f0;
+    --toggle-bg: #4db8e8;
+    --toggle-knob: #121620;
+    --shadow: 0 2px 12px rgba(0,0,0,.35);
+    --dash-shadow: 0 8px 32px rgba(0,0,0,.55);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Source Serif 4',serif;
+    background:var(--bg);
+    color:var(--text);
+    font-size:17px;
+    line-height:1.8;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  /* ========== THEME TOGGLE ========== */
+  .theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--card);
+    border: 1px solid var(--hr-color);
+    border-radius: 30px;
+    padding: 6px 12px 6px 8px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.82rem;
+    color: var(--text);
+  }
+  .theme-toggle:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,.2);
+    transform: translateY(-1px);
+  }
+  .toggle-track {
+    width: 38px;
+    height: 20px;
+    background: var(--toggle-bg);
+    border-radius: 20px;
+    position: relative;
+    transition: background 0.3s ease;
+    flex-shrink: 0;
+  }
+  .toggle-knob {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background: var(--toggle-knob);
+    border-radius: 50%;
+    transition: transform 0.3s ease, background 0.3s ease;
+  }
+  [data-theme="dark"] .toggle-knob {
+    transform: translateX(18px);
+  }
+  .toggle-label {
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+  }
+  .toggle-sun, .toggle-moon {
+    font-size: 14px;
+    line-height: 1;
+  }
+  [data-theme="light"] .toggle-moon { display: none; }
+  [data-theme="dark"]  .toggle-sun  { display: none; }
+
+  /* ========== HEADER ========== */
+  header{
+    background:linear-gradient(135deg,#0d3b52 0%,#1a6b8a 45%,#0d7c66 100%);
+    color:#fff;padding:52px 32px 40px;text-align:center;position:relative;overflow:hidden;
+  }
+  [data-theme="dark"] header {
+    background:linear-gradient(135deg,#091e2b 0%,#0e4a64 45%,#0a5244 100%);
+  }
+  header::before{content:'';position:absolute;inset:0;
+    background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  header h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.2rem);letter-spacing:1px;position:relative;}
+  header p{margin-top:10px;font-size:1rem;opacity:.85;position:relative;font-style:italic;}
+  .back-link{display:inline-block;margin-top:18px;padding:8px 22px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.4);border-radius:30px;color:#fff;text-decoration:none;font-size:.9rem;letter-spacing:.5px;transition:background .2s;position:relative;}
+  .back-link:hover{background:rgba(255,255,255,0.28);}
+
+  /* ========== DASHBOARD ========== */
+  #dash-toggle{display:none;}
+  .dash-btn{
+    position:fixed;bottom:28px;right:28px;z-index:999;
+    background:var(--air);color:#fff;border:none;border-radius:50%;
+    width:52px;height:52px;font-size:22px;cursor:pointer;
+    box-shadow:0 4px 18px rgba(0,0,0,.25);transition:background .2s,transform .2s;
+  }
+  .dash-btn:hover{background:#145a74;transform:scale(1.08);}
+  .dashboard{
+    position:fixed;bottom:92px;right:28px;z-index:998;width:260px;
+    background:var(--dash-bg);border-radius:var(--radius);box-shadow:var(--dash-shadow);
+    overflow:hidden;transition:max-height .35s ease,opacity .35s ease;
+    max-height:0;opacity:0;pointer-events:none;
+    border: 1px solid var(--dash-border);
+  }
+  .dashboard.open{max-height:700px;opacity:1;pointer-events:all;}
+  .dash-header{background:linear-gradient(90deg,#0d3b52,#1a6b8a);color:#fff;padding:12px 16px;font-family:'Playfair Display',serif;font-size:1rem;}
+  [data-theme="dark"] .dash-header{background:linear-gradient(90deg,#091e2b,#0e4a64);}
+  .dash-header span{font-size:.8rem;opacity:.8;display:block;font-family:'Source Serif 4',serif;font-style:italic;}
+  .dash-nav a{display:block;padding:9px 16px;font-size:.88rem;color:var(--text);text-decoration:none;border-bottom:1px solid var(--dash-border);transition:background .15s;}
+  .dash-nav a:hover{background:var(--dash-nav-hover);}
+  .dash-nav a::before{margin-right:7px;}
+  .dash-nav a.air::before{content:'💨';}
+  .dash-nav a.indoor::before{content:'🏠';}
+  .dash-nav a.odour::before{content:'🌫️';}
+  .dash-nav a.water::before{content:'💧';}
+  .dash-nav a.effects::before{content:'⚠️';}
+  .dash-nav a.control::before{content:'🛡️';}
+
+  /* ========== MAIN ========== */
+  main{max-width:900px;margin:0 auto;padding:40px 24px 60px;}
+
+  /* ========== INTRO CARD ========== */
+  .intro-card{background:var(--intro-bg);border-left:5px solid var(--air);border-radius:var(--radius);padding:24px 28px;margin-bottom:40px;}
+  .intro-card h2{font-family:'Playfair Display',serif;font-size:1.4rem;color:#0d3b52;margin-bottom:10px;}
+  [data-theme="dark"] .intro-card h2{color:var(--air);}
+  .intro-card p {color: var(--intro-text);}
+
+  /* ========== SECTION ========== */
+  section{margin-bottom:52px;}
+  .section-title{
+    display:flex;align-items:center;gap:12px;
+    font-family:'Playfair Display',serif;font-size:1.7rem;
+    padding:12px 20px;border-radius:var(--radius);color:#fff;margin-bottom:24px;
+  }
+  .section-title.air{background:linear-gradient(90deg,var(--air),#2a9fc9);}
+  .section-title.indoor{background:linear-gradient(90deg,var(--indoor),#e07b2a);}
+  .section-title.odour{background:linear-gradient(90deg,var(--odour),#a05cb5);}
+  .section-title.water{background:linear-gradient(90deg,var(--water),#22a88a);}
+  [data-theme="dark"] .section-title.air{background:linear-gradient(90deg,#0e4a64,#1a7a9a);}
+  [data-theme="dark"] .section-title.indoor{background:linear-gradient(90deg,#7a3a0a,#b05a1a);}
+  [data-theme="dark"] .section-title.odour{background:linear-gradient(90deg,#4a2470,#7a4a90);}
+  [data-theme="dark"] .section-title.water{background:linear-gradient(90deg,#0a4a38,#0a6a52);}
+
+  /* ========== CARDS ========== */
+  .card{background:var(--card);border-radius:var(--radius);padding:22px 26px;margin-bottom:20px;box-shadow:var(--shadow);transition:background 0.3s ease, box-shadow 0.3s ease;}
+  .card h3{font-family:'Playfair Display',serif;font-size:1.15rem;margin-bottom:10px;}
+  .card h3.air{color:var(--air);}
+  .card h3.water{color:var(--water);}
+  .card h3.indoor{color:var(--indoor);}
+  .card h3.odour{color:var(--odour);}
+  .card h3.red{color:var(--coral);}
+  .card p{margin-bottom:10px;color:var(--text);}
+  .card p:last-child{margin-bottom:0;}
+
+  /* ========== DOTTED LIST ========== */
+  .dot-list{list-style:none;padding:0;}
+  .dot-list li{padding:5px 0 5px 22px;position:relative;color:var(--text);}
+  .dot-list li::before{content:'◉';position:absolute;left:0;font-size:.65rem;top:8px;color:var(--gold);}
+
+  /* ========== TABLE ========== */
+  .table-wrap{overflow-x:auto;margin-top:12px;}
+  table{width:100%;border-collapse:collapse;font-size:.9rem;}
+  th{background:#0d3b52;color:#fff;padding:10px 14px;text-align:left;font-weight:600;}
+  [data-theme="dark"] th{background:#091e2b;}
+  td{padding:9px 14px;border-bottom:1px solid var(--dash-border);vertical-align:top;color:var(--text);}
+  tr:nth-child(even) td{background:var(--table-even);}
+  tr:hover td{background:var(--table-hover);}
+
+  /* ========== CALLOUT BOXES ========== */
+  .callout{border-radius:var(--radius);padding:16px 20px;margin:18px 0;font-size:.95rem;transition:background 0.3s ease;}
+  .callout.info{background:var(--callout-info-bg);border-left:4px solid var(--air);}
+  .callout.warn{background:var(--callout-warn-bg);border-left:4px solid var(--gold);}
+  .callout.danger{background:var(--callout-danger-bg);border-left:4px solid var(--coral);}
+  .callout.green{background:var(--callout-green-bg);border-left:4px solid var(--water);}
+  .callout strong{display:block;margin-bottom:4px;font-weight:600;}
+
+  /* odour callout via inline style override */
+  .callout-odour{border-radius:var(--radius);padding:16px 20px;margin:18px 0;font-size:.95rem;background:var(--callout-odour-bg);border-left:4px solid var(--odour);}
+  .callout-odour strong{display:block;margin-bottom:4px;font-weight:600;}
+
+  /* ========== GRID ========== */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:600px){.grid-2{grid-template-columns:1fr;}}
+
+  /* ========== DEFINITION TERM ========== */
+  .term{color:var(--air);text-decoration:underline dotted;cursor:pointer;font-style:italic;}
+  a.term:visited{color:var(--air);}
+
+  /* ========== DIVIDER ========== */
+  hr.fancy{border:none;height:2px;background:linear-gradient(90deg,transparent,var(--hr-color),transparent);margin:40px 0;}
+
+  /* ========== TYPES CARD ========== */
+  .types-card {background:var(--card);border-radius:var(--radius);padding:22px 26px;margin-bottom:20px;box-shadow:var(--shadow);border-top:4px solid var(--types-border);}
+  .types-card h3{color:var(--types-h3);font-family:'Playfair Display',serif;font-size:1.15rem;margin-bottom:10px;}
+
+  /* ========== QUIZ LINK ========== */
+  .quiz-block{text-align:center;background:linear-gradient(120deg,#0d3b52,#1a6b8a,#0d7c66);border-radius:var(--radius);padding:38px 28px;margin:50px 0 0;color:#fff;}
+  [data-theme="dark"] .quiz-block{background:linear-gradient(120deg,#091e2b,#0e4a64,#0a5244);}
+  .quiz-block h2{font-family:'Playfair Display',serif;font-size:1.8rem;margin-bottom:10px;}
+  .quiz-block p{opacity:.88;margin-bottom:22px;}
+  .quiz-btn{display:inline-block;padding:14px 36px;background:#fff;color:#0d3b52;font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;border-radius:40px;text-decoration:none;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 14px rgba(0,0,0,.25);}
+  .quiz-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.3);}
+
+  /* ========== FOOTER ========== */
+  footer{background:#0d3b52;color:#ccc;text-align:center;padding:28px 20px;font-size:.85rem;line-height:1.8;}
+  [data-theme="dark"] footer{background:#060f18;}
+  footer strong{color:#fff;}
+  footer a{color:#88d4e8;text-decoration:none;}
+  footer a:hover{text-decoration:underline;}
+
+  /* ========== BADGE ========== */
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.78rem;font-weight:600;margin-left:8px;vertical-align:middle;}
+  .badge.primary{background:#d4edfc;color:#0d3b52;}
+  .badge.secondary{background:#d5f5ec;color:#0d5c45;}
+  [data-theme="dark"] .badge.primary{background:#0e3a52;color:#88d4e8;}
+  [data-theme="dark"] .badge.secondary{background:#0a3a2a;color:#5ecfae;}
+
+  /* ========== CONTROL CARDS ========== */
+  .control-heading {color:#2e7d32; font-family:'Playfair Display',serif;}
+  [data-theme="dark"] .control-heading {color:#5cd87c;}
+</style>
+</head>
+<body>
+
+<!-- THEME TOGGLE -->
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+  <div class="toggle-track">
+    <div class="toggle-knob"></div>
+  </div>
+  <span class="toggle-sun">☀️</span>
+  <span class="toggle-moon">🌙</span>
+  <span class="toggle-label" id="toggleLabel">Light</span>
+</button>
+
+<!-- HEADER -->
+<header>
+  <h1>🌍 Environmental Pollution</h1>
+  <p>Comprehensive Study Notes &amp; Summary &nbsp;|&nbsp; Royronald Ongong'a</p>
+  <a class="back-link" href="index.html">← Back to Dashboard</a>
+</header>
+
+<!-- FLOATING DASHBOARD BUTTON -->
+<button class="dash-btn" id="dashBtn" title="Toggle Contents">☰</button>
+<nav class="dashboard" id="dashboard">
+  <div class="dash-header">Contents <span>Jump to any section</span></div>
+  <div class="dash-nav">
+    <a class="air" href="#intro">Introduction &amp; Environment</a>
+    <a class="air" href="#air-pollution">Air Pollution</a>
+    <a class="indoor" href="#indoor">Indoor Air Pollution</a>
+    <a class="odour" href="#odour">Odour Pollution</a>
+    <a class="water" href="#water">Water Pollution</a>
+    <a class="effects" href="#effects">Effects on Health, Plants &amp; Materials</a>
+    <a class="control" href="#control">Pollution Control</a>
+    <a href="#quiz">🎯 Practice Questions</a>
+  </div>
+</nav>
+
+<main>
+
+  <!-- INTRO CARD -->
+  <div class="intro-card" id="intro">
+    <h2>What is the Environment?</h2>
+    <p>The word <em>environment</em> comes from the French word <em>"environ"</em> meaning "to surround." It refers to everything that surrounds living organisms — both <a class="term" href="https://www.merriam-webster.com/dictionary/abiotic" target="_blank">abiotic</a> (non-living: air, water, soil) and <a class="term" href="https://www.merriam-webster.com/dictionary/biotic" target="_blank">biotic</a> (living) components. The four basic components are the <strong>atmosphere</strong> (air), <strong>hydrosphere</strong> (water), <strong>lithosphere</strong> (rock/soil), and the <strong>biosphere</strong> (all living things).</p>
+    <p style="margin-top:10px;"><strong>Environmental Chemistry</strong> is the scientific study of chemical and biochemical phenomena in natural places — it covers the sources, reactions, transport, effects, and fates of chemical species in air, soil, and water, and how human activity alters these.</p>
+    <p style="margin-top:10px;"><strong>Environmental Pollution</strong> is any <em>undesirable</em> change in the physical, chemical, or biological characteristics of air, water, or soil that causes harmful effects on living organisms or property. A <a class="term" href="https://www.merriam-webster.com/dictionary/pollutant" target="_blank">pollutant</a> is any substance introduced into the environment that causes such adverse effects — it may cause long or short-term damage by altering the growth rate of plant or animal species.</p>
+  </div>
+
+  <!-- TYPES OF POLLUTION overview -->
+  <div class="types-card">
+    <h3>Types of Environmental Pollution</h3>
+    <div class="grid-2" style="margin-top:12px;">
+      <div><ul class="dot-list">
+        <li>Air Pollution</li>
+        <li>Indoor Air Pollution</li>
+        <li>Odour Pollution</li>
+        <li>Water Pollution</li>
+      </ul></div>
+      <div><ul class="dot-list">
+        <li>Soil / Land Pollution</li>
+        <li>Marine Pollution</li>
+        <li>Thermal Pollution</li>
+        <li>Radioactive / Nuclear Pollution</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <hr class="fancy"/>
+
+  <!-- ===== AIR POLLUTION ===== -->
+  <section id="air-pollution">
+    <div class="section-title air">💨 Air Pollution</div>
+
+    <div class="callout info">
+      <strong>Definition</strong>
+      Air pollution is the <em>excessive concentration of foreign matter in air which adversely affects the well-being of individuals or causes damage to property.</em>
+    </div>
+
+    <div class="card">
+      <h3 class="air">Types of Air Pollutants</h3>
+      <p><strong>Primary Pollutants</strong> are emitted <em>directly</em> from a source. Examples: Carbon monoxide (CO), Nitrogen oxides (NO<sub>x</sub>), Sulphur oxides (SO<sub>x</sub>), most hydrocarbons, suspended particulate matter (SPM).</p>
+      <p><strong>Secondary Pollutants</strong> form when primary pollutants <em>react with each other or with the atmosphere.</em> Examples: <a class="term" href="https://www.merriam-webster.com/dictionary/ozone" target="_blank">Ozone</a> (O₃), <a class="term" href="https://www.britannica.com/science/photochemical-smog" target="_blank">Photochemical smog</a>, Peroxyacetyl nitrate (PAN), H₂SO₄, HNO₃.</p>
+    </div>
+
+    <div class="card">
+      <h3 class="air">Sources / Causes of Air Pollution</h3>
+      <p><strong>Natural Sources:</strong></p>
+      <ul class="dot-list">
+        <li>Natural disasters — volcanic eruptions, earthquakes, cyclones</li>
+        <li>Forest fires — release large amounts of smoke and carbon particles</li>
+        <li>Biological decay of organic matter</li>
+        <li>Pollen grains — trigger <a class="term" href="https://medlineplus.gov/allergy.html" target="_blank">allergic reactions</a></li>
+        <li>Radioactive material — <a class="term" href="https://www.epa.gov/radon/what-radon-gas-it-dangerous" target="_blank">Radon gas</a> from soil and rock</li>
+      </ul>
+      <p style="margin-top:12px;"><strong>Man-made (Anthropogenic) Sources:</strong></p>
+      <ul class="dot-list">
+        <li><strong>Industrial waste</strong> — factories release SO₂, CO, particulates</li>
+        <li><strong>Automobiles</strong> — exhaust fumes (CO, NO<sub>x</sub>, hydrocarbons)</li>
+        <li><strong>Thermal power stations</strong> — burn fossil fuels, emit SO₂ and particulate matter</li>
+        <li><strong>Nuclear explosions</strong> — release radioactive particles</li>
+        <li><strong>Agricultural activities</strong> — pesticide spraying, burning of crop residues</li>
+        <li><strong>Disposal of garbage</strong> — open burning of solid waste</li>
+      </ul>
+    </div>
+  </section>
+
+  <hr class="fancy"/>
+
+  <!-- ===== INDOOR AIR POLLUTION ===== -->
+  <section id="indoor">
+    <div class="section-title indoor">🏠 Indoor Air Pollution</div>
+
+    <div class="callout warn">
+      <strong>Definition</strong>
+      Indoor air pollution refers to the presence of harmful substances or contaminants inside buildings or enclosed spaces. It describes contaminants in the air inside a building from sources such as cigarette smoking, fuel combustion for heating or cooking, carpets, wallboards, insulation, or <a class="term" href="https://www.epa.gov/radon/what-radon-gas-it-dangerous" target="_blank">radon</a> in the soil beneath the structure.
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3 class="indoor">Urban Indoor Sources</h3>
+        <ul class="dot-list">
+          <li>Pesticides and household care products</li>
+          <li>Perfumes, hairsprays, furniture polish, glues</li>
+          <li>Air fresheners and wood preservatives</li>
+          <li>Reduced ventilation in modern buildings</li>
+          <li>Tobacco smoke — harms both active and passive smokers</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="indoor">Biological Indoor Pollutants</h3>
+        <ul class="dot-list">
+          <li>Pollen from plants</li>
+          <li>Dust mites, pet hair and dander</li>
+          <li>Fungi and parasites</li>
+          <li>Mold and bacteria</li>
+          <li><a class="term" href="https://www.cancer.org/cancer/risk-prevention/chemicals/formaldehyde.html" target="_blank">Formaldehyde</a> from carpets and particle boards — causes allergies</li>
+          <li>Asbestos — linked to lung cancer</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="indoor">Sources of Radon Indoors</h3>
+      <div class="grid-2">
+        <div>
+          <p><strong>Natural:</strong> Earth and rock beneath the home, well water, outdoor air seeping in.</p>
+        </div>
+        <div>
+          <p><strong>Artificial:</strong> Building materials like gypsum board, concrete blocks, wood panelling, insulation; daily-life materials like low-density plastics and paints.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="red">Major Indoor Pollutants — Source &amp; Health Effects</h3>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Pollutant</th><th>Source</th><th>Health Effects</th></tr>
+          <tr><td>1,1,1-Trichloroethane</td><td>Aerosol sprays</td><td>Dizziness, breathing irregularities</td></tr>
+          <tr><td><a class="term" href="https://www.cancer.org/cancer/risk-prevention/asbestos.html" target="_blank">Asbestos</a></td><td>Pipe insulation, ceiling/floor tiles, oven mitts</td><td>Lung cancer, <a class="term" href="https://www.merriam-webster.com/dictionary/asbestosis" target="_blank">asbestosis</a></td></tr>
+          <tr><td>Benzo-a-pyrene</td><td>Tobacco smoke, woodstoves</td><td>Lung cancer</td></tr>
+          <tr><td>Carbon Monoxide (CO)</td><td>Faulty furnaces, cigarette smoke</td><td>Headache, heartbeat irregularities, death. CO has 250× affinity for <a class="term" href="https://medlineplus.gov/ency/article/002503.htm" target="_blank">haemoglobin</a> than O₂</td></tr>
+          <tr><td>Radon-222</td><td>Soil and rock near foundation, concrete</td><td>Lung cancer</td></tr>
+          <tr><td>Styrene</td><td>Carpets, plastics</td><td>Kidney &amp; liver damage</td></tr>
+          <tr><td>Tetrachloroethylene</td><td>Dry-cleaning fluid</td><td>Nerve disorders, liver and kidney damage, cancer</td></tr>
+          <tr><td>Tobacco Smoke</td><td>Cigarettes and other smoking sources</td><td>Lung cancer and heart disease</td></tr>
+          <tr><td>Organic Material (dust mites, fungal spores, dander)</td><td>Living environment</td><td>Allergies, coughs, sneezing, eye irritation, breathing difficulty</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="indoor">Solutions to Indoor Air Pollution</h3>
+      <div class="grid-2">
+        <div>
+          <p><strong>Prevention:</strong></p>
+          <ul class="dot-list">
+            <li>Cover ceiling tiles and AC duct linings to prevent release of mineral fibres</li>
+            <li>Ban or restrict smoking to well-ventilated areas</li>
+            <li>Set stricter formaldehyde emission standards for carpets, furniture, building materials</li>
+            <li>Prevent radon infiltration</li>
+            <li>Use less polluting substitutes for harmful cleaning agents and paints</li>
+          </ul>
+        </div>
+        <div>
+          <p><strong>Cleanup / Dilution:</strong></p>
+          <ul class="dot-list">
+            <li>Use adjustable fresh air vents in workspaces</li>
+            <li>Increase intake of outside air and change air frequently</li>
+            <li>Circulate building air through rooftop greenhouses</li>
+            <li>Use exhaust hoods for gas stoves and appliances</li>
+            <li>Install efficient chimneys for wood-burning stoves</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="fancy"/>
+
+  <!-- ===== ODOUR POLLUTION ===== -->
+  <section id="odour">
+    <div class="section-title odour">🌫️ Odour Pollution</div>
+
+    <div class="callout-odour">
+      <strong>Definition</strong>
+      Odour pollution refers to the release of offensive, unpleasant, and undesirable odours of objectionable proportions into the environment.
+    </div>
+
+    <div class="card">
+      <h3 class="odour">Sources of Odour Pollution</h3>
+      <p>Industrial operations, livestock operations, agricultural activities, vehicular emissions, sewage and waste treatment plants, solid waste landfills, decaying vegetation, poultry farms, tanneries, slaughterhouses, and food/meat processing units.</p>
+      <p style="margin-top:10px;">Key chemical odour sources include <strong>chlorine, hydrogen sulphide, organic matter, septic contamination,</strong> and <strong>methane gas</strong>. Treatment methods include activated carbon filtration, air stripping, oxidation, and filtration.</p>
+    </div>
+
+    <div class="card">
+      <h3 class="odour">Health Effects of Odour Pollution</h3>
+      <ul class="dot-list">
+        <li><strong>Respiratory problems</strong> — irritation of the airways</li>
+        <li><strong><a class="term" href="https://medlineplus.gov/nausea.html" target="_blank">Nausea</a></strong> — uneasiness of the stomach that often precedes vomiting</li>
+        <li><strong><a class="term" href="https://medlineplus.gov/insomnia.html" target="_blank">Insomnia</a></strong> — a sleep disorder characterised by difficulty falling or staying asleep</li>
+        <li><strong>Physical discomfort</strong> — general bodily unease</li>
+        <li><strong>Annoyance</strong> — an unpleasant mental state characterised by irritation and distraction from conscious thinking</li>
+      </ul>
+    </div>
+  </section>
+
+  <hr class="fancy"/>
+
+  <!-- ===== WATER POLLUTION ===== -->
+  <section id="water">
+    <div class="section-title water">💧 Water Pollution</div>
+
+    <div class="callout green">
+      <strong>Definition</strong>
+      Water pollution is the introduction of contaminants into water bodies (rivers, lakes, oceans, groundwater) that makes the water harmful to humans, animals, plants, or the overall ecosystem.
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3 class="water">Point-Source Pollution</h3>
+        <p>Pollution that comes from a <em>single, identifiable source</em> — such as an oil spill, factory discharge pipe, or sewage outlet. It is easier to regulate because the source is traceable.</p>
+      </div>
+      <div class="card">
+        <h3 class="water">Non-Point-Source Pollution</h3>
+        <p>Pollution that comes from <em>many diffuse sources</em> — such as agricultural runoff, road drainage, and urban stormwater. Much harder to control because there is no single discharge point.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="water">Nutrients &amp; <a class="term" href="https://www.britannica.com/science/eutrophication" target="_blank">Eutrophication</a></h3>
+      <p>Nutrients (mainly nitrogen and phosphorus) are essential for plant growth. However, when they enter water bodies in excess — through wastewater and fertiliser runoff — they cause <strong>over-enrichment</strong>, leading to explosive growth of algae and aquatic plants.</p>
+      <p style="margin-top:8px;">This process (<a class="term" href="https://www.britannica.com/science/eutrophication" target="_blank">eutrophication</a>) depletes dissolved oxygen (DO) in the water as algae decompose, creating <a class="term" href="https://oceanservice.noaa.gov/facts/deadzone.html" target="_blank">dead zones</a> where fish and other aquatic life cannot survive.</p>
+    </div>
+
+    <div class="card">
+      <h3 class="water">Control of Water Pollution (Marine &amp; Freshwater)</h3>
+      <ul class="dot-list">
+        <li>Municipal and industrial waste must be treated before discharge into water bodies</li>
+        <li>Coastal waste should be periodically analysed to detect pollution levels</li>
+        <li>Soil erosion in coastal land should be arrested using suitable techniques</li>
+        <li>Recreation beaches must be maintained to meet hygienic and aesthetic standards</li>
+        <li>Wastewater treatment plants remove contaminants through physical, chemical, and biological processes before water is released</li>
+      </ul>
+    </div>
+  </section>
+
+  <hr class="fancy"/>
+
+  <!-- ===== EFFECTS ===== -->
+  <section id="effects">
+    <div class="section-title" style="background:linear-gradient(90deg,var(--coral),#e05020);">⚠️ Effects of Pollution on Health, Plants &amp; Materials</div>
+
+    <div class="callout danger">
+      <strong>Key Fact</strong>
+      An average person breathes about 22,000 times a day, taking in approximately 16 kg of air. The health impact depends on the <em>nature and concentration of pollutants, duration of exposure, and age of the person</em>.
+    </div>
+
+    <div class="card">
+      <h3 class="red">Effects on Human Health</h3>
+      <p><strong>Acute (short-term):</strong> Eye irritation (caused by NO<sub>x</sub>, O₃, PAN, smog, particulates), headaches, sore throat, stinging eyes, nausea, skin irritation.</p>
+      <p style="margin-top:8px;"><strong>Chronic (long-term):</strong> Long-duration exposure leads to lung cancer, heart disease, and damage to the brain, nerves, liver, and kidneys.</p>
+      <p style="margin-top:8px;">High concentrations of SO₂, NO₂, suspended particulate matter (SPM), and photochemical smog aggravate chronic pulmonary diseases such as <a class="term" href="https://medlineplus.gov/bronchitis.html" target="_blank">bronchitis</a> and <a class="term" href="https://medlineplus.gov/asthma.html" target="_blank">asthma</a>.</p>
+      <p style="margin-top:8px;">Pollen and various particulates can trigger <a class="term" href="https://medlineplus.gov/asthma.html" target="_blank">asthmatic attacks</a>. Carbon monoxide (CO) is particularly dangerous — it binds to <a class="term" href="https://medlineplus.gov/ency/article/002503.htm" target="_blank">haemoglobin</a> with 250 times greater affinity than oxygen, preventing oxygen delivery to tissues.</p>
+    </div>
+
+    <div class="card">
+      <h3 class="red">Effects on Plants</h3>
+      <ul class="dot-list">
+        <li>Decreased agricultural yield and suppressed growth of vegetables</li>
+        <li>Leaf injury and damage to young plants</li>
+        <li>Decreased growth rate and increased death rate in flora</li>
+        <li>Sulphur dioxide (SO₂) causes leaf tissue to turn white, brown, or yellow — a by-product of burning fossil fuels (oil, coal, gasoline)</li>
+        <li>Ozone (O₃) damage appears as mottled yellow, black, or brown spots on leaves; eventually causes leaf drop</li>
+        <li>Fluorides and <a class="term" href="https://www.epa.gov/ozone-pollution-and-your-patients-health/peroxyacetyl-nitrate-pan" target="_blank">peroxyacyl nitrate (PAN)</a> also damage leaf tissue and can kill entire plants</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3 class="red">Effects on Materials &amp; Structures</h3>
+      <ul class="dot-list">
+        <li>SO₂, in the presence of oxygen and moisture, converts to H₂SO₄ (sulfuric acid) — corroding metals</li>
+        <li>H₂SO₄ reacts with limestone, marble, and other building materials, causing deterioration (<a class="term" href="https://www.britannica.com/science/acid-rain" target="_blank">acid rain</a> effect)</li>
+        <li>SO₂, O₃, H₂S, and aerosols damage protective coatings and paints on surfaces</li>
+        <li>O₃ and PAN cause cracking of rubber and electrical insulations</li>
+        <li>Suspended Particulate Matter (SPM) soils and erodes building facades and damages artwork</li>
+      </ul>
+    </div>
+  </section>
+
+  <hr class="fancy"/>
+
+  <!-- ===== CONTROL ===== -->
+  <section id="control">
+    <div class="section-title" style="background:linear-gradient(90deg,#2e7d32,#43a047);">🛡️ Air Pollution Control</div>
+
+    <div class="callout green">
+      <strong>Key Principle</strong>
+      Air pollution cannot be fully prevented, but it can be effectively <em>controlled</em> through two broad strategies: preventative (source control) measures, and engineering control using specialised equipment.
+    </div>
+
+    <div class="card">
+      <h3 class="control-heading">Preventative Measures (Source Control)</h3>
+      <ul class="dot-list">
+        <li>Selection of suitable, cleaner fuels — low sulphur coal in power plants, use of <a class="term" href="https://afdc.energy.gov/fuels/natural_gas_cng.html" target="_blank">Compressed Natural Gas (CNG)</a></li>
+        <li>Modification of industrial processes to reduce emissions</li>
+        <li>Careful selection of site and zoning for industrial units (away from residential areas)</li>
+        <li>Removal of leaded petrol — lead is a major air pollutant that causes neurological damage</li>
+        <li>Implementation of industrial acts to control harmful gas emissions</li>
+        <li>Natural disaster management teams minimise the effects of forest fires and volcanic eruptions</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3 class="control-heading">Control Equipment</h3>
+      <p><strong>1. Gravitational Settling Chamber</strong> — used to remove larger particles (size &gt;50 µm). Flue gas velocity is reduced in a large chamber so particles settle under gravitational force. <em>Advantages:</em> low cost, easy design, low maintenance. <em>Disadvantages:</em> large space needed, cannot collect fine particles.</p>
+      <p style="margin-top:10px;"><strong>2. Scrubbers</strong> — particulate matter is incorporated into liquid droplets and removed from the gas stream. Types include spray tower, Venturi scrubber, and cyclone scrubber. Flue gas is pushed upward against a downward-falling water current — particles mix with water and fall out. <em>Advantages:</em> simultaneously removes particulates and gaseous pollutants, can cool hot gases. <em>Disadvantages:</em> large amounts of wastewater produced, freezing problems in cold climates.</p>
+    </div>
+  </section>
+
+  <!-- QUIZ LINK -->
+  <div class="quiz-block" id="quiz">
+    <h2>🎯 Test Your Understanding</h2>
+    <p>Reinforce what you have learned with a set of carefully crafted questions on Environmental Pollution — covering definitions, types, sources, effects, and control measures.</p>
+    <a class="quiz-btn" href="environmental_pollution_quiz.html">Open Practice Questions →</a>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <p><strong>Environmental Pollution — Study Notes</strong></p>
+  <p>Compiled from lecture materials by <strong>Royronald Ongong'a</strong>. For academic use only.</p>
+  <p style="margin-top:8px;">Medical term definitions sourced from <a href="https://medlineplus.gov" target="_blank">MedlinePlus</a>, <a href="https://www.merriam-webster.com" target="_blank">Merriam-Webster</a>, and <a href="https://www.britannica.com" target="_blank">Encyclopædia Britannica</a>.</p>
+  <p style="margin-top:8px;opacity:.6;">Part of a series of toxicology study notes. <a href="index.html">← Return to Dashboard</a></p>
+</footer>
+
+<script>
+  // ---- Dashboard toggle ----
+  const btn = document.getElementById('dashBtn');
+  const dash = document.getElementById('dashboard');
+  btn.addEventListener('click', () => {
+    dash.classList.toggle('open');
+    btn.textContent = dash.classList.contains('open') ? '✕' : '☰';
+  });
+  document.querySelectorAll('.dash-nav a').forEach(a => {
+    a.addEventListener('click', () => {
+      dash.classList.remove('open');
+      btn.textContent = '☰';
+    });
+  });
+
+  // ---- Dark mode toggle ----
+  const html = document.documentElement;
+  const themeToggle = document.getElementById('themeToggle');
+  const toggleLabel = document.getElementById('toggleLabel');
+
+  // Load saved preference
+  const saved = localStorage.getItem('theme');
+  if (saved) {
+    html.setAttribute('data-theme', saved);
+    toggleLabel.textContent = saved === 'dark' ? 'Dark' : 'Light';
+  }
+
+  themeToggle.addEventListener('click', () => {
+    const current = html.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    toggleLabel.textContent = next === 'dark' ? 'Dark' : 'Light';
+    localStorage.setItem('theme', next);
+  });
+</script>
+</body>
+</html>

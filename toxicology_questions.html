@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Toxicology Assessment Hub | MLS</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0f14;
+  --surface: #13161e;
+  --card: #191d28;
+  --border: rgba(255,255,255,0.07);
+  --accent-teal: #00d4b4;
+  --accent-amber: #f5a623;
+  --accent-rose: #ff6b8a;
+  --accent-blue: #4da6ff;
+  --accent-purple: #b47dff;
+  --accent-green: #5dd98c;
+  --text-primary: #e8ecf4;
+  --text-secondary: #8a93a8;
+  --text-muted: #545d72;
+  --sidebar-w: 280px;
+}
+body.light {
+  --bg: #f4f6fb; --surface: #ffffff; --card: #ffffff;
+  --border: rgba(0,0,0,0.09); --text-primary: #111827;
+  --text-secondary: #4b5563; --text-muted: #9ca3af;
+}
+body.light #sidebar { box-shadow: 2px 0 12px rgba(0,0,0,0.08); }
+body.light .hero { background: linear-gradient(135deg,#e8f0fe,#f0faf8,#fef9ec); }
+body.light .hero h1 { background: linear-gradient(135deg,#111827 30%,#009980 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+body.light .tox-table th { background: rgba(0,0,0,0.04); }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; line-height: 1.7; }
+
+#theme-btn {
+  position: fixed; top: 18px; right: 18px; z-index: 200;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text-primary); width: 42px; height: 42px;
+  border-radius: 10px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; transition: all 0.2s;
+}
+#theme-btn:hover { border-color: var(--accent-teal); color: var(--accent-teal); }
+
+/* SIDEBAR */
+#sidebar {
+  position: fixed; top: 0; left: 0;
+  width: var(--sidebar-w); height: 100vh;
+  background: var(--surface); border-right: 1px solid var(--border);
+  overflow-y: auto; z-index: 100;
+  transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+  display: flex; flex-direction: column;
+}
+#sidebar.hidden { transform: translateX(calc(-1 * var(--sidebar-w))); }
+.sidebar-header {
+  padding: 24px 20px 16px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.sidebar-logo { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--accent-teal); }
+.sidebar-subtitle { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+.sidebar-section { padding: 12px 20px 4px; font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; }
+.sidebar-progress { padding: 16px 20px; border-bottom: 1px solid var(--border); }
+.prog-label { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 8px; display: flex; justify-content: space-between; }
+.prog-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--accent-teal), var(--accent-blue)); border-radius: 3px; transition: width 0.4s; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 20px; cursor: pointer;
+  font-size: 0.85rem; color: var(--text-secondary);
+  border-left: 3px solid transparent;
+  transition: all 0.18s;
+}
+.nav-item:hover { color: var(--text-primary); background: rgba(255,255,255,0.03); }
+.nav-item.active { color: var(--accent-teal); border-left-color: var(--accent-teal); background: rgba(0,212,180,0.06); }
+.nav-item .ni-count { margin-left: auto; font-size: 0.72rem; background: var(--border); padding: 1px 7px; border-radius: 20px; color: var(--text-muted); }
+.nav-item.done .ni-count { background: rgba(93,217,140,0.2); color: var(--accent-green); }
+.nav-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* TOGGLE */
+#sidebar-toggle {
+  position: fixed; top: 18px; left: 18px; z-index: 150;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text-primary); width: 42px; height: 42px;
+  border-radius: 10px; cursor: pointer; font-size: 1.1rem;
+  display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+}
+#sidebar-toggle:hover { border-color: var(--accent-teal); color: var(--accent-teal); }
+
+/* MAIN */
+#main { margin-left: var(--sidebar-w); transition: margin-left 0.35s cubic-bezier(.4,0,.2,1); min-height: 100vh; }
+#main.expanded { margin-left: 0; }
+
+/* HERO */
+.hero {
+  background: linear-gradient(135deg, #0d1525 0%, #0d1f1a 50%, #1a0d20 100%);
+  padding: 80px 60px 60px; position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: -50%; right: -10%;
+  width: 500px; height: 500px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,212,180,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(0,212,180,0.1); border: 1px solid rgba(0,212,180,0.25);
+  color: var(--accent-teal); font-size: 0.75rem; padding: 4px 14px;
+  border-radius: 20px; margin-bottom: 20px; letter-spacing: 0.05em;
+}
+.hero h1 {
+  font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 900; line-height: 1.15; margin-bottom: 16px;
+  background: linear-gradient(135deg, #e8ecf4 30%, #00d4b4 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.hero p { color: var(--text-secondary); font-size: 1rem; max-width: 600px; margin-bottom: 30px; }
+.hero-stats { display: flex; gap: 30px; flex-wrap: wrap; }
+.h-stat { text-align: center; }
+.h-stat .val { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; color: var(--accent-amber); }
+.h-stat .lbl { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* SECTION TABS */
+.section-tabs {
+  display: flex; gap: 0; border-bottom: 1px solid var(--border);
+  background: var(--surface); position: sticky; top: 0; z-index: 50;
+  overflow-x: auto;
+}
+.stab {
+  padding: 14px 24px; cursor: pointer; font-size: 0.85rem;
+  color: var(--text-secondary); border-bottom: 2px solid transparent;
+  white-space: nowrap; transition: all 0.2s; display: flex; align-items: center; gap: 8px;
+}
+.stab:hover { color: var(--text-primary); }
+.stab.active { color: var(--accent-teal); border-bottom-color: var(--accent-teal); }
+.stab-badge { font-size: 0.68rem; background: var(--border); padding: 1px 8px; border-radius: 10px; color: var(--text-muted); }
+.stab.active .stab-badge { background: rgba(0,212,180,0.15); color: var(--accent-teal); }
+
+/* CONTENT */
+.content { padding: 40px 60px 80px; max-width: 1000px; }
+.q-section { display: none; }
+.q-section.active { display: block; }
+.section-header { margin-bottom: 32px; }
+.section-header h2 { font-family: 'Playfair Display', serif; font-size: 1.7rem; font-weight: 700; margin-bottom: 8px; }
+.section-header p { color: var(--text-secondary); font-size: 0.9rem; }
+.score-banner {
+  display: none; padding: 16px 24px; border-radius: 12px; margin-bottom: 24px;
+  border: 1px solid; font-size: 0.95rem; font-weight: 500;
+}
+.score-banner.show { display: flex; align-items: center; gap: 12px; }
+.score-banner.good { background: rgba(93,217,140,0.1); border-color: rgba(93,217,140,0.3); color: var(--accent-green); }
+.score-banner.avg { background: rgba(245,166,35,0.1); border-color: rgba(245,166,35,0.3); color: var(--accent-amber); }
+.score-banner.low { background: rgba(255,107,138,0.1); border-color: rgba(255,107,138,0.3); color: var(--accent-rose); }
+
+/* MCQ */
+.mcq-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 24px; margin-bottom: 20px;
+  transition: border-color 0.2s;
+}
+.mcq-card:hover { border-color: rgba(255,255,255,0.12); }
+.q-num { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; }
+.q-text { font-size: 0.97rem; color: var(--text-primary); margin-bottom: 18px; font-weight: 500; line-height: 1.6; }
+.options { display: flex; flex-direction: column; gap: 10px; }
+.opt {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px 16px; border-radius: 10px;
+  border: 1px solid var(--border); cursor: pointer;
+  transition: all 0.18s; font-size: 0.88rem; color: var(--text-secondary);
+}
+.opt:hover { border-color: rgba(0,212,180,0.4); color: var(--text-primary); background: rgba(0,212,180,0.04); }
+.opt.selected { border-color: var(--accent-blue); background: rgba(77,166,255,0.08); color: var(--text-primary); }
+.opt.correct { border-color: var(--accent-green) !important; background: rgba(93,217,140,0.12) !important; color: var(--accent-green) !important; }
+.opt.wrong { border-color: var(--accent-rose) !important; background: rgba(255,107,138,0.1) !important; color: var(--accent-rose) !important; }
+.opt-letter {
+  width: 24px; height: 24px; border-radius: 6px;
+  background: var(--border); display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; font-weight: 700; flex-shrink: 0; font-family: 'JetBrains Mono', monospace;
+}
+.opt.correct .opt-letter { background: var(--accent-green); color: #0d0f14; }
+.opt.wrong .opt-letter { background: var(--accent-rose); color: #0d0f14; }
+.opt.selected .opt-letter { background: var(--accent-blue); color: #0d0f14; }
+.feedback {
+  margin-top: 14px; padding: 12px 16px; border-radius: 8px;
+  font-size: 0.85rem; display: none; line-height: 1.5;
+}
+.feedback.show { display: block; }
+.feedback.correct-fb { background: rgba(93,217,140,0.1); color: var(--accent-green); border-left: 3px solid var(--accent-green); }
+.feedback.wrong-fb { background: rgba(255,107,138,0.08); color: #ff9baf; border-left: 3px solid var(--accent-rose); }
+.submit-btn {
+  margin-top: 32px; padding: 14px 36px;
+  background: linear-gradient(135deg, var(--accent-teal), var(--accent-blue));
+  color: #0d0f14; border: none; border-radius: 10px; cursor: pointer;
+  font-size: 0.95rem; font-weight: 700; font-family: 'DM Sans', sans-serif;
+  transition: opacity 0.2s; letter-spacing: 0.02em;
+}
+.submit-btn:hover { opacity: 0.9; }
+.submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* SAQ */
+.saq-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 28px; margin-bottom: 24px;
+}
+.saq-mark { font-size: 0.72rem; color: var(--accent-amber); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; font-weight: 600; }
+.saq-text { font-size: 0.97rem; font-weight: 500; margin-bottom: 18px; line-height: 1.6; }
+.saq-hints { margin-bottom: 16px; }
+.hint-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+.hint-label:hover { color: var(--text-secondary); }
+.hint-content { display: none; padding: 12px 16px; background: rgba(180,125,255,0.08); border-radius: 8px; border-left: 3px solid var(--accent-purple); font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
+.hint-content.open { display: block; }
+.answer-area {
+  width: 100%; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; color: var(--text-primary); padding: 14px 16px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.88rem; resize: vertical;
+  min-height: 120px; line-height: 1.6; transition: border-color 0.2s;
+}
+.answer-area:focus { outline: none; border-color: var(--accent-teal); }
+.reveal-btn {
+  margin-top: 12px; padding: 8px 20px;
+  background: transparent; border: 1px solid var(--border);
+  color: var(--text-secondary); border-radius: 8px; cursor: pointer;
+  font-size: 0.82rem; font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+}
+.reveal-btn:hover { border-color: var(--accent-purple); color: var(--accent-purple); }
+.model-answer {
+  margin-top: 14px; padding: 16px; border-radius: 10px;
+  background: rgba(0,212,180,0.06); border: 1px solid rgba(0,212,180,0.2);
+  font-size: 0.87rem; color: var(--text-secondary); line-height: 1.75;
+  display: none;
+}
+.model-answer.show { display: block; }
+.model-answer strong { color: var(--accent-teal); }
+.model-answer ul { padding-left: 20px; margin: 6px 0; }
+.model-answer li { margin-bottom: 4px; }
+
+/* CASE STUDY */
+.case-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; margin-bottom: 36px; overflow: hidden;
+}
+.case-header {
+  background: linear-gradient(135deg, rgba(0,212,180,0.1), rgba(77,166,255,0.08));
+  padding: 24px 28px; border-bottom: 1px solid var(--border);
+}
+.case-number { font-size: 0.72rem; color: var(--accent-teal); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 8px; font-weight: 600; }
+.case-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 14px; }
+.case-scenario {
+  font-size: 0.88rem; color: var(--text-secondary); line-height: 1.75;
+  background: rgba(0,0,0,0.2); padding: 16px; border-radius: 8px; margin-top: 4px;
+}
+.case-body { padding: 28px; }
+.case-q { margin-bottom: 24px; }
+.case-q-num { font-size: 0.72rem; color: var(--accent-amber); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+.case-q-text { font-size: 0.93rem; font-weight: 500; margin-bottom: 12px; line-height: 1.6; }
+.case-marks { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 10px; }
+.case-answer-area {
+  width: 100%; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; color: var(--text-primary); padding: 14px 16px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.88rem; resize: vertical;
+  min-height: 140px; line-height: 1.6; transition: border-color 0.2s;
+}
+.case-answer-area:focus { outline: none; border-color: var(--accent-amber); }
+.case-reveal-btn {
+  margin-top: 10px; padding: 8px 20px;
+  background: transparent; border: 1px solid var(--border);
+  color: var(--text-secondary); border-radius: 8px; cursor: pointer;
+  font-size: 0.82rem; font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+}
+.case-reveal-btn:hover { border-color: var(--accent-amber); color: var(--accent-amber); }
+.case-model {
+  margin-top: 12px; padding: 16px; border-radius: 10px;
+  background: rgba(245,166,35,0.06); border: 1px solid rgba(245,166,35,0.2);
+  font-size: 0.87rem; color: var(--text-secondary); line-height: 1.75; display: none;
+}
+.case-model.show { display: block; }
+.case-model strong { color: var(--accent-amber); }
+.case-model ul { padding-left: 20px; margin: 6px 0; }
+.case-model li { margin-bottom: 4px; }
+.total-marks { 
+  font-size: 0.8rem; color: var(--accent-rose); font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  padding: 4px 12px; background: rgba(255,107,138,0.1);
+  border-radius: 20px; display: inline-flex; align-items: center; gap: 5px;
+}
+
+/* FOOTER */
+footer {
+  background: var(--surface); border-top: 1px solid var(--border);
+  padding: 30px 60px; margin-left: var(--sidebar-w);
+  transition: margin-left 0.35s cubic-bezier(.4,0,.2,1);
+  font-size: 0.82rem; color: var(--text-muted); display: flex;
+  align-items: center; justify-content: space-between; flex-wrap: gap;
+}
+footer.expanded { margin-left: 0; }
+.footer-link { color: var(--accent-teal); text-decoration: none; }
+.footer-link:hover { text-decoration: underline; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  :root { --sidebar-w: 260px; }
+  .content { padding: 24px 20px 60px; }
+  .hero { padding: 70px 20px 40px; }
+  footer { padding: 20px; }
+  .section-tabs { padding: 0 10px; }
+  .hero-stats { gap: 16px; }
+}
+</style>
+</head>
+<body>
+
+<button id="sidebar-toggle" onclick="toggleSidebar()" title="Toggle Dashboard">☰</button>
+<button id="theme-btn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div class="sidebar-header">
+    <div>
+      <div class="sidebar-logo">📋 Tox Assessment</div>
+      <div class="sidebar-subtitle">Progress Dashboard</div>
+    </div>
+  </div>
+  <div class="sidebar-progress">
+    <div class="prog-label"><span>Overall Progress</span><span id="prog-pct">0%</span></div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+  <div class="sidebar-section">Sections</div>
+  <div class="nav-item active" id="nav-mcq" onclick="switchSection('mcq')">
+    <div class="nav-dot" style="background:var(--accent-teal)"></div>
+    MCQs
+    <span class="ni-count" id="cnt-mcq">0 / 70</span>
+  </div>
+  <div class="nav-item" id="nav-saq" onclick="switchSection('saq')">
+    <div class="nav-dot" style="background:var(--accent-amber)"></div>
+    Short Answer Questions
+    <span class="ni-count" id="cnt-saq">40 Qs</span>
+  </div>
+  <div class="nav-item" id="nav-case" onclick="switchSection('case')">
+    <div class="nav-dot" style="background:var(--accent-rose)"></div>
+    Case Studies
+    <span class="ni-count" id="cnt-case">5 Cases</span>
+  </div>
+  <div class="sidebar-section" style="margin-top:auto">Quick Stats</div>
+  <div style="padding: 16px 20px; font-size: 0.82rem; color: var(--text-secondary);">
+    <div style="margin-bottom:8px;">✅ MCQ Score: <span id="stat-score" style="color:var(--accent-green)">—</span></div>
+    <div style="margin-bottom:8px;">📝 SAQs Attempted: <span id="stat-saq" style="color:var(--accent-amber)">0</span></div>
+    <div>🏥 Cases Reviewed: <span id="stat-case" style="color:var(--accent-rose)">0</span></div>
+  </div>
+  <div style="padding: 16px 20px; border-top: 1px solid var(--border); margin-top: 10px;">
+    <a href="toxicology_notes.html" style="font-size:0.82rem; color:var(--accent-teal); text-decoration:none;">← Back to Study Notes</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">🧪 Toxicology Assessment Suite</div>
+    <h1>Test Your Toxicology Knowledge</h1>
+    <p>Comprehensive assessment covering Metal Toxicity (Arsenic, Mercury, Lead, Thallium) and Pesticide Toxicology. Validate your understanding across all learning objectives.</p>
+    <div class="hero-stats">
+      <div class="h-stat"><div class="val">70</div><div class="lbl">MCQs</div></div>
+      <div class="h-stat"><div class="val">40</div><div class="lbl">Short Answer Qs</div></div>
+      <div class="h-stat"><div class="val">5</div><div class="lbl">Case Studies</div></div>
+      <div class="h-stat"><div class="val">325</div><div class="lbl">Total Marks</div></div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="section-tabs">
+    <div class="stab active" id="tab-mcq" onclick="switchSection('mcq')">
+      🎯 Multiple Choice <span class="stab-badge">70 Qs</span>
+    </div>
+    <div class="stab" id="tab-saq" onclick="switchSection('saq')">
+      ✍️ Short Answers <span class="stab-badge">40 × 5 marks</span>
+    </div>
+    <div class="stab" id="tab-case" onclick="switchSection('case')">
+      🏥 Case Studies <span class="stab-badge">5 × 25 marks</span>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ===== MCQ SECTION ===== -->
+    <div class="q-section active" id="sec-mcq">
+      <div class="section-header">
+        <h2>Multiple Choice Questions</h2>
+        <p>Select the single best answer. Instant feedback provided after each selection. Score tracked automatically.</p>
+      </div>
+      <div id="mcq-score-banner" class="score-banner"></div>
+      <div id="mcq-container"></div>
+      <button class="submit-btn" onclick="submitMCQ()">Calculate Final Score 🎯</button>
+    </div>
+
+    <!-- ===== SAQ SECTION ===== -->
+    <div class="q-section" id="sec-saq">
+      <div class="section-header">
+        <h2>Short Answer Questions</h2>
+        <p>Each question is worth <strong>5 marks</strong>. Write your answer, then reveal the model answer to self-assess. Toggle hints for guidance.</p>
+      </div>
+      <div id="saq-container"></div>
+    </div>
+
+    <!-- ===== CASE SECTION ===== -->
+    <div class="q-section" id="sec-case">
+      <div class="section-header">
+        <h2>Case Study Questions</h2>
+        <p>Each case is worth <strong>25 marks</strong> with sub-questions. Read the scenario carefully and construct comprehensive answers.</p>
+      </div>
+      <div id="case-container"></div>
+    </div>
+
+  </div>
+</div>
+
+<footer id="footer">
+  <div>© 2024 MLS Toxicology Study Hub &nbsp;|&nbsp; <a class="footer-link" href="toxicology_notes.html">Study Notes</a> &nbsp;|&nbsp; For academic use only</div>
+  <div style="color: var(--text-muted);">Lecturer: Roy Ronald Ongong'a &nbsp;|&nbsp; Metal & Pesticide Toxicology</div>
+</footer>
+
+<script>
+// ══════════════════════════════════
+// DATA
+// ══════════════════════════════════
+
+const mcqs = [
+// ARSENIC (1-18)
+{q:"Which valence state of arsenic is considered the principal toxic form?", opts:["Pentavalent (As+5)","Trivalent (As+3)","Elemental (As0)","Organic methylated form"], ans:1, exp:"Trivalent arsenite (As+3) has a slower excretion rate and greater toxicity. Pentavalent forms have little or no effect, though they can be converted to trivalent in vivo."},
+{q:"What is the WHO maximum permissible limit of arsenic in drinking water?", opts:["20 µg/L","50 µg/L","10 µg/L","5 µg/L"], ans:2, exp:"WHO has set a limit of 10 µg/L, while the EPA MCL is 20 µg/L."},
+{q:"Arsenic is primarily excreted from the body through:", opts:["Bile","Sweat","Kidneys (as methylated arsenic)","Feces"], ans:2, exp:"Arsenic is excreted mainly through the kidneys as methylated arsenic. Some is also excreted via feces, sweat, and bile."},
+{q:"The term 'Arsenicosis' refers to:", opts:["Acute arsenic poisoning from a single large dose","Arsenic poisoning caused by chronic exposure, especially via drinking water","An allergic reaction to arsenic compounds","Arsenic-induced liver failure only"], ans:1, exp:"Arsenicosis specifically refers to poisoning caused by prolonged exposure to arsenic, particularly through contaminated drinking water."},
+{q:"Which enzyme system does arsenic primarily disrupt in the Krebs cycle?", opts:["Succinate dehydrogenase only","Cytochrome oxidase","Pyruvate dehydrogenase (by chelating alpha-lipoic acid)","Isocitrate dehydrogenase"], ans:2, exp:"Arsenic chelates alpha-lipoic acid, an essential cofactor for pyruvate dehydrogenase, thereby interfering with cellular energy production in the Krebs cycle."},
+{q:"'Blackfoot Disease' is associated with chronic exposure to arsenic mainly in:", opts:["Bangladesh","Taiwan","Japan","Chile"], ans:1, exp:"Blackfoot Disease — a severe peripheral vascular disease causing gangrene — is mainly associated with chronic arsenic exposure in Taiwan."},
+{q:"Which of the following is the preferred chelating agent in acute arsenic poisoning?", opts:["EDTA","Penicillamine","BAL (Dimercaprol) 3-5 mg/kg every 4 hours","Prussian Blue"], ans:2, exp:"BAL (British Anti-Lewisite / Dimercaprol) is the primary chelating agent for acute arsenic poisoning, given at 3-5 mg/kg every 4 hours."},
+{q:"Arsenicosis victims in the sub-acute stage (1 week to 1 month) typically present with:", opts:["Loss of hair and nail changes only","Peripheral neuropathy, cardiac dysrhythmias, and GI symptoms","Psychosis and hallucinations","Only skin pigmentation changes"], ans:1, exp:"Sub-acute arsenic toxicity (1 week to 1 month) causes peripheral neuropathy, cardiac dysrhythmias, hypotension, GI symptoms, hemolysis, anemia, and renal insufficiency."},
+{q:"The 'rain drop' type pigmentation of the skin in chronic arsenic poisoning affects:", opts:["Exposed areas (face, hands)","Covered areas (flexors, nipples, lower abdomen, temples, eyelids)","Only the palms and soles","Symmetrically all over the body"], ans:1, exp:"Rain drop pigmentation in stage 3 of chronic arsenicosis affects covered body parts such as flexors, nipples, lower abdomen, temples, and eyelids."},
+{q:"A urinary arsenic excretion above which level is considered indicative of toxic exposure?", opts:["50 mg/24 hrs","100 mg/24 hrs","200 mg/24 hrs","300 mg/24 hrs"], ans:1, exp:"A urinary excretion >100 mg/24 hours is regarded as indicative of exposure to a potentially toxic amount of arsenic."},
+{q:"What is the mechanism by which arsenic causes arsenolysis?", opts:["It blocks cholinesterase activity","Arsenic anions substitute for phosphate, disrupting phosphorylation reactions","It directly destroys mitochondrial membranes","It inhibits protein synthesis exclusively"], ans:1, exp:"Arsenolysis is a major form of toxicity where arsenic anions substitute for phosphate, disrupting many metabolic reactions that require phosphorylation."},
+{q:"Which of the following cancers is NOT classically associated with chronic arsenic exposure?", opts:["Skin cancer","Bladder cancer","Colon cancer","Lung cancer"], ans:2, exp:"Arsenic is associated with skin, lung, bladder, kidney, and liver cancers. Colon cancer is not a classic arsenic-associated malignancy."},
+{q:"In acute arsenic poisoning, the stool characteristically becomes:", opts:["Green and formed","Dark colored and bloody initially, then colorless, odorless, and watery resembling rice water","Yellow and fatty","Pale and clay-colored"], ans:1, exp:"In acute toxicity, stools are dark and bloody initially. Later they become colorless, odorless, and watery (rice-water) due to vasodilation, transudation, and mucosal sloughing."},
+{q:"Arsenic accumulates in which tissues apart from viscera?", opts:["Muscle and fat","Nails, hair, and cancellous bone (replaces phosphorus)","Lymph nodes and spleen only","Brain and spinal cord primarily"], ans:1, exp:"Arsenic becomes fixed in cancellous bone (replacing phosphorus) and concentrates in nails and hair — which is why these are used for chronic exposure testing."},
+{q:"What is the minimum lethal dose of arsenic trioxide in an adult?", opts:["10–20 mg","70–180 mg","300–400 mg","500 mg–1 g"], ans:1, exp:"Large doses of 70-180 mg can be fatal in adults from acute arsenic poisoning."},
+{q:"Which test is used to detect arsenic in hair and nails indicating chronic exposure?", opts:["Urinalysis for monomethylarsine","Hair/nail samples containing >300 ppm or >100 mg As per 100 gm specimen","Blood level >0.9 µg/dL","Liver biopsy"], ans:1, exp:"Hair and nail samples containing >300 ppm or 100 mg As per 100 gm specimen are diagnostic of chronic arsenic poisoning."},
+{q:"The classical 'glove and stocking' type anesthesia in chronic arsenic poisoning indicates:", opts:["Central nervous system involvement","Peripheral neuritis (4th stage)","Renal neuropathy","Autonomic dysfunction"], ans:1, exp:"The 4th stage of chronic arsenicosis involves peripheral neuritis with a glove and stocking type of anesthesia resembling alcoholism."},
+{q:"Gastric lavage in arsenic poisoning is best performed with:", opts:["Plain water","1% sodium thiosulphate in water","Potassium permanganate solution","Normal saline with activated charcoal"], ans:1, exp:"Gastric lavage with 1% sodium thiosulphate is helpful in arsenic poisoning. Stomach wash should also be done with milk and warm water."},
+
+// MERCURY (19-36)
+{q:"Minamata disease is caused by chronic ingestion of fish contaminated with:", opts:["Inorganic mercury","Elemental mercury vapor","Methyl mercury (organic mercury)","Ethyl mercury"], ans:2, exp:"Minamata disease resulted from methylmercury contaminating fish in Minamata Bay, Japan (1932-1968). It caused deaths and permanent disabilities in over 1000 people."},
+{q:"Which form of mercury crosses the blood-brain barrier (BBB) most readily?", opts:["Inorganic mercury (Hg+)","Elemental mercury vapor (after conversion to Hg2+)","Organic mercury (methyl mercury) — crosses both BBB and placenta","Mercurous salts"], ans:2, exp:"Organic (methyl) mercury is lipophilic and readily crosses both the BBB and the placental barrier. Inorganic mercury cannot cross the BBB but accumulates in the kidney."},
+{q:"'Erethism' in chronic mercury poisoning is characterized by:", opts:["Tremors and movement disorders","Personality changes including shyness, irritability, loss of confidence, insomnia, and hallucinations","Renal failure and oliguria","Skin peeling and pigmentation"], ans:1, exp:"Erethism is a specific neurological syndrome of chronic mercury poisoning characterized by shyness, timidity, irritability, loss of confidence, mental depression, memory loss, insomnia, and hallucinations — seen in mirror factory workers."},
+{q:"'Mercurial tremors' (Hatter's shake / Danbury tremors) in chronic mercury poisoning are:", opts:["Fine resting tremors similar to thyrotoxicosis","Moderately coarse tremors excited by voluntary movement, absent during sleep, starting from hands then lips, tongue, arms, legs","Intention tremors only affecting upper limbs","Tremors that appear only at rest"], ans:1, exp:"Mercurial (Danbury) tremors are coarse, excited by voluntary movement, absent during sleep, and progressively involve hands, lips, tongue, and eventually arms and legs."},
+{q:"'Acrodynia' (Pink Disease) in mercury poisoning presents as:", opts:["Blue-grey skin discoloration","Erythematous, eczematous papular skin lesions mainly affecting hands and feet with skin thickening","Bullous eruptions on sun-exposed areas","Purple discoloration of fingernails"], ans:1, exp:"Acrodynia (Pink Disease) results from chronic mercury exposure in any form, presenting as erythematous, eczematous (watery and weeping) papular skin lesions mainly on hands and feet with skin thickening."},
+{q:"The route of absorption and percentage absorbed for elemental mercury vapor is:", opts:["GIT: 50% absorbed","Lung: 80% absorbed; GIT: 0.01%","Skin: 100% absorbed","Lung: 20%; GIT: 60%"], ans:1, exp:"Elemental mercury vapor is primarily absorbed through the lungs (80%). GIT absorption of elemental mercury is negligible (0.01%)."},
+{q:"Which chemical is the antidote for mercury poisoning that reduces mercuric chloride to metallic mercury?", opts:["Sodium thiosulphate","Prussian Blue","Sodium formaldehyde sulphoxylate","N-acetylcysteine"], ans:2, exp:"Gastric lavage with sodium formaldehyde sulphoxylate is the chemical antidote that reduces perchloride (mercuric chloride) to metallic mercury, which is less toxic."},
+{q:"'Mercura lentis' is:", opts:["Opacity of the lens causing blindness","A brownish reflex from the anterior lens capsule seen on slit-lamp in bilateral, vision-sparing fashion in persons exposed to mercury vapor","A yellowing of the sclera","An anterior chamber inflammation"], ans:1, exp:"Mercura lentis is a bilateral brownish reflex from the anterior lens capsule seen on slit-lamp examination in persons exposed to mercury vapors for years. It does not affect visual acuity."},
+{q:"The chelating agent used for mercury poisoning (BAL) is given at:", opts:["5-10 mg/kg 6-hourly","3-5 mg/kg 4-hourly for 2 days, then tapered","10 mg/kg 8-hourly","1 mg/kg 12-hourly"], ans:1, exp:"BAL (Dimercaprol) for mercury poisoning: 3-5 mg/kg 4-hourly for 2 days, then 2.5 mg/kg 6-hourly for 1 day, then 2.5 mg/kg twice daily according to severity."},
+{q:"The mechanism of mercury toxicity primarily involves:", opts:["Inhibition of cytochrome P450 exclusively","High-affinity binding to sulfhydryl (-SH) groups of proteins causing non-specific cell injury or death","Competitive antagonism with calcium at synapses","Substitution for potassium in Na+/K+ ATPase"], ans:1, exp:"The main mechanism is high-affinity binding of divalent mercury to sulfhydryl groups of proteins, causing non-specific cell injury or death. Additional mechanisms include microtubule disruption, enzyme inhibition, and oxidative stress."},
+{q:"Inorganic mercury accumulates primarily in which organ?", opts:["Brain","Liver","Kidney","Lung"], ans:2, exp:"Inorganic mercury (unlike organic mercury) cannot cross the BBB or placental barrier and accumulates primarily in the kidney."},
+{q:"Which symptom of acute mercury inhalation poisoning involves the lung?", opts:["Pulmonary fibrosis only","Chemical pneumonia and pulmonary oedema","Spontaneous pneumothorax","Lung abscess"], ans:1, exp:"Acute inhalation of mercury vapors causes chemical pneumonia and pulmonary oedema, along with gingivostomatitis, increased salivation, and CNS symptoms."},
+{q:"After ingesting inorganic mercury, the diagnostic blood level indicating toxicity is:", opts:["Blood Hg >1.5 µg/dL","Blood Hg >3.6 µg/dL, 24-hr urine >15 µg/dL","Blood Hg >10 µg/dL","Blood Hg >0.5 µg/dL"], ans:1, exp:"Diagnostic levels for mercury poisoning: Blood Hg >3.6 µg/dL and 24-hour urinary excretion >15 µg/dL. Assessed by atomic absorption spectrophotometer."},
+{q:"Thimerosal used as a vaccine preservative contains:", opts:["Methyl mercury","Ethyl mercury (49.6% mercury by weight)","Inorganic mercury sulfate","Elemental mercury"], ans:1, exp:"Thimerosal contains the ethyl mercury radical (49.6% mercury by weight as ethyl mercury) attached to the sulfur group of thiosalicylate and was used as a vaccine preservative since the 1930s."},
+{q:"Which of the following correctly describes organic mercury toxicokinetics?", opts:["Poor GIT absorption, stored in liver, excreted by bile","Extremely well absorbed across the gut, crosses BBB and placenta, accumulates in brain and kidney","Only absorbed through inhalation","Excreted unchanged in urine within 2 hours"], ans:1, exp:"Organic mercury (methyl mercury) is extremely well absorbed from the gut, is lipophilic, crosses both the BBB and placenta, and accumulates in the brain and kidney."},
+{q:"Symptoms of Minamata disease (chronic methylmercury poisoning) include all EXCEPT:", opts:["Disturbance in hand coordination","Chewing and swallowing difficulty","Seizures and clouding of consciousness","Profuse bloody diarrhea and vomiting as the chief symptom"], ans:3, exp:"Minamata disease (chronic methylmercury) presents with neurological symptoms: coordination problems, speech and gait disturbance, chewing difficulty, tremors, rigidity, seizures. Profuse bloody diarrhea is not a chief feature."},
+{q:"In chronic mercury poisoning, salivary excretion of thallium compared to urinary excretion is:", opts:["Equal","5 times greater","15 times greater — wait, this applies to thallium, not mercury. What is characteristic of chronic mercury affecting the mouth?","Absent"], ans:2, exp:"Chronic mercury poisoning causes excessive salivation, swollen and painful salivary glands, foul-smelling breath, inflamed gums with a brownish-blue line, loosening of teeth, and jaw necrosis."},
+{q:"A blood level of mercury above which threshold causes symptoms in chronic poisoning?", opts:["50 mg/mL","100 mg/mL","200 mg/mL","10 mg/mL"], ans:1, exp:"Signs and symptoms of chronic mercury poisoning start at a blood level of 100 mg/mL. The patient is symptomatic at daily urinary excretion >300 mg/mL."},
+
+// LEAD (37-54)
+{q:"Lead is classified as which group carcinogen by IARC?", opts:["Group 1 (definite human carcinogen)","Group 2A (probable)","Group 2B (possible) in animals","Group 3 (not classifiable)"], ans:2, exp:"Lead has been classified as a Group 2B carcinogen — possible carcinogen in animals. Data to support its role in human carcinogenesis are insufficient."},
+{q:"The percentage of ingested lead absorbed by a child on an empty stomach is:", opts:["20%","50%","Up to 100%","10%"], ans:2, exp:"Children absorb about 50% of ingested lead after a meal and up to 100% on an empty stomach, making them far more vulnerable than adults."},
+{q:"Lead primarily disrupts heme synthesis by inhibiting which enzyme most profoundly?", opts:["Ferrochelatase","ALA synthase","δ-aminolevulinic acid dehydratase (ALAD)","Uroporphyrinogen decarboxylase"], ans:2, exp:"Lead inhibits three enzymes in heme biosynthesis — ALAD, coproporphyrinogen oxidase, and ferrochelatase — but its effects on ALAD are the most profound."},
+{q:"In adults, what percentage of total body lead stores are found in bone?", opts:["50%","70%","Over 95%","30%"], ans:2, exp:"Among adults, over 95% of total body stores of lead are found in bone. In children, about 70% is stored in bone."},
+{q:"The half-life of lead in blood is approximately:", opts:["6 months","1 year","20 years","30 days"], ans:2, exp:"The half-life of lead in blood is 20 years, reflecting its extensive storage in bone. Lead is not simply stored away but continuously moves in and out of bone."},
+{q:"Lead nephropathy is characterized by all of the following EXCEPT:", opts:["Proximal tubular nephropathy","Glomerular sclerosis","Nephrotic syndrome as the initial presentation","Interstitial fibrosis"], ans:2, exp:"Lead nephropathy (Fanconi-like syndrome) causes proximal tubular nephropathy, glomerular sclerosis, and interstitial fibrosis. Nephrotic syndrome is not the classic initial presentation."},
+{q:"Lead mimics which essential ion in the nervous system, causing inappropriate neurotransmitter release?", opts:["Sodium","Potassium","Calcium (divalent cation)","Magnesium"], ans:2, exp:"Lead is a divalent cation similar to calcium and can disrupt the physiologic effects of calcium at lower concentrations, causing inappropriate neurotransmitter release at rest and interfering with evoked release."},
+{q:"Chelation therapy in lead poisoning with BLLs above 60 µg/dL uses:", opts:["BAL only","DMSA (dimercaptosuccinic acid) and/or EDTA","Prussian Blue","Penicillamine only"], ans:1, exp:"Chelation therapy is warranted for BLL >60 µg/dL. Oral DMSA (DMCA) has advantages over EDTA and effectively reduces BLL. EDTA can also be used."},
+{q:"Lead toxicity in the cardiovascular system includes all EXCEPT:", opts:["Hypertension","Atherosclerosis","Pulmonary fibrosis","Ischemic coronary heart disease"], ans:2, exp:"Lead causes hypertension, atherosclerosis, ECG disturbances, altered myocardial contractility, and ischemic heart disease. Pulmonary fibrosis is associated with paraquat, not lead."},
+{q:"The primary treatment for mild lead poisoning is:", opts:["Immediate chelation therapy","Removal from the source of lead exposure","Dialysis","High-dose vitamin C"], ans:1, exp:"The primary treatment for mild lead poisoning is to stop the exposure and remove the source. Chelation therapy is reserved for severe symptoms usually associated with BLL >100 µg/dL."},
+{q:"Which dietary intervention reduces lead absorption?", opts:["High-fat diet","Low calcium and iron diet","Adequate calcium and iron, low fat, regular small meals","Vegetarian diet only"], ans:2, exp:"Adequate calcium and iron in the diet reduces lead absorption. High-fat diets encourage lead absorption. Eating regularly (not on empty stomach) also reduces absorption."},
+{q:"Organic lead (tetraethyl lead) differs from inorganic lead in that it:", opts:["Cannot be absorbed through skin","Is more likely to be absorbed dermally","Is not metabolized in the liver","Is stored in bone preferentially"], ans:1, exp:"Organic lead (tetraethyl lead) is more likely to be absorbed through the skin than inorganic lead. Nearly all organic lead ingested is absorbed; organic lead is metabolized in the liver."},
+{q:"'Plumbism' means:", opts:["Mercury poisoning","Arsenic poisoning","Lead poisoning (from Latin plumbum = Pb)","Thallium poisoning"], ans:2, exp:"Plumbism means lead poisoning — from plumbum, the Latin word for lead (Pb), which also gives rise to the word 'plumber'."},
+{q:"Lead crosses the placenta and the fetal BLL matches the maternal BLL. The most critical consequence is:", opts:["Maternal renal failure","Damage to the fetal nervous system and brain","Fetal lead storage in bone only","Maternal anemia only"], ans:1, exp:"Lead crosses the placenta to match maternal blood levels. Because of this, it can cause serious damage to the nervous system and brain of unborn children."},
+{q:"Chronic lead nephropathy on biopsy shows:", opts:["Minimal change disease pattern","Membranous nephropathy","Chronic tubulointerstitial nephritis, often associated with hypertension and gout","Proliferative glomerulonephritis"], ans:2, exp:"Chronic lead nephropathy presents as chronic tubulointerstitial nephritis on biopsy, often associated with hypertension and gout due to lead-induced hyperuricemia."},
+{q:"Fanconi-like syndrome from lead poisoning in the kidney involves:", opts:["Collecting duct damage","Proximal tubular nephropathy causing aminoaciduria, glycosuria, phosphaturia","Glomerular damage only","Medullary sponge kidney"], ans:1, exp:"Lead causes a Fanconi-like syndrome through proximal tubular nephropathy, impairing reabsorption of amino acids, glucose, phosphate, and uric acid."},
+{q:"What is the Latin origin of the chemical symbol Pb for lead?", opts:["Plombum","Plumbum","Palladium","Platinum-base"], ans:1, exp:"The chemical symbol Pb comes from the Latin word 'plumbum,' which also gives us the English word 'plumber' and 'plumbism' (lead poisoning)."},
+{q:"Lead-induced anemia results from:", opts:["Increased red cell destruction only","Inhibition of heme biosynthesis (especially ALAD) causing decreased hemoglobin production","Bone marrow fibrosis","Autoimmune hemolysis"], ans:1, exp:"Lead-induced anemia results from inhibition of heme synthesis enzymes (particularly ALAD), disrupting hemoglobin production. This leads to a hypochromic, microcytic anemia."},
+
+// THALLIUM (55-58)
+{q:"The classic, most characteristic sign of thallium poisoning that appears approximately 15 days after exposure is:", opts:["Peripheral neuropathy","Seizures","Alopecia (hair loss)","Skin rash"], ans:2, exp:"Loss of hair is the most characteristic sign of thallium poisoning, typically appearing after 15 days. Nail changes (Mees lines) may also appear later."},
+{q:"The antidote of choice for thallium poisoning is:", opts:["BAL (Dimercaprol)","EDTA","Prussian Blue (potassium ferric hexacyanoferrate)","Sodium thiosulphate"], ans:2, exp:"Prussian Blue is the antidote for thallium poisoning. It traps thallium in the gut by exchanging thallium for potassium in its lattice, preventing absorption. BAL, EDTA, and penicillamine do NOT accelerate thallium excretion."},
+{q:"Thallium exerts its toxic mechanism primarily by:", opts:["Blocking cholinesterase irreversibly","Mimicking potassium ions and inhibiting K-Na-ATPase; inactivating sulfhydryl groups causing mitochondrial permeability increase","Binding to sulfhydryl groups on hemoglobin only","Uncoupling oxidative phosphorylation like paraquat"], ans:1, exp:"Thallium mimics K+ ions (similar ionic size), substituting for potassium in Na+/K+ ATPase with 10x greater affinity. It also inactivates sulfhydryl groups, increasing mitochondrial permeability and causing swelling. Alopecia results from inhibition of cysteine incorporation, preventing keratinization."},
+{q:"The ratio of fecal to urinary elimination of thallium is approximately:", opts:["1:2","1:1","2:1","3:1"], ans:2, exp:"Thallium is mainly excreted in feces. The ratio of fecal to urinary elimination is approximately 2:1. Salivary excretion is about 15 times greater than urinary excretion."},
+
+// PESTICIDES (59-70)
+{q:"Organophosphate pesticides cause toxicity primarily by:", opts:["Blocking GABA receptors","Irreversibly inhibiting cholinesterase, causing cholinergic crisis","Inhibiting Na+ channels","Uncoupling oxidative phosphorylation"], ans:1, exp:"Organophosphates cause 'irreversible' cholinesterase inhibition, leading to cholinergic crisis: nausea, vomiting, hypersecretion, miosis, fasciculations, and coma. Diagnosed by low cholinesterase in RBCs."},
+{q:"Paraquat (a bipyridyl herbicide) poisoning is treated with:", opts:["High-flow oxygen to improve respiratory failure","Decontamination, avoidance of O2, haemoperfusion, and possibly corticosteroids/cyclophosphamide","Atropine and oximes","Vitamin K1"], ans:1, exp:"Paraquat treatment: Decontamination, AVOID oxygen (promotes superoxide radical formation), haemoperfusion, and possibly corticosteroids and cyclophosphamide. Dithionite test in urine confirms diagnosis."},
+{q:"Developing countries experience what percentage of pesticide-related deaths despite using only 25% of global pesticides?", opts:["50%","75%","99%","60%"], ans:2, exp:"Although developing countries use only 25% of pesticides produced worldwide, they experience 99% of deaths — due to more intense/unsafe use, weaker regulatory systems, and poorer health infrastructure."},
+{q:"Which pesticide class blocks the GABA system, causing tremors, dizziness, and seizures?", opts:["Organophosphates","Carbamates","Organochlorines","Pyrethroids Type I"], ans:2, exp:"Organochlorines (e.g., Lindane, Endosulfan) inhibit the GABA system and alter calcium homeostasis, causing tremors, dizziness, and seizures. Detected in blood; treated with supportive care and decontamination."},
+{q:"The specific biomarker used to diagnose prenatal organophosphate exposure in newborns is:", opts:["Umbilical cord blood cholinesterase","Amniotic fluid acetylcholinesterase","Organophosphate metabolites (DAPs) in meconium","Urinary dialkylphosphates in the first week of life"], ans:2, exp:"Measuring organophosphate compound (OP) metabolites (DAPs) in meconium is the best biomarker of prenatal OP exposure, because meconium accumulates from the 16th week of pregnancy."},
+{q:"Warfarin-based rodenticide poisoning causes haemorrhage through:", opts:["Direct vessel wall damage","Vitamin K antagonism, raising prothrombin time","Platelet aggregation inhibition","Factor VIII deficiency induction"], ans:1, exp:"Warfarin-based rodenticides (Warfarin, Brodifacoum, Diphacinone) cause haemorrhage through Vitamin K antagonism, which is diagnosed by elevated prothrombin time (PT) and treated with Vitamin K1 (Fitomenadione)."},
+{q:"Persistent Organic Pollutants (POPs) such as DDT and dieldrin are characterized by all EXCEPT:", opts:["Low water solubility","Lipophilic nature","Rapid biodegradation in the environment","Accumulation in adipose tissue and marine mammals"], ans:2, exp:"POPs are characterized by low water solubility, lipophilicity, persistence in the environment (resistant to breakdown), and accumulation in adipose tissue and food chains — NOT rapid biodegradation."},
+{q:"The Stockholm Convention (effective 2004) addresses which category of pesticides specifically?", opts:["All agricultural pesticides","Rodenticides only","Nine of the 12 Persistent Organic Pollutants including aldrin, chlordane, DDT, dieldrin, endrin, heptachlor, mirex, toxaphene, hexachlorobenzene","All organophosphate pesticides"], ans:2, exp:"Nine of the 12 POPs in the Stockholm Convention are pesticides: aldrin, chlordane, DDT, dieldrin, endrin, heptachlor, mirex, toxaphene, and hexachlorobenzene. The convention became effective May 2004, signed by 50 countries."}
+];
+
+const saqs = [
+// ARSENIC
+{q:"Describe the four stages of chronic arsenic toxicity (Arsenicosis).", marks:5, hint:"Think GIT → catarrhal → skin → nervous system in sequence.", answer:`<strong>Stage 1 – GIT Disturbances:</strong> Loss of weight and appetite, colicky pain, constipation, vomiting, diarrhea, salivation.<br><br><strong>Stage 2 – Catarrhal Stage:</strong> Dryness and itching of skin, harsh/husky voice, photophobia, conjunctivitis, hepatomegaly (enlarged cirrhotic liver), chronic nephritis.<br><br><strong>Stage 3 – Skin Eruptions:</strong> Erythematous flushing from cutaneous capillary dilation; 'rain drop' pigmentation on covered body parts (flexors, nipples, abdomen, temples, eyelids); epithelial hyperplasia; hyperkeratosis and desquamation of palms and soles.<br><br><strong>Stage 4 – Nervous Disturbances:</strong> Peripheral neuritis with glove-and-stocking anesthesia (resembling alcoholism); encephalopathy in some; paresthesia, numbness, and pain especially on soles of feet.`},
+{q:"Outline the toxicokinetics of arsenic in the body including absorption, distribution, and excretion.", marks:5, hint:"Absorption routes → rapid redistribution → organs → excretion pathways.", answer:`<strong>Absorption:</strong> Via inhalation, dermal absorption, or GIT ingestion. Once absorbed, arsenic rapidly combines with the globin portion of hemoglobin.<br><br><strong>Distribution:</strong> Within 24 hours redistributes to liver, kidney, spleen, lung, and GIT. Lesser accumulation in muscle and nervous tissue. Becomes fixed in cancellous bone (replaces phosphorus) and concentrates in nails and hair.<br><br><strong>Excretion:</strong> Mainly through kidneys as methylated arsenic. Some excreted via feces, sweat, and bile (enterohepatic circulation). Dimethyl-arsenic (DMA) is the principal detoxification product. Can be transferred across the placenta and appears in human milk.`},
+{q:"What is the role of pyruvate dehydrogenase in arsenic toxicity and why is alpha-lipoic acid significant?", marks:5, hint:"Krebs cycle, arsenic chelation, energy production blockade.", answer:`Arsenic interferes with cellular respiration by chelating <strong>alpha-lipoic acid</strong>, which is an essential cofactor for the enzyme <strong>pyruvate dehydrogenase</strong>. Pyruvate dehydrogenase is required for energy production — it converts pyruvate to acetyl-CoA in the Krebs cycle. By chelating its cofactor, arsenic blocks this critical step, impairing ATP synthesis in mitochondria.<br><br>Additionally, arsenic inhibits succinic dehydrogenase activity and uncouples oxidative phosphorylation. Arsenic is a capillary poison, increasing vascular permeability leading to tissue edema and hemorrhage. These combined effects on cellular energetics are central to arsenic's systemic toxicity.`},
+{q:"Explain the treatment protocol for acute arsenic poisoning.", marks:5, hint:"Decontamination → chelation → supportive.", answer:`<ul><li><strong>Supportive Care:</strong> Maintain airway, breathing, and circulation. IV saline for dehydration. Hemodialysis if renal failure occurs.</li><li><strong>GI Decontamination:</strong> Stomach wash with milk and warm water. Gastric lavage with 1% sodium thiosulphate. Nasogastric suction. Whole bowel irrigation. Demulcents (ghee, barley water). Castor oil/magnesium sulphate to reduce intestinal absorption.</li><li><strong>Chelation Therapy:</strong> BAL (Dimercaprol) 3-5 mg/kg every 4 hours. DMSA 10 mg/kg PO for 5 days. Oral Penicillamine 100 mg/kg body weight in 4 divided doses for 4-8 days after initial 12-48 hours of BAL.</li><li><strong>Pain Relief:</strong> Morphine for pain. Massage to relieve cramps.</li></ul>`},
+{q:"What cancers are associated with long-term arsenic exposure and what is the typical latency period?", marks:5, hint:"Target organs, 20-40 year latency.", answer:`Long-term arsenic exposure (typically <strong>20-40 years</strong>) is associated with:<ul><li><strong>Skin cancer:</strong> Hyperkeratosis, hyperpigmentation; basal cell carcinoma and squamous cell carcinoma</li><li><strong>Lung cancer:</strong> Associated with exposure in Taiwan, Japan, and Chile</li><li><strong>Bladder cancer:</strong> Particularly in Taiwan and Argentina; smoking elevates risk synergistically</li><li><strong>Kidney cancer</strong></li><li><strong>Liver cancer</strong></li></ul>Arsenic is classified as a <strong>known human carcinogen (Group 1)</strong>. Blackfoot Disease (severe gangrene) is also associated with chronic arsenic in Taiwan's drinking water.`},
+
+// MERCURY
+{q:"Compare the toxicokinetics of organic mercury versus inorganic mercury.", marks:5, hint:"Absorption, BBB crossing, organ accumulation, excretion — compare the two forms.", answer:`<strong>Organic Mercury (Methyl Mercury):</strong> Extremely well absorbed across the GIT (~90%). Lipophilic — readily crosses both the blood-brain barrier (BBB) and placental barrier. Accumulates in brain and kidney. Main route is dietary (fish consumption). Excreted in urine and feces. Cooking does not reduce methylmercury content.<br><br><strong>Inorganic Mercury:</strong> Absorbed mainly through lungs (80% of vapor), GIT (7-15% of salts). Forms complexes with glutathione in liver, secreted in bile. CANNOT cross the BBB or placental barrier (unlike organic mercury). Accumulates primarily in the kidney. Systemic effects possible from skin and lung exposure. Excreted in urine and feces.`},
+{q:"Describe the clinical features of Minamata disease.", marks:5, hint:"Neurological manifestations — coordination, speech, movement.", answer:`Minamata disease results from chronic methylmercury intoxication through consumption of contaminated fish. Clinical features are predominantly <strong>neurological</strong>:<ul><li>Disturbance in hand co-ordination and fine motor control</li><li>Gait and speech disturbances (ataxia)</li><li>Chewing and swallowing difficulty</li><li>Tremors and rigidity</li><li>Seizures and clouding of consciousness</li><li>Constriction of visual fields</li><li>Paresis</li><li>Delirium and polyneuropathy</li></ul>The disease caused deaths of over 1000 people and permanently disabled many more in Minamata, Japan (1932-1968). It bioaccumulated through the food chain from the Chisso Chemical Factory's methyl mercury discharge.`},
+{q:"What is the significance of 'Erethism' in mercury poisoning and in which occupational setting is it classically described?", marks:5, hint:"Psychological features, mirror factory workers.", answer:`<strong>Erethism</strong> is a specific neuropsychological syndrome of chronic mercury poisoning characterized by:<ul><li>Shyness and timidity</li><li>Irritability and loss of confidence</li><li>Mental depression and loss of memory</li><li>Insomnia</li><li>Hallucinations and delusions</li><li>Sometimes suicidal melancholia or manic-depressive psychosis</li></ul>It is classically described in workers in <strong>mirror manufacturing factories</strong>. The syndrome is also called 'Mad Hatter Syndrome' — historically seen in hat-makers who used mercuric nitrate in carroting felt. The term 'Mad as a Hatter' derives from this occupational syndrome. Mercury tremors (Danbury tremors/Hatter's shake) are also associated — coarse tremors starting in hands, then lips, tongue, arms, and legs, excited by voluntary movement.`},
+{q:"Explain the mechanism of mercury toxicity at the cellular level.", marks:5, hint:"SH binding, enzyme inhibition, microtubule disruption.", answer:`<strong>Primary Mechanism:</strong> High-affinity binding of divalent mercury to <strong>sulfhydryl (-SH) groups</strong> of cellular proteins causes non-specific cell injury or death. This disrupts enzyme function throughout the body.<br><br><strong>Additional Mechanisms:</strong><ul><li>Interruption of microtubule formation, affecting cell division and neuronal structure</li><li>Inhibition of enzymes and induction of oxidative stress</li><li>Interruption of protein and DNA synthesis</li><li>Induction of autoimmune responses</li><li>Overexpression of metallothionein and glutathione system-related genes as protective responses</li></ul>Organic mercury additionally disrupts serotonergic and cholinergic systems; it inhibits axonogenesis and synaptogenesis at low exposure levels.`},
+{q:"What are the medico-legal aspects of mercury poisoning?", marks:5, hint:"Accidental sources, mercury as non-constituent of human body.", answer:`<strong>Key Medico-Legal Points:</strong><ul><li><strong>Mercury is not a natural constituent of the human body</strong> — its presence in tissues always indicates external introduction.</li><li><strong>Mercuric chloride</strong> causes accidental poisoning when used as a disinfectant/antiseptic, contraceptive vaginal tablets, or for anti-syphilitic treatment.</li><li><strong>Phenyl mercuric acetate jelly</strong> has caused poisoning when used as a contraceptive.</li><li>Normal tissue levels: 5-150 mg/100g in kidney and liver.</li><li>Mercury poisoning may be homicidal (as in murder cases) — mercuric chloride is a frequent agent.</li><li>Dental amalgams release mercury vapor and can increase body mercury burden.</li><li>Mercury poisoning may be misidentified initially as other conditions; confirmation requires blood/urine testing by atomic absorption spectrophotometry.</li></ul>`},
+
+// LEAD
+{q:"Explain how lead causes anemia. Include the specific enzymes inhibited.", marks:5, hint:"Heme biosynthesis pathway, three enzymes, ALAD most important.", answer:`Lead disrupts heme synthesis at three enzyme points:<ul><li><strong>δ-Aminolevulinic acid dehydratase (ALAD):</strong> Most profoundly inhibited. ALAD catalyzes condensation of two ALA molecules to form porphobilinogen. Inhibition causes accumulation of δ-ALA in urine (a key biomarker).</li><li><strong>Coproporphyrinogen oxidase:</strong> Inhibition leads to coproporphyrinuria.</li><li><strong>Ferrochelatase:</strong> Inhibition prevents incorporation of iron into protoporphyrin IX to form heme, causing erythrocyte protoporphyrin accumulation (another biomarker) and ultimately <strong>hypochromic microcytic anemia</strong>.</li></ul>The resulting anemia, combined with lead's direct effect on red blood cells (shortened lifespan, increased fragility), produces the characteristic clinical picture.`},
+{q:"Describe the effects of lead on the nervous system in children.", marks:5, hint:"IQ reduction, behavioral effects, neurotransmitter mechanism, developmental impact.", answer:`Lead causes profound <strong>neurotoxicity</strong> in children through multiple mechanisms:<br><br><strong>Mechanism:</strong> Lead mimics calcium (both divalent cations) and disrupts calcium-dependent physiologic processes in the CNS at concentrations lower than calcium. It causes inappropriate neurotransmitter release at rest and competes with calcium to interfere with evoked neurotransmitter release.<br><br><strong>Clinical Effects:</strong><ul><li>Reduced IQ and learning disabilities</li><li>Problems with cognition and thinking</li><li>Difficulties with executive functions (planning, decisions, behaviors)</li><li>Abnormal social behavior including aggression</li><li>Attention problems and behavioral disruptions (hyperactivity, impulsive behavior)</li><li>Failure at school</li><li>Difficulties coordinating fine movements</li><li>Slowed body growth</li><li>Hearing problems</li></ul>There is no safe blood lead level in children — any measurable amount may have negative health effects.`},
+{q:"What are the reproductive effects of lead poisoning?", marks:5, hint:"Male and female, pregnancy outcomes, transplacental transfer.", answer:`<strong>Male Reproductive Effects:</strong><ul><li>Reduced sperm count</li><li>Increased abnormal sperm frequencies</li><li>Potential infertility (role remains controversial at low levels)</li></ul><strong>Female and Pregnancy Effects:</strong><ul><li>Miscarriages and subtle abortions</li><li>Lead crosses the placenta — fetal BLL matches maternal BLL</li><li>Damage to fetal nervous system and brain</li><li>Growth retardation (small-for-gestational-age, low birth weight, reduced head circumference)</li><li>At high exposure levels: adverse pregnancy outcomes (fetal death, stillbirth)</li></ul>Lead is also stored in bone and can be mobilized during pregnancy (as bone remodels), increasing fetal exposure even from historical lead accumulation in the mother.`},
+{q:"Outline lead toxicokinetics including absorption, distribution, and elimination.", marks:5, hint:"Route-dependent absorption percentages, bone storage, excretion pathways.", answer:`<strong>Absorption:</strong><ul><li>Adults absorb up to 20% of ingested inorganic lead after a meal, 60-80% on an empty stomach</li><li>Children absorb ~50% after a meal, up to 100% on empty stomach</li><li>Almost all inhaled lead in the lower respiratory tract is absorbed</li><li>Organic lead (tetraethyl lead) absorbed more readily through skin</li></ul><strong>Distribution:</strong><ul><li>Distributed to many tissues — blood, soft tissues, bone</li><li>>95% of adult total body stores are in bone; ~70% in children</li><li>Half-life in blood: 20 years (reflecting bone storage)</li><li>Lead crosses placenta to match maternal blood levels</li><li>Cannot be destroyed or metabolized to something else</li></ul><strong>Elimination:</strong><ul><li>Most excreted in urine or through biliary clearance (feces)</li><li>Fecal excretion accounts for ~one-third of total excreted lead</li><li>Inorganic lead is NOT metabolized in the liver</li><li>Organic lead is metabolized in the liver</li></ul>`},
+{q:"What are the cardiovascular effects of chronic lead poisoning?", marks:5, hint:"Blood pressure, ECG, vascular, cardiac changes.", answer:`Chronic lead poisoning causes significant cardiovascular pathology:<ul><li><strong>Hypertension</strong> — a major complication of chronic lead nephropathy</li><li><strong>Atherosclerosis</strong></li><li><strong>ECG disturbances</strong></li><li><strong>Heightened catecholamine sensitivity</strong></li><li><strong>Altered myocardial contractile responsiveness</strong> to inotropic stimulation</li><li><strong>Hypercholesterolemia</strong></li><li><strong>Increased vascular reactivity</strong> to alpha-adrenergic agonists</li><li><strong>Ischemic coronary heart disease</strong></li><li><strong>Myocarditis</strong></li><li><strong>Cerebrovascular accidents (stroke)</strong></li><li><strong>Peripheral vascular disease</strong></li></ul>The mechanism involves lead mimicking calcium ions in smooth muscle cells and endothelium, altering vascular tone and function.`},
+
+// THALLIUM
+{q:"Describe the clinical features of acute thallium poisoning.", marks:5, hint:"Onset timing, GIT, neurological, and the pathognomonic sign.", answer:`Thallium poisoning has an <strong>insidious onset</strong>, reaching a maximum in the 2nd-3rd week after exposure.<br><br><strong>Initial Symptoms:</strong><ul><li>Gradual GI disturbances (nausea, vomiting, abdominal pain)</li><li>Hyperaesthesia — mainly in soles of the feet</li><li>Polyneuritis that may lead to respiratory insufficiency</li><li>Tachycardia</li></ul><strong>Most Characteristic Sign — Alopecia:</strong> Loss of hair appears after <strong>~15 days</strong> and is pathognomonic of thallium poisoning.<br><br><strong>Late Features:</strong><ul><li>Nail changes (Mees lines)</li><li>Atrophic skin changes</li><li>Psychotic behavior with hallucinations and dementia</li><li>Visual disturbances (in severe cases)</li></ul><strong>Chronic Poisoning:</strong> Polyneuropathy, sleep disorders, headache, fatigue, hair loss, skin abnormalities, GI dysfunction, pain in joints.`},
+{q:"Explain the mechanism of thallium toxicity and its specific antidote.", marks:5, hint:"K+ mimicry, ATPase inhibition, SH groups, Prussian Blue mechanism.", answer:`<strong>Mechanism of Thallium Toxicity:</strong><ul><li>Thallium ions and potassium ions are similar in size — thallium can substitute for K+ in Na+/K+-ATPase with <strong>10 times greater affinity</strong> than potassium, causing K-Na-ATPase inhibition.</li><li>Thallium depolarizes membranes and antagonizes calcium effects on the heart.</li><li>True mechanism involves inactivation of <strong>sulfhydryl (SH) groups</strong> responsible for increasing mitochondrial permeability, leading to water influx and swelling.</li><li><strong>Alopecia:</strong> Thallium inhibits protein synthesis particularly cysteine incorporation, preventing keratinization of hair.</li><li>May form insoluble compound with riboflavin, causing riboflavin deficiency-like features (peripheral neuropathy, alopecia).</li></ul><br><strong>Antidote — Prussian Blue:</strong><ul><li>Potassium ferric hexacyanoferrate(II) administered orally 10g in 100ml of 1.5% mannitol twice daily.</li><li>Traps thallium in the gut by <strong>exchanging thallium for potassium</strong> in its molecular lattice.</li><li>Neither complex is soluble or absorbable across the gut wall.</li><li>Continue until urinary thallium <0.6 mg/24 hours.</li></ul>Note: BAL, EDTA, and penicillamine do NOT accelerate thallium excretion.`},
+
+// PESTICIDES
+{q:"What are the acute toxicokinetic mechanisms of organophosphate and carbamate pesticides?", marks:5, hint:"Cholinesterase inhibition — reversible vs irreversible, cholinergic crisis.", answer:`<strong>Organophosphates (e.g., Chlorpyrifos, Diazinon, Parathion):</strong><ul><li>Cause <strong>'irreversible'</strong> cholinesterase inhibition — the OP compound phosphorylates the active site of acetylcholinesterase (AChE) permanently (aging).</li><li>Acetylcholine accumulates at nerve synapses (muscarinic, nicotinic, CNS).</li><li>Metabolized to toxic 'oxones' (e.g., parathion→paraoxon) which are more potent inhibitors.</li><li>Also produce dialkylphosphate (DAP) metabolites — used as biomarkers.</li></ul><strong>Carbamates (e.g., Carbaryl, Aldicarb):</strong><ul><li>Cause <strong>reversible</strong> cholinesterase inhibition — carbamylation of AChE is temporary.</li><li>Both produce cholinergic crisis: miosis, hypersecretion, nausea, vomiting, fasciculations, coma.</li></ul><strong>Diagnosis:</strong> Low cholinesterase in RBCs.<br><strong>Treatment:</strong> Supportive care, Atropine IV (muscarinic blocker), Oximes (for OPs — regenerates AChE if given before aging), Decontamination.`},
+{q:"Describe the chronic effects of pesticide exposure on the nervous system.", marks:5, hint:"Prenatal exposure effects, adult chronic effects, specific pesticides.", answer:`<strong>Prenatal/Developmental Neurotoxicity:</strong><ul><li>Organophosphate exposure during brain growth causes permanent structural and functional effects.</li><li>Acetylcholinesterases play a direct role in axonal outgrowth and neuronal differentiation — OP inhibition disrupts this.</li><li>Chlorpyrifos and diazinon alter axonogenesis, synaptogenesis, and synaptic programming via serotonergic system alteration and inhibition of neuronal RNA synthesis.</li><li>These effects occur at exposure levels too low to cause overt cholinesterase inhibition symptoms.</li></ul><strong>Adult/Chronic Neurotoxicity:</strong><ul><li>Memory and concentration problems</li><li>Unusual fatigue, irritability, and depression</li><li>Visual difficulties</li><li>Delayed polyneuropathy (OPIDN — Organophosphate-Induced Delayed Neuropathy)</li><li>Subtle changes in short-term memory after home OP applications</li></ul>`},
+{q:"Explain the concept of Persistent Organic Pollutants (POPs) and their significance in human health.", marks:5, hint:"Chemical properties, biomagnification, endocrine disruption, specific examples.", answer:`<strong>Definition:</strong> POPs are chemicals that persist in the environment, accumulate in living organisms, and travel long distances.<br><br><strong>Chemical Properties:</strong><ul><li>Low water solubility</li><li>Lipophilic (fat-soluble)</li><li>Resistant to environmental breakdown</li><li>Accumulate in adipose tissue</li><li>Travel long distances (found in Arctic despite no local use)</li></ul><strong>Examples (9 pesticide POPs):</strong> Aldrin, Dieldrin, Chlordane, DDT, Endrin, Heptachlor, Mirex, Toxaphene, Hexachlorobenzene.<br><br><strong>Health Significance:</strong><ul><li>Biomagnify up the food chain — highest levels in marine mammals; humans at top</li><li>Breastfed babies particularly vulnerable (POPs found in breast milk)</li><li>Endocrine disruption: DDT (estrogenic/anti-androgenic), methoxychlor, endosulfan</li><li>Potential carcinogenesis</li><li>Immunotoxicity — cytokine abnormalities, increased infection susceptibility</li><li>Neurodevelopmental effects</li></ul>Controlled under the Stockholm Convention (effective 2004).`},
+{q:"What are the routes of pesticide exposure in children, and why are children particularly vulnerable?", marks:5, hint:"Behavioral, physiological, and developmental factors.", answer:`<strong>Routes of Exposure in Children:</strong><ul><li><strong>Ingestion:</strong> Breastfeeding (contaminated milk), accidental ingestion of pesticide containers, residues in food and water, mouthing behavior</li><li><strong>Inhalation:</strong> Indoor/outdoor spraying, occupational exposure of parent</li><li><strong>Dermal:</strong> Accidental contact, residues on surfaces, contaminated clothing/shoes of working parents</li><li><strong>Transplacental:</strong> In utero exposure — metabolites found in amniotic fluid and meconium from week 16</li></ul><strong>Why Children Are More Vulnerable:</strong><ul><li>Larger skin surface area relative to body weight</li><li>Breathe more air per kg body weight (faster absorption)</li><li>Drink and eat more per kg body weight</li><li>Behavioral: put fingers/objects in mouths, play on floor/ground</li><li>Immature metabolic pathways (altered detoxification)</li><li>Critical windows of development — exposure during neurodevelopment has permanent effects</li><li>Paraoxonase (PON) genotype influences susceptibility</li></ul>`},
+{q:"Describe the endocrine disrupting effects of pesticides.", marks:5, hint:"Mechanisms, specific pesticides, reproductive effects, hormone pathways.", answer:`<strong>Definition:</strong> Endocrine disruption occurs when low doses of pesticides mimic, block, or trigger inappropriate hormonal activity.<br><br><strong>Mechanisms of Disruption:</strong><ul><li>Interference with hormone synthesis</li><li>Disruption of hormone release and storage</li><li>Alteration of hormone transport and clearance</li><li>Blocking or activating hormone receptor recognition and binding</li><li>Disruption of post-receptor activation</li><li>Effects on thyroid function</li><li>CNS hormonal pathway disruption</li></ul><strong>Specific Pesticide Effects:</strong><ul><li><strong>Estrogenic:</strong> DDT, Dieldrin, Endosulfan, Methoxychlor</li><li><strong>Anti-androgenic:</strong> DDT, Vinclozilin, Procymidone</li><li><strong>Anti-thyroid:</strong> Ethylenethiourea (ETU), Maneb, Zineb metabolites</li><li><strong>Anti-progestin:</strong> DDT</li></ul><strong>Clinical Consequences:</strong> Infertility, low sperm count, early puberty, hormone-dependent cancers (testicular, breast, prostate), altered sex ratio, spontaneous abortion, developmental defects.`},
+{q:"What is the treatment approach for organophosphate poisoning?", marks:5, hint:"Decontamination, antidotes (atropine + oximes), supportive care.", answer:`<strong>1. Decontamination:</strong> Remove from source. Remove contaminated clothing. Wash skin thoroughly. If ingested, consider gastric lavage with appropriate precautions.<br><br><strong>2. Supportive Care:</strong> Secure airway (secretions can obstruct). Assist ventilation if needed. IV access, monitor ECG, vital signs.<br><br><strong>3. Atropine (Muscarinic Antidote):</strong><ul><li>Blocks muscarinic effects of acetylcholine (hypersecretion, bradycardia, bronchospasm, miosis)</li><li>Give IV — titrate to drying of secretions and heart rate normalization</li><li>Large doses may be required (no upper limit in severe cases)</li></ul><strong>4. Oximes (Cholinesterase Reactivators):</strong><ul><li>Pralidoxime (2-PAM) — reactivates phosphorylated AChE IF given BEFORE aging occurs</li><li>Must be given promptly — ineffective after 'aging' of the OP-AChE bond</li><li>Not routinely indicated for carbamate poisoning</li></ul><strong>Note:</strong> Carbamates treated similarly but oximes generally not required due to reversible inhibition.`},
+{q:"Discuss the immunotoxic effects of pesticides.", marks:5, hint:"Four outcomes, specific immune system changes, population studies.", answer:`<strong>Overview:</strong> Pesticides have the potential to alter the immune system, making individuals more susceptible to infection, autoimmunity, or hypersensitivity.<br><br><strong>Four Potential Outcomes:</strong><ol><li><strong>No alteration</strong> (most common outcome)</li><li><strong>Increased immune activation</strong> — potential development of autoimmune disease</li><li><strong>Immunosuppression</strong> — decreased immune system activity, increased infection susceptibility</li><li><strong>Hypersensitivity</strong> — allergic-type reactions</li></ol><strong>Specific Immune Changes:</strong><ul><li>Decrease in neutrophil and macrophage function</li><li>Decrease in thymocyte numbers</li><li>Altered mitogen-induced lymphocyte proliferation</li><li>Decreased antibody-dependent cell cytotoxicity</li><li>Altered cytokine secretion (increase or decrease)</li></ul><strong>Clinical Evidence:</strong><ul><li>Children contaminated with chlordane and heptachlor had cytokine panel abnormalities</li><li>Inuit infants exposed in utero to DDE, HCB, and dieldrin had elevated risk of otitis media</li></ul>`},
+{q:"Explain the metabolic pathways (Phases I, II, III) involved in pesticide biotransformation.", marks:5, hint:"Three phases — oxidation/reduction/hydrolysis → conjugation → plant-specific.", answer:`<strong>Phase I — Transformation of Parent Compound:</strong><ul><li>Initial reactions: <strong>Oxidation, Reduction, Hydrolysis</strong></li><li>Generally produces more water-soluble and less toxic products than parent compound</li><li>Exception: Some organophosphates undergo <strong>oxidative activation</strong> (e.g., Parathion → Paraoxon — more toxic!)</li></ul><strong>Phase II — Conjugation:</strong><ul><li>Pesticide or its metabolites conjugate with: Sugar (glucuronide), Amino acids, Glutathione</li><li>Increases water solubility OR reduces toxicity</li><li>Facilitates excretion</li></ul><strong>Phase III — Plant-Specific:</strong><ul><li>Unique to plants because plants cannot excrete xenobiotics like animals do</li><li>Methods: Further conjugation of Phase II products; movement of metabolites to vacuole for storage; incorporation into cell wall</li><li>Example: Herbicide glucosides may be further processed by addition of malonic acid residue (Malonyl-CoA + Glucose-O-X → Malonyl glucose-O-X)</li></ul>Biotransformation mainly occurs in liver, skin, GI tract, kidneys, and lungs.`},
+{q:"What prevention strategies exist to reduce pesticide exposure at local, national, and international levels?", marks:5, hint:"Three levels of prevention — specific measures at each.", answer:`<strong>Local Level:</strong><ul><li>Use pesticides only when benefits outweigh risks and non-chemical methods have failed</li><li>Avoid cosmetic pesticide use</li><li>Integrated Pest Management (IPM) as first-line defense</li><li>Store pesticides in original containers with child-proof seals, locked away</li><li>Follow manufacturer safety precautions — gloves, masks, protective clothing</li><li>Pregnant women should not apply pesticides; longer re-entry times required</li><li>Use least hazardous chemical available; prefer bait stations over sprays</li></ul><strong>National Level:</strong><ul><li>Education of farmers and pesticide applicators</li><li>Bans and restrictions on highly toxic persistent pesticides</li><li>Regulatory requirements (e.g., US Food Quality Protection Act 1996 — protecting infants and children)</li><li>Licensed pesticide applicators</li><li>Pesticide residue monitoring programs in food</li></ul><strong>International Level:</strong><ul><li><strong>Stockholm Convention</strong> (2004) — controls 12 POPs including 9 pesticides</li><li><strong>Rotterdam Convention</strong> (1998, 73 countries) — Prior Informed Consent (PIC) procedure for hazardous chemicals; labelling requirements; covers 22 pesticides</li><li>FAO International Code of Conduct on Distribution and Use of Pesticides</li><li>WHO and ILO global monitoring and safety standards</li></ul>`},
+{q:"Describe the environmental fate of pesticides — how they move through air, water, and soil.", marks:5, hint:"Emission, drift, deposition, leaching, volatilization, persistence.", answer:`<strong>Environmental Pathways After Application:</strong><ul><li><strong>Emission (1):</strong> Directly to air during spraying</li><li><strong>Drift (2):</strong> Wind-carried to surface water and surrounding areas</li><li><strong>Deposition (3):</strong> From air onto humans, wildlife, plants, or soil</li><li><strong>Drainage/Runoff (6):</strong> From target sites into surface waters</li><li><strong>Volatilization (7):</strong> From surfaces back into air</li><li><strong>Leaching (5):</strong> From plants/animals into groundwater</li><li><strong>Sedimentation (4):</strong> From surface water into sediment and sediment organisms</li></ul><strong>Persistence Factors:</strong><ul><li>Partition coefficients, degradation rates, deposition rates</li><li>Climate: POPs persist 3-8 times longer in cold climates (Arctic) than temperate ones</li></ul><strong>Water Contamination (USGS data):</strong> 90% of streams and 50% of wells tested positive for at least one pesticide.<br><br><strong>Atmospheric Transport:</strong> Pesticides detected in air and rain at sites across the USA — DDTe, methidathion, dieldrin among most commonly detected.`},
+{q:"What are the chronic health effects associated with low-level pesticide exposure?", marks:5, hint:"Neurodevelopment, cancer, endocrine disruption, immunotoxicity, reproductive.", answer:`Growing epidemiological and animal evidence links long-term low-level pesticide exposure to:<br><br><strong>1. Neurodevelopmental Effects:</strong><ul><li>Impaired neurobehavioral development and cognitive function</li><li>Prenatal OP exposure → altered axonogenesis, synaptogenesis</li><li>Memory/concentration problems, attention deficits in children</li></ul><strong>2. Cancer:</strong><ul><li>Brain tumors, acute lymphocytic leukemia, non-Hodgkin lymphoma</li><li>Prenatal permethrin exposure linked to childhood leukemia</li><li>Brain cancer associated with maternal agricultural activity</li></ul><strong>3. Endocrine Disruption:</strong> Infertility, low sperm count, early puberty, hormone-dependent cancers, altered sex ratio<br><br><strong>4. Immunotoxicity:</strong> Increased susceptibility to infections, cytokine abnormalities<br><br><strong>5. Reproductive/Developmental:</strong><ul><li>Fetal death, spontaneous abortion, preterm birth</li><li>Growth retardation (low birth weight, small head circumference)</li><li>Congenital anomalies (eye defects, urogenital defects, CNS defects, cardiac defects)</li></ul>Effects are especially significant during critical developmental windows (prenatal period).`},
+];
+
+const cases = [
+{
+  title:"The Bangladesh Water Crisis",
+  scenario:`A 35-year-old male farmer from rural Bangladesh presents to the district hospital with a 3-year history of skin changes. He reports darkening and spotty discoloration of his skin on his abdomen and inner thighs, hardening and scaling of his palms and soles, and a recent appearance of raised warty lesions on his feet. He also complains of tingling and numbness in his feet and lower legs, progressive weakness, and episodes of abdominal pain with intermittent diarrhea. He has no significant medical or family history. He uses a tube-well for drinking water that was installed in 1995. Community investigation reveals the village has no water treatment facility. Lab results: Urinalysis shows proteinuria and albuminuria.`,
+  qs:[
+    {q:"What is the most likely diagnosis, and what confirms your suspicion from the history?", marks:5, answer:`<strong>Diagnosis: Arsenicosis (Chronic Arsenic Poisoning)</strong><br><br><strong>Confirmatory History Points:</strong><ul><li>Use of a tube-well since 1995 — in Bangladesh, arsenic contamination of tube-wells was confirmed in 1993 (Nawabganj district). Millions have been exposed since the 1970s.</li><li>Classic stage-by-stage progression: Stage 1 (GIT), Stage 2 (catarrhal), Stage 3 (skin eruptions — rain drop pigmentation, hyperkeratosis of palms/soles), Stage 4 (nervous system — glove and stocking peripheral neuropathy)</li><li>Skin changes: melanosis (rain drop pigmentation), hyperkeratosis, and now squamous/basal cell carcinoma risk (warty lesions)</li><li>Proteinuria and albuminuria confirm renal involvement</li></ul>`},
+    {q:"What investigations would you order to confirm the diagnosis and assess severity?", marks:5, answer:`<ul><li><strong>Urine:</strong> 24-hour urinary arsenic (>100 mg/24h is toxic); proteinuria, albuminuria, cast — already present. Monomethylarsine and dimethylarsine in urine (recent exposure marker)</li><li><strong>Blood:</strong> Blood arsenic level (>0.9 µg/dL indicates exposure); CBC (monocytic hypochromic anemia, leukocytosis, mild eosinophilia); Liver function tests (elevated alkaline phosphatase, bilirubin, urobilinogen)</li><li><strong>Hair and Nails:</strong> >300 ppm or >100 mg/100g specimen is diagnostic of chronic exposure</li><li><strong>Water Testing:</strong> Arsenic level in tube-well water (WHO limit 10 µg/L; EPA limit 20 µg/L)</li><li><strong>Skin biopsy:</strong> If malignant transformation suspected</li><li><strong>Nerve conduction studies:</strong> To assess peripheral neuropathy severity</li><li><strong>Chest X-ray and chest CT:</strong> Screen for lung cancer</li><li><strong>Ultrasound abdomen:</strong> Assess liver (hepatomegaly, cirrhosis), spleen, ascites</li></ul>`},
+    {q:"Outline the treatment protocol for this patient.", marks:5, answer:`<strong>1. Remove from exposure:</strong> Immediately switch to safe water source (deep tube wells, rainwater harvesting, arsenic removal systems).<br><br><strong>2. Supportive care:</strong> Nutritional support; treat complications (anemia, renal insufficiency).<br><br><strong>3. Chelation Therapy (if active toxicity):</strong><ul><li>BAL 3-5 mg/kg every 4 hours (initial)</li><li>DMSA 10 mg/kg PO for 5 days</li><li>Oral Penicillamine 100 mg/kg in 4 divided doses for 4-8 days</li></ul><strong>4. Specific complications:</strong><ul><li>Saline IV for dehydration</li><li>Monitor renal function; hemodialysis if renal failure</li><li>Dermatological care for skin lesions</li><li>Pain management for neuropathy</li></ul><strong>5. Screening and follow-up:</strong> Regular surveillance for cancers (skin, bladder, lung, liver)`},
+    {q:"How would you prevent similar cases in this community?", marks:5, answer:`<strong>Immediate Measures:</strong><ul><li>Pond-sand filters and dug wells</li><li>Deep hand tube wells (arsenic-free deeper aquifers)</li><li>Rainwater harvesting</li><li>Emergency water treatment (coagulation, adsorption filters)</li></ul><strong>Long-term Measures:</strong><ul><li>Regular water testing — maintain arsenic below 10 µg/L (WHO standard)</li><li>Install arsenic removal systems</li><li>Public awareness and community education about arsenic in groundwater</li><li>Early screening programs for high-risk communities</li><li>Occupational exposure monitoring</li><li>Promote alternative livelihoods not dependent on tube-well water</li></ul>`},
+    {q:"What cancers are this patient at risk of developing and over what time period?", marks:5, answer:`After long-term arsenic exposure (typically <strong>20-40 years</strong>), this patient is at elevated risk of:<br><br><strong>High Risk:</strong><ul><li><strong>Skin cancer:</strong> Basal cell carcinoma and squamous cell carcinoma (hyperkeratotic lesions can transform — the warty lesions noted may already be early malignant change)</li><li><strong>Bladder cancer:</strong> Particularly high risk in Asian populations with well-water arsenic</li></ul><strong>Moderate Risk:</strong><ul><li><strong>Lung cancer</strong></li><li><strong>Kidney cancer</strong></li><li><strong>Liver cancer</strong></li></ul>Additionally, 'Blackfoot Disease' (severe peripheral vascular disease → gangrene) is a recognized complication in his demographic. He requires annual skin examination, periodic urine cytology, chest X-ray, and imaging surveillance.`}
+  ]
+},
+{
+  title:"The Chlorpyrifos Apartment Case",
+  scenario:`A mother brings her two children to the pediatric clinic. Child A is 6 years old and was born at low birth weight (2.2 kg) for gestational age. He is currently behind in reading, has behavioral problems, difficulty concentrating, and his teachers report he may have ADHD. Child B is 8 months old and appears healthy. The mother reports that when she was pregnant with her 6-year-old, their apartment was professionally sprayed three times with chlorpyrifos for termites. During the pregnancy she experienced dizziness and fatigue. She recently read that chlorpyrifos is banned in US residential settings due to surface persistence. She is worried about both children. She mentions she is still living in the same apartment.`,
+  qs:[
+    {q:"What are the problem lists for each child?", marks:5, answer:`<strong>Child A (6 years old) Problem List:</strong><ul><li>Low birth weight for gestational age (small-for-gestational age — SGA)</li><li>Developmental delay — behind in meeting milestones</li><li>Learning disability — behind in reading</li><li>Behavioral problems — possible ADHD presentation</li><li>Concentration difficulties</li><li>Probable history of prenatal organophosphate (chlorpyrifos) exposure during critical brain development</li></ul><strong>Child B (8 months old) Problem List:</strong><ul><li>Current ongoing exposure risk — chlorpyrifos residues persist on surfaces for weeks after application</li><li>Crawling-age infant (high dermal and ingestion exposure risk from contaminated floors/surfaces)</li><li>Developmental vulnerability — critical period of neurological development</li><li>Potential breast milk contamination if mother was exposed</li></ul>`},
+    {q:"What differential diagnoses would you consider for Child A's neurodevelopmental problems?", marks:5, answer:`<strong>Primary Consideration:</strong><ul><li>Organophosphate (Chlorpyrifos) Prenatal Exposure — causing neurodevelopmental toxicity</li></ul><strong>Differential Diagnoses:</strong><ul><li>ADHD (primary — genetic)</li><li>Specific Learning Disorder (dyslexia)</li><li>Fetal Alcohol Spectrum Disorder — take alcohol history during pregnancy</li><li>Lead poisoning — also causes behavioral problems, IQ reduction, learning disabilities</li><li>Prenatal infections (TORCH — toxoplasma, rubella, CMV, herpes)</li><li>Maternal hypothyroidism during pregnancy — affects fetal brain development</li><li>Preterm complication sequelae — though born at term apparently</li><li>Nutritional deficiencies (iron, iodine deficiency in pregnancy)</li><li>Genetic/chromosomal abnormalities — unlikely if previously undetected but consider</li></ul>`},
+    {q:"What further history would you want and what investigations would you request?", marks:5, answer:`<strong>Further History:</strong><ul><li>Exact timing of chlorpyrifos applications relative to gestational age</li><li>Duration of exposure and re-entry times observed (were windows opened, how long before return?)</li><li>Mother's occupational exposures during pregnancy</li><li>Any other pesticide use (home, garden, pets)</li><li>Alcohol, drug, medication use during pregnancy</li><li>Any other children's developmental concerns</li><li>Family history of learning disabilities or ADHD</li><li>Current diet and nutrition for both children</li><li>Lead paint presence in the old apartment</li></ul><strong>Investigations:</strong><ul><li>Blood lead level for Child A (rule out co-exposure)</li><li>Urinary DAP (dialkylphosphate) metabolites for current OP exposure (Child B)</li><li>Urine chlorpyrifos metabolite (3,5,6-trichloropyridinol)</li><li>Neuropsychological testing for Child A (IQ, attention, learning)</li><li>Wipe sampling of apartment surfaces for chlorpyrifos residues</li><li>Thyroid function (mother's history)</li></ul>`},
+    {q:"What is the likelihood that prenatal chlorpyrifos exposure contributed to Child A's problems?", marks:5, answer:`The likelihood is <strong>significant and plausible</strong>, supported by strong scientific evidence:<br><br><strong>Supporting Evidence:</strong><ul><li>Chlorpyrifos inhibits acetylcholinesterase — enzymes playing a direct role in axonal outgrowth and neuronal differentiation during fetal brain development</li><li>The pesticide alters axonogenesis, synaptogenesis, and programming of synaptic function via serotonergic system alteration</li><li>These neurodevelopmental effects occur at exposure levels <strong>too low to cause overt cholinesterase inhibition symptoms</strong> in the mother</li><li>Mother's dizziness and fatigue during pregnancy suggests she had detectable exposure levels</li><li>Low birth weight is a documented consequence of in utero OP exposure</li><li>The timing (multiple exposures during pregnancy) aligns with critical brain development windows</li><li>Case series: A house with high chlorpyrifos levels weeks post-application was associated with a child diagnosed as cerebral palsy (later confirmed as chlorpyrifos toxicity)</li></ul><strong>Important caveats:</strong> Causality cannot be definitively proven in individual cases; other differential diagnoses must be excluded.`},
+    {q:"What immediate management steps would you take for both children?", marks:5, answer:`<strong>Immediate Steps:</strong><ul><li><strong>Relocation:</strong> Both children (and mother) should leave the apartment immediately until chlorpyrifos residue levels are measured and confirmed safe</li><li><strong>Surface wipe testing:</strong> Commission professional environmental testing of the apartment surfaces</li><li><strong>Child B (8 months):</strong> Measure urinary OP metabolites; monitor developmental milestones closely; ensure no crawling access to contaminated areas; consider stopping breastfeeding if mother's exposure levels are high</li><li><strong>Child A (6 years):</strong> Full neuropsychological evaluation; lead screening; refer to developmental pediatrics</li></ul><strong>Medium-term:</strong><ul><li>If residues confirmed — professional decontamination or permanent relocation</li><li>Report to public health authorities (sentinel case documentation)</li><li>Educational support plan for Child A (IEP — Individualized Education Program)</li><li>Family counseling and education about pesticide risks</li><li>Refer to pediatric neurology if warranted</li></ul>`}
+  ]
+},
+{
+  title:"The Gold Mine Mercury Disaster",
+  scenario:`A 28-year-old small-scale gold miner presents with a 2-year history of progressive neurological symptoms. He processes gold using elemental mercury amalgamation at home, working in a poorly ventilated room. He reports increasingly unsteady gait, his handwriting has become illegible (he notes his writing 'shakes'), he has become very shy and withdrawn, has difficulty remembering things, and his wife says he has been irritable and depressed. On examination: coarse tremors of both hands at rest and worsened by voluntary movement, normal cranial nerves, mild gait ataxia, and on dental examination a brownish-blue line is noted at his gum margin with loose teeth.`,
+  qs:[
+    {q:"What is the diagnosis? What specific signs confirm this?", marks:5, answer:`<strong>Diagnosis: Chronic Elemental Mercury Poisoning (Hydrargyrism/Mercurialism)</strong><br><br><strong>Confirmatory Signs:</strong><ul><li><strong>Mercurial tremors (Danbury/Hatter's tremors):</strong> Coarse tremors starting in hands, worsened by voluntary movement, present in handwriting — this patient's illegible writing is classic</li><li><strong>Erethism:</strong> Shyness, withdrawal, irritability, depression, memory loss — the neuropsychological syndrome</li><li><strong>Brownish-blue gum line (Burton's line):</strong> Chronic mercury stomatitis with gum line discoloration and loose teeth</li><li><strong>Gait ataxia:</strong> CNS involvement</li><li><strong>Occupational exposure:</strong> Mercury amalgamation in a poorly ventilated room — inhalation of mercury vapor (80% lung absorption)</li><li><strong>Progressive course over 2 years:</strong> Consistent with chronic accumulation</li></ul>`},
+    {q:"Explain the mechanism by which elemental mercury causes these neurological symptoms.", marks:5, answer:`<strong>Pathway of Elemental Mercury Neurological Toxicity:</strong><ol><li>Elemental mercury vapor is inhaled and absorbed through the lungs (80%)</li><li>In blood, elemental Hg° is oxidized to Hg²⁺ (mercuric ion) by catalase</li><li>Hg²⁺ can cross the <strong>blood-brain barrier</strong> (unlike inorganic salts) — this is the key danger of elemental mercury vapor</li><li>In the brain, Hg²⁺ binds with high affinity to <strong>sulfhydryl (-SH) groups</strong> of neuronal proteins, causing non-specific cell injury</li><li>Disrupts microtubule formation, inhibits enzymes, and causes oxidative stress in neurons</li><li>Interrupts protein and DNA synthesis in neuronal and glial cells</li><li>Selective vulnerability of cerebellar and cortical neurons explains tremors and cognitive changes</li></ol><strong>Result:</strong> Progressive neuronal damage → tremors, ataxia, and the neuropsychiatric syndrome (Erethism)`},
+    {q:"What investigations would confirm the diagnosis and assess severity?", marks:5, answer:`<ul><li><strong>Blood mercury level:</strong> >3.6 µg/dL is diagnostic; normal is much lower. Elemental and vapor exposure: 10 mg/m³ mercury vapor is toxic</li><li><strong>24-hour urinary mercury:</strong> >15 µg/dL indicates significant exposure; elevated in chronic elemental mercury exposure</li><li><strong>Atomic absorption spectrophotometry:</strong> The gold standard analytical method for measuring mercury in blood and urine</li><li><strong>Slit-lamp eye examination:</strong> Look for Mercura lentis (bilateral brownish anterior lens capsule reflex — does not affect vision but confirms chronic exposure)</li><li><strong>Neuropsychological testing:</strong> Assess cognitive function, memory, attention</li><li><strong>Brain MRI:</strong> May show cerebellar atrophy or white matter changes in severe cases</li><li><strong>Nerve conduction studies:</strong> Assess peripheral nerve involvement</li><li><strong>Workplace air monitoring:</strong> Measure mercury vapor levels in the work environment</li></ul>`},
+    {q:"Outline the treatment of this patient including specific antidotes.", marks:5, answer:`<strong>1. Remove from Exposure (MOST CRITICAL):</strong> Immediately cease mercury amalgam processing; vacate and ventilate the working space.<br><br><strong>2. Supportive Care:</strong><ul><li>Albumin sources (eggs, skimmed milk, vegetable glutens) to precipitate mercury</li><li>Nutritional support</li><li>Mouth wash with borax for stomatitis</li></ul><strong>3. Chemical Antidote (Acute/Residual body burden):</strong><ul><li><strong>BAL (Dimercaprol):</strong> 3-5 mg/kg 4-hourly for 2 days → 2.5 mg/kg 6-hourly for 1 day → 2.5 mg/kg BD based on severity</li><li><strong>Gastric lavage:</strong> Sodium formaldehyde sulphoxylate 5-10% (if recent ingestion component); reduces mercuric chloride to metallic mercury</li></ul><strong>4. Enhanced Elimination:</strong><ul><li>5-10% glucose in saline for diuresis</li><li>Saline purgatives</li><li>Monitor urinary mercury levels</li></ul><strong>5. Neurological support:</strong> Physical therapy for tremors and ataxia; psychiatric support for erethism; regular follow-up`},
+    {q:"How does this case illustrate the public health problem of artisanal gold mining and mercury?", marks:5, answer:`<strong>This case illustrates multiple layers of the mercury-artisanal mining problem:</strong><br><br><strong>Scale of the Problem:</strong><ul><li>Artisanal and small-scale gold mining (ASGM) is the world's largest source of human-caused mercury pollution</li><li>Mercury amalgamation releases mercury vapor at home — exposing entire families, not just the worker</li><li>Working in poorly ventilated rooms maximizes inhalation exposure</li></ul><strong>Vulnerable Populations:</strong><ul><li>The miner himself (occupational, chronic)</li><li>His wife and children (household environmental exposure — take-home mercury on clothes, surfaces, in hair)</li><li>Pregnant women in mining communities (transplacental and breast milk transmission)</li></ul><strong>The 2-year progression:</strong> Demonstrates that neurological damage from mercury is cumulative and progressive; early symptoms (personality changes, shyness) are often not recognized as toxicity<br><br><strong>Public Health Response Needed:</strong><ul><li>Occupational health education for miners</li><li>Mercury-free gold processing alternatives (borax method)</li><li>Proper ventilation regulations</li><li>Mercury monitoring programs</li><li>Medico-legal documentation — mercury found in this non-constituent of the body = forensic evidence of exposure</li></ul>`}
+  ]
+},
+{
+  title:"The Farm Community Child Cluster",
+  scenario:`A pediatrician in an agricultural community notes a cluster of concerning findings in the past 6 months: 5 children aged 3-8 years have presented with unexplained symptoms. Three children have behavioral changes and two have had unexplained seizure-like episodes. All live within 2 km of a farm that uses multiple pesticides seasonally. Summer and autumn spraying seasons have recently concluded. Upon history-taking, parents report children play outdoors near the farm and two families drink from private wells. One child had a dog treated with an organophosphate flea dip 2 weeks ago and frequently plays with the dog. Community soil samples show elevated organochlorine levels.`,
+  qs:[
+    {q:"What pesticide classes are you most concerned about and why based on the clinical and environmental data?", marks:5, answer:`<strong>Primary Concern: Organochlorine Pesticides</strong><ul><li>Soil samples confirm elevated organochlorine levels</li><li>Organochlorines (lindane, endosulfan) inhibit the GABA system → seizure-like episodes in 2 children</li><li>Organochlorines are persistent — they remain in soil for extended periods and bioaccumulate</li><li>Children playing outdoors near the farm = dermal contact, hand-to-mouth ingestion of contaminated soil</li></ul><strong>Secondary Concern: Organophosphate Pesticides</strong><ul><li>The child with the OP-dipped dog — veterinary organophosphate flea products can be as concentrated as agricultural ones</li><li>Children frequently involved in pet care are a recognized exposure pathway</li><li>Behavioral changes and neurodevelopmental effects consistent with low-level OP exposure</li></ul><strong>Well Water Concern:</strong><ul><li>Private wells not monitored — 50% of wells in studies test positive for at least one pesticide</li><li>Both families using well water are at higher risk of pesticide ingestion</li></ul>`},
+    {q:"How would you investigate this cluster? What biomarkers would you use?", marks:5, answer:`<strong>Clinical Investigations for Each Child:</strong><ul><li><strong>Blood cholinesterase (RBC and plasma):</strong> Low levels indicate OP/carbamate exposure</li><li><strong>Urinary DAP (dialkylphosphate) metabolites:</strong> Non-specific OP biomarkers; 3,5,6-TCP for chlorpyrifos specifically</li><li><strong>Blood organochlorine levels:</strong> Detectable in blood — serum aldrin, dieldrin, lindane, endosulfan panels</li><li><strong>Urinary pyrethroids metabolite (3-PBA — 3-phenoxybenzoic acid):</strong> If pyrethroid exposure suspected</li><li><strong>Blood lead level:</strong> Rule out co-exposure in agricultural settings</li><li><strong>Neuropsychological testing:</strong> Cognitive function, attention, memory, behavioral assessment</li><li><strong>EEG:</strong> For children with seizure-like episodes</li></ul><strong>Environmental Investigations:</strong><ul><li>Well water testing for pesticide panel</li><li>Soil sampling (already done — expand sampling points)</li><li>Indoor dust sampling in all 5 homes</li><li>Wipe samples from children's play areas</li><li>Air monitoring near farm during spraying season</li><li>Review of farm pesticide application records</li></ul>`},
+    {q:"Explain the specific mechanism by which organochlorine pesticides cause seizures.", marks:5, answer:`<strong>Mechanism: GABA System Blockade</strong><br><br>Organochlorine pesticides (e.g., Lindane, Endosulfan, Dieldrin) exert their toxicity by:<br><br><strong>1. GABA-A Receptor Antagonism:</strong><ul><li>GABA (gamma-aminobutyric acid) is the brain's major inhibitory neurotransmitter</li><li>Organochlorines bind to and block the GABA-A receptor's chloride channel</li><li>This prevents chloride influx → neurons remain depolarized → excessive neuronal excitation</li></ul><strong>2. Calcium Homeostasis Disruption:</strong><ul><li>Organochlorines alter calcium ion homeostasis in neurons</li><li>Disrupted calcium signaling further increases neuronal excitability</li></ul><strong>3. Result:</strong><ul><li>Tremors, dizziness, and seizures (excitatory signs)</li><li>In severe cases: status epilepticus</li></ul><strong>Why children are more vulnerable:</strong> Children's immature GABA receptor systems and blood-brain barrier make them proportionally more susceptible. Their hand-to-mouth behavior and play on contaminated soil increases exposure per kg body weight.`},
+    {q:"What are the chronic developmental risks for children in this community from long-term pesticide exposure?", marks:5, answer:`<strong>Neurodevelopmental Risks:</strong><ul><li>Impaired IQ and cognitive development from organophosphate prenatal/postnatal exposure</li><li>Attention and memory deficits (subtle changes documented at low OP levels)</li><li>Language delay and learning disabilities</li><li>Behavioral problems resembling ADHD</li></ul><strong>Cancer Risks:</strong><ul><li>Brain tumors (associated with parental agricultural pesticide exposure)</li><li>Acute lymphocytic leukemia (particularly with 2,4-D herbicide and certain metabolic enzyme polymorphisms)</li><li>Non-Hodgkin lymphoma</li></ul><strong>Endocrine Disruption:</strong><ul><li>Organochlorines are known endocrine disruptors (estrogenic/anti-androgenic effects)</li><li>Early puberty, altered sex ratio, reproductive effects in adulthood</li></ul><strong>Immunotoxicity:</strong><ul><li>Increased susceptibility to infections (reduced neutrophil/macrophage function)</li><li>Cytokine abnormalities</li></ul><strong>Reproductive effects in future adulthood:</strong><ul><li>Fertility problems, hormonal cancers</li></ul>The critical vulnerability windows — prenatal, infancy, and early childhood — make this community's children particularly at risk.`},
+    {q:"What public health measures would you recommend for this agricultural community?", marks:5, answer:`<strong>Immediate Measures:</strong><ul><li>Issue community health alert — avoid well water from positive-testing wells; provide bottled/treated water</li><li>Advise parents to keep children indoors during farm spraying and during re-entry restricted periods</li><li>Prohibit children from playing near farm fields, especially post-spray</li><li>Instruct on proper hand washing before meals and after outdoor play</li><li>Advise changing clothing after outdoor play in potentially contaminated areas</li></ul><strong>Environmental Measures:</strong><ul><li>Mandate farm to disclose pesticide use schedule to community</li><li>Require buffer zones between farmland and residential areas</li><li>Regular testing of private wells; install filtration systems</li><li>Soil remediation program for severely contaminated play areas</li></ul><strong>Health System Measures:</strong><ul><li>Establish a community pesticide poisoning surveillance system</li><li>Biomonitoring program for all children under 12 in the community</li><li>Train local healthcare providers to recognize and report pesticide toxicity</li><li>Create a sentinel case reporting system</li></ul><strong>Agricultural Policy:</strong><ul><li>Promote Integrated Pest Management (IPM) to reduce pesticide dependence</li><li>Encourage organic farming alternatives</li><li>Strict enforcement of pesticide use regulations and applicator licensing</li><li>Mandatory notification of neighboring communities before spraying</li></ul>`}
+  ]
+},
+{
+  title:"The Thallium Homicidal Poisoning",
+  scenario:`A 45-year-old office worker presents to the emergency department having been referred from a neurologist. Over the past 3 weeks he has developed progressive weakness and painful tingling in his feet and lower legs, constipation, severe insomnia, and joint pains especially in the ankles and knees. His wife noticed that 15 days ago he began losing hair dramatically — initially from the scalp, then eyebrows. He reports his nails are showing white bands. He has no prior medical history and does not use alcohol or drugs. He is on no medications. His wife is very attentive during the consultation. Nerve conduction studies show a polyneuropathy. The attending neurologist notes the combination of ascending polyneuropathy + alopecia is very unusual.`,
+  qs:[
+    {q:"What toxicological diagnosis should be strongly suspected and what features support it?", marks:5, answer:`<strong>Strongly Suspected Diagnosis: THALLIUM POISONING</strong><br><br>This is the classic presentation of thallium toxicity, sometimes called 'The Poisoner's Poison' or 'Inheritance Powder'.<br><br><strong>Supporting Features:</strong><ul><li><strong>Alopecia beginning 15 days after exposure</strong> — the most characteristic and pathognomonic sign of thallium poisoning; appears after ~15 days</li><li><strong>Mees lines (white transverse nail bands)</strong> — classic sign of heavy metal poisoning seen with thallium</li><li><strong>Ascending polyneuropathy</strong> — initial symptoms of hyperaesthesia particularly in soles of feet, progressive weakness</li><li><strong>GI symptoms</strong> — constipation (due to GI motility inhibition by thallium)</li><li><strong>Joint pains</strong> — particularly ankles, knees, and thoracic spine; characteristic of chronic thallium toxicity</li><li><strong>Insomnia and sleep disorders</strong> — common in chronic thallium poisoning</li><li><strong>Attentive wife</strong> — raises suspicion of intentional (homicidal) poisoning; thallium salts are odorless, tasteless, and freely water-soluble — ideal for surreptitious administration</li></ul>`},
+    {q:"What is the mechanism of thallium toxicity and how does it cause alopecia?", marks:5, answer:`<strong>Mechanism of Thallium Toxicity:</strong><br><br><strong>Primary Mechanism — Potassium Mimicry:</strong><ul><li>Thallium ions (Tl+) and potassium ions (K+) are similar in ionic size</li><li>Thallium substitutes for potassium in Na+/K+-ATPase with <strong>10 times greater affinity</strong></li><li>This causes disruption of K-Na-ATPase function</li><li>Thallium depolarizes membranes and antagonizes calcium on the heart</li><li>Disrupts all potassium-dependent cellular processes</li></ul><strong>Secondary Mechanism — SH Group Inactivation:</strong><ul><li>Thallium inactivates sulfhydryl (SH) groups responsible for mitochondrial membrane permeability regulation</li><li>Results in water influx and mitochondrial swelling</li><li>May also involve riboflavin inactivation (forming insoluble compound), reducing energy production</li></ul><strong>Mechanism of Alopecia:</strong><ul><li>Thallium inhibits protein synthesis, specifically the incorporation of <strong>cysteine</strong> into proteins</li><li>Cysteine is essential for <strong>keratinization</strong> of hair</li><li>Without keratinization, hair falls out</li><li>This explains the characteristic delay — hair loss appears ~15 days after exposure (time for hair to weaken and fall)</li></ul>`},
+    {q:"What investigations would you order and what would you find?", marks:5, answer:`<strong>Diagnostic Investigations:</strong><ul><li><strong>Urinary thallium level:</strong> Thallium detectable in urine within 1 hour of ingestion; persists for weeks to months. Normal <0.5 µg/L; toxic levels significantly elevated</li><li><strong>Blood thallium level:</strong> Measured by atomic absorption spectrophotometry; remains elevated during distribution and elimination phases</li><li><strong>Hair microscopy:</strong> Dark pigment at the roots — characteristic of thallium poisoning</li><li><strong>GIT/Liver opacities:</strong> Thallium is radio-opaque; abdominal X-ray may show opacities in GI tract or liver</li><li><strong>ECG:</strong> Thallium antagonizes calcium on the heart; may show ECG changes</li><li><strong>Nerve conduction studies:</strong> Already done — shows polyneuropathy (decreased nerve conduction velocity)</li><li><strong>Decreased colour sensitivity:</strong> Optic neuropathy assessment</li><li><strong>CBC and metabolic panel:</strong> General assessment</li><li><strong>Toxicology screen on hair segments:</strong> Segmental hair analysis can identify timing of exposure</li></ul><strong>Expected Findings:</strong> Elevated urinary/blood thallium; dark pigment at hair roots; GIT opacities; ECG changes; polyneuropathy on NCS.`},
+    {q:"Outline the specific management of this patient including the antidote.", marks:5, answer:`<strong>1. Immediate Admission to ICU/High Dependency:</strong><ul><li>Vital function monitoring — polyneuropathy may cause respiratory insufficiency</li><li>Artificial ventilation may be required if severe</li></ul><strong>2. Decontamination:</strong><ul><li>If recent ingestion suspected: induce emesis then gastric aspiration and lavage</li><li>Activated charcoal if Prussian Blue not immediately available</li></ul><strong>3. Antidote — Prussian Blue (Potassium ferric hexacyanoferrate):</strong><ul><li>10g dissolved in 100 mL of 1.5% mannitol (as laxative), twice daily, orally or intraduodenally (preferred if GI motility impaired)</li><li>Prussian Blue <strong>exchanges thallium for potassium</strong> in its molecular lattice in the gut, trapping thallium and preventing absorption/reabsorption</li><li>Neither complex is absorbable → excreted in feces</li><li>Continue until urinary thallium excretion <0.6 mg/24 hours</li></ul><strong>4. Enhanced Elimination:</strong><ul><li>Forced diuresis — increases urinary thallium excretion; mean half-life with diuresis + charcoal hemoperfusion = 1.4 days</li><li>Charcoal hemoperfusion: If used within 48 hours, effective (average clearance 72 ml/min at 2 mg/L blood concentration)</li><li>Potassium chloride: Increases rate of thallium disappearance</li></ul><strong>5. IMPORTANT — Do NOT use:</strong> BAL, EDTA, and penicillamine do NOT accelerate thallium excretion and are contraindicated.<br><br><strong>6. Medico-Legal:</strong> Report to law enforcement — thallium poisoning in this context is highly suspicious for homicide.`},
+    {q:"What are the medico-legal implications of this case and how should you proceed?", marks:5, answer:`<strong>This case has strong features of intentional (homicidal) thallium poisoning:</strong><br><br><strong>Clinical-Forensic Red Flags:</strong><ul><li>Thallium is nicknamed 'The Poisoner's Poison' and 'Inheritance Powder' — historically used for homicide because it is odorless, tasteless, freely water-soluble, and easily concealed in food or drink</li><li>The patient has no medications, no alcohol/drug use, no occupational exposure history</li><li>The attentive wife at consultation should raise clinical suspicion — perpetrators often accompany victims to monitor progress</li><li>Thallium is not a naturally occurring element in human tissues — its presence always indicates external introduction</li><li>The progressive, unusual neurological picture + alopecia + GI symptoms = classic deliberate slow poisoning</li></ul><strong>Medico-Legal Actions:</strong><ul><li>Mandatory reporting to police — suspected homicidal poisoning</li><li>Document all findings meticulously</li><li>Collect and preserve biological samples (blood, urine, hair) with chain of custody documentation</li><li>Hair segment toxicology analysis can precisely time exposures</li><li>Interview patient privately (without wife present) about relationship, any suspicious food/drink incidents</li><li>Secure the patient's home food and drink samples for forensic analysis</li><li>Forensic toxicology laboratory analysis with certified methodology</li><li>Notify hospital administration and risk management</li></ul>`}
+  ]
+}
+];
+
+// ══════════════════════════════════
+// RENDER FUNCTIONS
+// ══════════════════════════════════
+let mcqAnswered = {};
+let mcqCorrect = 0;
+
+function renderMCQ() {
+  const container = document.getElementById('mcq-container');
+  container.innerHTML = '';
+  mcqs.forEach((q, qi) => {
+    const card = document.createElement('div');
+    card.className = 'mcq-card';
+    card.id = `mcq-${qi}`;
+    const letters = ['A','B','C','D','E'];
+    let optsHTML = q.opts.map((o, oi) =>
+      `<div class="opt" id="opt-${qi}-${oi}" onclick="selectOpt(${qi},${oi})">
+        <div class="opt-letter">${letters[oi]}</div>
+        <span>${o}</span>
+      </div>`
+    ).join('');
+    card.innerHTML = `
+      <div class="q-num">Question ${qi+1} of ${mcqs.length}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="options">${optsHTML}</div>
+      <div class="feedback" id="fb-${qi}"></div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function selectOpt(qi, oi) {
+  if (mcqAnswered[qi] !== undefined) return;
+  mcqAnswered[qi] = oi;
+  const q = mcqs[qi];
+  const opts = document.querySelectorAll(`[id^="opt-${qi}-"]`);
+  opts.forEach((opt, i) => {
+    opt.style.pointerEvents = 'none';
+    if (i === q.ans) opt.classList.add('correct');
+    else if (i === oi && oi !== q.ans) opt.classList.add('wrong');
+  });
+  const fb = document.getElementById(`fb-${qi}`);
+  const isCorrect = oi === q.ans;
+  if (isCorrect) mcqCorrect++;
+  fb.className = `feedback show ${isCorrect ? 'correct-fb' : 'wrong-fb'}`;
+  fb.innerHTML = (isCorrect ? '✅ Correct! ' : '❌ Incorrect. ') + q.exp;
+  updateStats();
+  document.getElementById(`opt-${qi}-${oi}`).classList.add('selected');
+}
+
+function submitMCQ() {
+  const total = mcqs.length;
+  const answered = Object.keys(mcqAnswered).length;
+  const score = mcqCorrect;
+  const pct = Math.round((score/total)*100);
+  const banner = document.getElementById('mcq-score-banner');
+  banner.innerHTML = `🎯 Final Score: ${score} / ${total} (${pct}%) — ${answered < total ? `⚠️ ${total-answered} questions unanswered` : 'All questions attempted!'}`;
+  banner.className = `score-banner show ${pct >= 70 ? 'good' : pct >= 50 ? 'avg' : 'low'}`;
+  banner.scrollIntoView({behavior:'smooth'});
+  document.getElementById('stat-score').textContent = `${score}/${total} (${pct}%)`;
+}
+
+function renderSAQ() {
+  const container = document.getElementById('saq-container');
+  container.innerHTML = '';
+  saqs.forEach((q, qi) => {
+    const card = document.createElement('div');
+    card.className = 'saq-card';
+    card.innerHTML = `
+      <div class="saq-mark">✍️ ${q.marks} Marks</div>
+      <div class="saq-text">Q${qi+1}. ${q.q}</div>
+      <div class="saq-hints">
+        <div class="hint-label" onclick="toggleHint(${qi})">💡 Show Hint ▸</div>
+        <div class="hint-content" id="hint-${qi}">${q.hint}</div>
+      </div>
+      <textarea class="answer-area" placeholder="Write your answer here..." onblur="trackSAQ(${qi})"></textarea>
+      <button class="reveal-btn" onclick="revealSAQ(${qi})">Reveal Model Answer</button>
+      <div class="model-answer" id="saq-ans-${qi}"><strong>📋 Model Answer:</strong><br><br>${q.answer}</div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+let saqDone = new Set();
+function toggleHint(qi) {
+  const h = document.getElementById(`hint-${qi}`);
+  h.classList.toggle('open');
+}
+function revealSAQ(qi) {
+  document.getElementById(`saq-ans-${qi}`).classList.add('show');
+  saqDone.add(qi);
+  document.getElementById('stat-saq').textContent = saqDone.size;
+  updateProgress();
+}
+function trackSAQ(qi) { saqDone.add(qi); updateProgress(); }
+
+function renderCases() {
+  const container = document.getElementById('case-container');
+  container.innerHTML = '';
+  let caseDone = 0;
+  cases.forEach((c, ci) => {
+    const card = document.createElement('div');
+    card.className = 'case-card';
+    const totalMarks = c.qs.reduce((a,q) => a+q.marks, 0);
+    let qsHTML = c.qs.map((q, qi) => `
+      <div class="case-q">
+        <div class="case-q-num">Sub-question ${qi+1}</div>
+        <div class="case-q-text">${q.q}</div>
+        <div class="case-marks">[${q.marks} marks]</div>
+        <textarea class="case-answer-area" placeholder="Write your answer here..."></textarea>
+        <button class="case-reveal-btn" onclick="revealCase(${ci},${qi})">Reveal Model Answer</button>
+        <div class="case-model" id="case-ans-${ci}-${qi}"><strong>📋 Model Answer:</strong><br><br>${q.answer}</div>
+      </div>
+    `).join('<hr style="border-color:var(--border);margin:20px 0">');
+    card.innerHTML = `
+      <div class="case-header">
+        <div class="case-number">📋 Case Study ${ci+1} of ${cases.length} &nbsp;|&nbsp; <span class="total-marks">🏆 ${totalMarks} Marks Total</span></div>
+        <div class="case-title">${c.title}</div>
+        <div class="case-scenario"><strong>Clinical Scenario:</strong><br>${c.scenario}</div>
+      </div>
+      <div class="case-body">${qsHTML}</div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+let casesDone = new Set();
+function revealCase(ci, qi) {
+  document.getElementById(`case-ans-${ci}-${qi}`).classList.add('show');
+  casesDone.add(ci);
+  document.getElementById('stat-case').textContent = casesDone.size;
+  updateProgress();
+}
+
+// ══════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════
+function switchSection(sec) {
+  ['mcq','saq','case'].forEach(s => {
+    document.getElementById(`sec-${s}`).classList.remove('active');
+    document.getElementById(`tab-${s}`).classList.remove('active');
+    document.getElementById(`nav-${s}`).classList.remove('active');
+  });
+  document.getElementById(`sec-${sec}`).classList.add('active');
+  document.getElementById(`tab-${sec}`).classList.add('active');
+  document.getElementById(`nav-${sec}`).classList.add('active');
+  window.scrollTo({top: document.querySelector('.section-tabs').offsetTop - 10, behavior: 'smooth'});
+}
+
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  const main = document.getElementById('main');
+  const footer = document.getElementById('footer');
+  sb.classList.toggle('hidden');
+  main.classList.toggle('expanded');
+  footer.classList.toggle('expanded');
+}
+
+function toggleTheme() {
+  document.body.classList.toggle('light');
+  document.getElementById('theme-btn').textContent = document.body.classList.contains('light') ? '🌙' : '☀️';
+}
+
+function updateStats() {
+  const answered = Object.keys(mcqAnswered).length;
+  document.getElementById('cnt-mcq').textContent = `${answered} / ${mcqs.length}`;
+  if (answered === mcqs.length) document.getElementById('nav-mcq').classList.add('done');
+  updateProgress();
+}
+
+function updateProgress() {
+  const mcqPct = Object.keys(mcqAnswered).length / mcqs.length;
+  const saqPct = saqDone.size / saqs.length;
+  const casePct = casesDone.size / cases.length;
+  const overall = Math.round(((mcqPct + saqPct + casePct) / 3) * 100);
+  document.getElementById('prog-fill').style.width = overall + '%';
+  document.getElementById('prog-pct').textContent = overall + '%';
+}
+
+// ══════════════════════════════════
+// INIT
+// ══════════════════════════════════
+renderMCQ();
+renderSAQ();
+renderCases();
+</script>
+</body>
+</html>

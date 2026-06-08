@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Toxicology Study Notes | MLS</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --card: #191d28;
+    --border: rgba(255,255,255,0.07);
+    --accent-teal: #00d4b4;
+    --accent-amber: #f5a623;
+    --accent-rose: #ff6b8a;
+    --accent-blue: #4da6ff;
+    --accent-purple: #b47dff;
+    --accent-green: #5dd98c;
+    --text-primary: #e8ecf4;
+    --text-secondary: #8a93a8;
+    --text-muted: #545d72;
+    --tag-bg: rgba(0,212,180,0.1);
+    --sidebar-w: 280px;
+  }
+  body.light {
+    --bg: #f4f6fb;
+    --surface: #ffffff;
+    --card: #ffffff;
+    --border: rgba(0,0,0,0.09);
+    --text-primary: #111827;
+    --text-secondary: #4b5563;
+    --text-muted: #9ca3af;
+  }
+  body.light ::-webkit-scrollbar-track { background: #f0f2f7; }
+  body.light ::-webkit-scrollbar-thumb { background: #c8cdd8; }
+  body.light .hero { background: linear-gradient(135deg,#e8f0fe,#f0faf8,#fef9ec); }
+  body.light .hero h1 { background: linear-gradient(135deg,#111827 30%,#009980 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  body.light #sidebar { box-shadow: 2px 0 12px rgba(0,0,0,0.08); }
+  body.light .tox-table th { background: rgba(0,0,0,0.04); }
+  body.light strong { color: #111827; }
+  #theme-btn {
+    position: fixed; top: 18px; right: 18px; z-index: 200;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text-primary); width: 42px; height: 42px;
+    border-radius: 10px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; transition: all 0.2s;
+  }
+  #theme-btn:hover { border-color: var(--accent-teal); color: var(--accent-teal); }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.7;
+  }
+
+  /* ─── SIDEBAR / DASHBOARD ─── */
+  #sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: var(--sidebar-w);
+    height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    z-index: 100;
+    transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+    display: flex;
+    flex-direction: column;
+  }
+  #sidebar.hidden { transform: translateX(calc(-1 * var(--sidebar-w))); }
+
+  .sidebar-header {
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(135deg, rgba(0,212,180,0.08), rgba(77,166,255,0.05));
+  }
+  .sidebar-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--accent-teal);
+    letter-spacing: 0.02em;
+  }
+  .sidebar-header p {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .sidebar-section {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-section-title {
+    padding: 4px 20px 8px;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 20px;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+    text-decoration: none;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.04); color: var(--text-primary); }
+  .nav-item.active {
+    background: rgba(0,212,180,0.08);
+    color: var(--accent-teal);
+    border-left-color: var(--accent-teal);
+  }
+  .nav-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .progress-bar {
+    height: 2px;
+    background: var(--border);
+    margin: 4px 20px 0;
+    border-radius: 1px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 1px;
+    transition: width 0.5s ease;
+  }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  /* ─── TOGGLE BUTTON ─── */
+  #toggle-btn {
+    position: fixed;
+    top: 18px;
+    left: 18px;
+    z-index: 200;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    width: 42px; height: 42px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    font-size: 1.1rem;
+  }
+  #toggle-btn:hover { background: var(--card); border-color: var(--accent-teal); color: var(--accent-teal); }
+  #toggle-btn.shifted { left: calc(var(--sidebar-w) + 14px); }
+
+  /* ─── MAIN CONTENT ─── */
+  #main {
+    margin-left: var(--sidebar-w);
+    transition: margin-left 0.35s cubic-bezier(.4,0,.2,1);
+    padding: 0 0 80px 0;
+  }
+  #main.full { margin-left: 0; }
+
+  /* ─── HERO ─── */
+  .hero {
+    background: linear-gradient(135deg, #0d1117 0%, #121928 50%, #0a1520 100%);
+    padding: 80px 60px 60px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 400px; height: 400px;
+    background: radial-gradient(ellipse, rgba(0,212,180,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: 30%;
+    width: 300px; height: 300px;
+    background: radial-gradient(ellipse, rgba(77,166,255,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(0,212,180,0.1);
+    border: 1px solid rgba(0,212,180,0.2);
+    color: var(--accent-teal);
+    padding: 5px 14px;
+    border-radius: 100px;
+    font-size: 0.73rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 900;
+    line-height: 1.15;
+    background: linear-gradient(135deg, #e8ecf4 30%, #00d4b4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    max-width: 700px;
+    margin-bottom: 16px;
+  }
+  .hero p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    max-width: 580px;
+    line-height: 1.75;
+  }
+  .hero-chips {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 28px;
+  }
+  .chip {
+    padding: 5px 14px;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border: 1px solid;
+  }
+  .chip-teal { background: rgba(0,212,180,0.08); border-color: rgba(0,212,180,0.25); color: var(--accent-teal); }
+  .chip-amber { background: rgba(245,166,35,0.08); border-color: rgba(245,166,35,0.25); color: var(--accent-amber); }
+  .chip-blue { background: rgba(77,166,255,0.08); border-color: rgba(77,166,255,0.25); color: var(--accent-blue); }
+  .chip-purple { background: rgba(180,125,255,0.08); border-color: rgba(180,125,255,0.25); color: var(--accent-purple); }
+  .chip-rose { background: rgba(255,107,138,0.08); border-color: rgba(255,107,138,0.25); color: var(--accent-rose); }
+  .chip-green { background: rgba(93,217,140,0.08); border-color: rgba(93,217,140,0.25); color: var(--accent-green); }
+
+  /* ─── CONTENT ─── */
+  .content-wrap {
+    padding: 0 60px;
+    max-width: 960px;
+  }
+
+  /* ─── SECTION ─── */
+  .section {
+    padding: 56px 0 0;
+    scroll-margin-top: 80px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .section-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.85rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .section-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 3px;
+  }
+
+  /* ─── CARDS ─── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: rgba(255,255,255,0.12); }
+  .card-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card p, .card li { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.75; }
+  .card ul { padding-left: 18px; }
+  .card li { margin-bottom: 6px; }
+
+  /* ─── HIGHLIGHT BOXES ─── */
+  .hbox {
+    border-radius: 14px;
+    padding: 18px 22px;
+    margin-bottom: 16px;
+    border-left: 4px solid;
+  }
+  .hbox-teal { background: rgba(0,212,180,0.07); border-left-color: var(--accent-teal); }
+  .hbox-amber { background: rgba(245,166,35,0.07); border-left-color: var(--accent-amber); }
+  .hbox-rose { background: rgba(255,107,138,0.07); border-left-color: var(--accent-rose); }
+  .hbox-blue { background: rgba(77,166,255,0.07); border-left-color: var(--accent-blue); }
+  .hbox-purple { background: rgba(180,125,255,0.07); border-left-color: var(--accent-purple); }
+  .hbox-green { background: rgba(93,217,140,0.07); border-left-color: var(--accent-green); }
+  .hbox-title { font-weight: 700; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }
+  .hbox p, .hbox li { font-size: 0.87rem; color: var(--text-secondary); line-height: 1.75; }
+  .hbox ul { padding-left: 18px; }
+  .hbox li { margin-bottom: 4px; }
+
+  /* ─── GRID ─── */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  /* ─── TABLE ─── */
+  .tox-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; border-radius: 12px; overflow: hidden; }
+  .tox-table th {
+    background: rgba(255,255,255,0.06);
+    padding: 11px 16px;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+  }
+  .tox-table td {
+    padding: 11px 16px;
+    font-size: 0.84rem;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.6;
+  }
+  .tox-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent-teal), transparent);
+    margin: 20px 0 32px;
+    opacity: 0.25;
+  }
+  .big-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 60px 0;
+  }
+
+  /* ─── INLINE TERM ─── */
+  .term {
+    color: var(--accent-teal);
+    border-bottom: 1px dotted rgba(0,212,180,0.4);
+    cursor: help;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .term:hover { border-bottom-color: var(--accent-teal); }
+
+  /* ─── EMPHASIS ─── */
+  strong { color: var(--text-primary); font-weight: 600; }
+  .warn { color: var(--accent-rose); font-weight: 600; }
+  .key { color: var(--accent-amber); font-weight: 600; }
+  .safe { color: var(--accent-green); font-weight: 600; }
+
+  /* ─── CTA ─── */
+  .cta-bar {
+    background: linear-gradient(135deg, rgba(0,212,180,0.1), rgba(77,166,255,0.07));
+    border: 1px solid rgba(0,212,180,0.2);
+    border-radius: 20px;
+    padding: 40px 48px;
+    margin: 60px 60px 0;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .cta-text h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 8px; }
+  .cta-text p { color: var(--text-secondary); font-size: 0.88rem; }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--accent-teal);
+    color: #000;
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .cta-btn:hover { background: #00e6c3; transform: translateY(-1px); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    margin: 60px 60px 0;
+    padding: 32px 0;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+  footer a { color: var(--accent-teal); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: #2a2f3e; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #3a4055; }
+
+  /* ─── PHASE BADGES ─── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .badge-teal { background: rgba(0,212,180,0.15); color: var(--accent-teal); }
+  .badge-amber { background: rgba(245,166,35,0.15); color: var(--accent-amber); }
+  .badge-rose { background: rgba(255,107,138,0.15); color: var(--accent-rose); }
+  .badge-blue { background: rgba(77,166,255,0.15); color: var(--accent-blue); }
+  .badge-purple { background: rgba(180,125,255,0.15); color: var(--accent-purple); }
+
+  /* ─── METAL TAG ─── */
+  .metal-tag {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.78rem;
+    padding: 2px 10px;
+    border-radius: 6px;
+    margin-right: 8px;
+    border: 1px solid;
+    letter-spacing: 0.04em;
+    font-weight: 700;
+  }
+
+  @media (max-width: 900px) {
+    .hero { padding: 80px 24px 40px; }
+    .hero h1 { font-size: 2rem; }
+    .content-wrap { padding: 0 24px; }
+    .grid2, .grid3 { grid-template-columns: 1fr; }
+    .cta-bar { padding: 28px 24px; margin: 40px 24px 0; }
+    footer { margin: 40px 24px 0; flex-direction: column; text-align: center; }
+    #sidebar { width: 260px; }
+    :root { --sidebar-w: 260px; }
+    #main { margin-left: 0; }
+    #sidebar { transform: translateX(-260px); }
+    #sidebar.hidden { transform: translateX(-260px); }
+    #sidebar.open { transform: translateX(0); }
+    #toggle-btn { left: 14px; }
+    #toggle-btn.shifted { left: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <h2>📚 Study Dashboard</h2>
+    <p>MLS Toxicology · 2024</p>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Part I — Metal Toxicology</div>
+    <a class="nav-item active" href="#arsenic" onclick="setActive(this)">
+      <span class="nav-dot" style="background:var(--accent-teal)"></span> Arsenic Toxicology
+    </a>
+    <a class="nav-item" href="#mercury" onclick="setActive(this)">
+      <span class="nav-dot" style="background:var(--accent-amber)"></span> Mercury Toxicology
+    </a>
+    <a class="nav-item" href="#lead" onclick="setActive(this)">
+      <span class="nav-dot" style="background:var(--accent-blue)"></span> Lead Toxicology
+    </a>
+    <a class="nav-item" href="#thallium" onclick="setActive(this)">
+      <span class="nav-dot" style="background:var(--accent-purple)"></span> Thallium Toxicology
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Part II — Pesticide Toxicology</div>
+    <a class="nav-item" href="#pest-intro" onclick="setActive(this)">
+      <span class="nav-dot" style="background:var(--accent-green)"></span> Introduction & Classification
+    </a>
+    <a class="nav-item" href="#pest-exposure" onclick="setActive(this)">
+      <span class="nav-dot" style="background:var(--accent-rose)"></span> Exposure & Fate
+    </a>
+    <a class="nav-item" href="#pest-kinetics" onclick="setActive(this)">
+      <span class="nav-dot" style="background:var(--accent-teal)"></span> Toxicokinetics
+    </a>
+    <a class="nav-item" href="#pest-toxicity" onclick="setActive(this)">
+      <span class="nav-dot" style="background:var(--accent-amber)"></span> Acute Toxicity & Syndromes
+    </a>
+    <a class="nav-item" href="#pest-chronic" onclick="setActive(this)">
+      <span class="nav-dot" style="background:var(--accent-purple)"></span> Chronic Effects
+    </a>
+    <a class="nav-item" href="#pest-prevention" onclick="setActive(this)">
+      <span class="nav-dot" style="background:var(--accent-green)"></span> Prevention & Management
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Quick Tools</div>
+    <a class="nav-item" href="#questions">
+      <span class="nav-dot" style="background:var(--accent-rose)"></span> Practice Questions
+    </a>
+  </div>
+
+  <div class="sidebar-footer">
+    Track your reading progress<br>as you scroll through each section.
+  </div>
+</nav>
+
+<!-- TOGGLE BUTTON -->
+<button id="toggle-btn" onclick="toggleSidebar()" title="Toggle dashboard">☰</button>
+<!-- THEME BUTTON -->
+<button id="theme-btn" onclick="toggleTheme()" title="Toggle light/dark mode">🌙</button>
+
+<!-- MAIN -->
+<div id="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag">🔬 MLS Toxicology Notes</div>
+    <h1>Metal &amp; Pesticide<br>Toxicology</h1>
+    <p>A concise, exam-ready study companion covering metal poisoning mechanisms, clinical presentations, diagnosis, and management — alongside pesticide toxicology from classification to chronic effects.</p>
+    <div class="hero-chips">
+      <span class="chip chip-teal">Arsenic</span>
+      <span class="chip chip-amber">Mercury</span>
+      <span class="chip chip-blue">Lead</span>
+      <span class="chip chip-purple">Thallium</span>
+      <span class="chip chip-green">Organophosphates</span>
+      <span class="chip chip-rose">Carbamates</span>
+      <span class="chip chip-teal">Pyrethroids</span>
+      <span class="chip chip-amber">Organochlorines</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!--          PART I — METAL TOXICOLOGY        -->
+  <!-- ══════════════════════════════════════════ -->
+
+  <div class="content-wrap">
+
+    <!-- ─── ARSENIC ─── -->
+    <div class="section" id="arsenic">
+      <div class="section-header">
+        <div class="section-icon" style="background:rgba(0,212,180,0.1);">⚗️</div>
+        <div>
+          <div class="section-title" style="color:var(--accent-teal)">Arsenic (As)</div>
+          <div class="section-subtitle">Metalloid · Atomic No. 33 · MW 74.92 g/mol</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+
+      <!-- Overview -->
+      <div class="hbox hbox-teal">
+        <div class="hbox-title" style="color:var(--accent-teal)">🌍 Epidemiological Context</div>
+        <p>The groundwater contamination of arsenic in <strong>Bangladesh</strong> represents the largest population poisoning in history, with millions exposed since the 1970s. Arsenic is ubiquitous in the environment and highly toxic in its <a href="https://www.atsdr.cdc.gov/toxfaqs/tf.asp?id=19&tid=3" target="_blank" class="term">inorganic form</a>.</p>
+      </div>
+
+      <!-- Forms & Toxicity -->
+      <div class="grid2" style="margin-bottom:16px">
+        <div class="card">
+          <div class="card-title" style="color:var(--accent-teal)">⚛️ Toxic Forms</div>
+          <ul>
+            <li><strong>Trivalent As(III) — Arsenite:</strong> <span class="warn">Most toxic</span> — slower excretion rate, principal toxic form. Inhibits sulfhydryl-containing enzymes.</li>
+            <li><strong>Pentavalent As(V) — Arsenate:</strong> Less toxic alone, but can be <strong>converted to As(III) in vivo</strong>, making it indirectly dangerous.</li>
+            <li><strong>Inorganic arsenic</strong> (in contaminated water, rice, grains): Most harmful type.</li>
+            <li><strong>Organic arsenic</strong> (dimethylarsinic acid): Less toxic; principal detox product after methylation.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title" style="color:var(--accent-amber)">⚡ Mechanism of Toxicity</div>
+          <ul>
+            <li>Binds <a href="https://www.britannica.com/science/sulfhydryl-group" target="_blank" class="term">sulfhydryl (SH) groups</a> in proteins and enzymes → non-specific cell damage.</li>
+            <li>Inhibits <strong>succinic dehydrogenase</strong> and <strong>uncouples oxidative phosphorylation</strong> in mitochondria.</li>
+            <li>Chelates <strong>alpha-lipoic acid</strong> → blocks <a href="https://www.khanacademy.org/science/ap-biology/cellular-energetics/cellular-respiration-ap/a/steps-of-cellular-respiration" target="_blank" class="term">pyruvate dehydrogenase</a> → disrupts Krebs cycle energy production.</li>
+            <li><strong>Arsenolysis:</strong> Arsenic anions substitute for phosphate, disrupting phosphorylation reactions.</li>
+            <li>Capillary poison: increases vascular permeability → <a href="https://www.merriam-webster.com/medical/edema" target="_blank" class="term">edema</a> and hemorrhage.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Toxicokinetics -->
+      <div class="card">
+        <div class="card-title" style="color:var(--accent-blue)">🔄 Toxicokinetics (ADME)</div>
+        <div class="grid2">
+          <div>
+            <p><span class="badge badge-teal">Absorption</span></p>
+            <p style="margin-top:8px">Absorbed via inhalation, GI tract ingestion, and skin. After absorption, rapidly binds the globin portion of haemoglobin → distributes to blood.</p>
+          </div>
+          <div>
+            <p><span class="badge badge-blue">Distribution</span></p>
+            <p style="margin-top:8px">Within 24 hrs redistributes to <strong>liver, kidney, spleen, lung, GI tract</strong>. Concentrates in <strong>nails, hair, and cancellous bone</strong> (replaces phosphorus). Crosses placenta; found in human milk.</p>
+          </div>
+          <div style="margin-top:12px">
+            <p><span class="badge badge-amber">Biotransformation</span></p>
+            <p style="margin-top:8px">Undergoes <strong>methylation</strong> in the liver → dimethylarsenic (DMA) as the principal detox product. Methylated forms have a longer half-life. Undergoes enterohepatic circulation.</p>
+          </div>
+          <div style="margin-top:12px">
+            <p><span class="badge badge-rose">Elimination</span></p>
+            <p style="margin-top:8px">Primarily renal excretion as methylated arsenic. Minor routes: feces, sweat, bile. Safe limit: urinary excretion <strong>&lt;100 µg/24 hrs</strong>.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clinical Stages -->
+      <div class="card">
+        <div class="card-title" style="color:var(--accent-rose)">🩺 Clinical Presentation — Arsenicosis Stages</div>
+        <table class="tox-table">
+          <thead>
+            <tr><th>Stage/Timeframe</th><th>Key Features</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge badge-rose">Acute (≤7 days)</span></td>
+              <td>Metallic/garlicky taste, <a href="https://www.healthline.com/health/xerostomia" target="_blank" class="term">xerostomia</a>, <a href="https://www.medicinenet.com/dysphagia/definition.htm" target="_blank" class="term">dysphagia</a>, profuse vomiting (projectile, dark brown), <strong>rice-water stools</strong> (later bloody), renal damage (oliguria, <a href="https://www.webmd.com/a-to-z-guides/what-is-proteinuria" target="_blank" class="term">proteinuria</a>, haematuria), skeletal muscle cramps, periorbital edema.</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-amber">Sub-acute (1 wk–1 mo)</span></td>
+              <td><a href="https://www.healthline.com/health/peripheral-neuropathy" target="_blank" class="term">Peripheral neuropathy</a>, cardiac dysrhythmias, hypotension, pigmentation changes, keratosis, renal insufficiency, haemolysis, confusion.</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-teal">Chronic Stage 1</span></td>
+              <td>GI disturbances: weight loss, anorexia, colicky pain, constipation/diarrhoea.</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-teal">Chronic Stage 2 — Catarrhal</span></td>
+              <td>Dry/itchy skin, harsh voice, photophobia, conjunctivitis, hepatomegaly (cirrhotic), chronic nephritis.</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-teal">Chronic Stage 3 — Skin</span></td>
+              <td><strong>Raindrop pigmentation</strong> (flexors, nipples, abdomen), <a href="https://www.healthline.com/health/hyperkeratosis" target="_blank" class="term">hyperkeratosis</a> of palms and soles, <a href="https://www.healthline.com/health/skin/desquamation" target="_blank" class="term">desquamation</a>.</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-teal">Chronic Stage 4 — Neurological</span></td>
+              <td>Peripheral neuritis — "glove and stocking" <a href="https://www.verywellhealth.com/peripheral-neuropathy-types-symptoms-causes-4692303" target="_blank" class="term">anaesthesia</a>, <a href="https://my.clevelandclinic.org/health/diseases/6105-encephalopathy" target="_blank" class="term">encephalopathy</a> in some cases.</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-rose">Cancers (long-term)</span></td>
+              <td>Skin, lung, bladder, kidney, liver cancers — especially from drinking water exposure over 20–40 years. <strong>Blackfoot disease</strong> (Taiwan). <a href="https://www.cancer.gov/about-cancer/causes-prevention/risk/substances/arsenic" target="_blank" class="term">Known carcinogen.</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Diagnosis & Treatment -->
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title" style="color:var(--accent-green)">🔬 Diagnosis</div>
+          <ul>
+            <li><strong>Recent:</strong> Urine — arsenic ions present shortly after ingestion. Urinary As >100 µg/24 hrs → toxic exposure. Proteinuria, casts, albuminuria present.</li>
+            <li><strong>Acute (blood):</strong> Blood As 0.9 µg/dl; monocytic hypochromic anaemia, leukocytosis, mild eosinophilia.</li>
+            <li><strong>Chronic:</strong> Hair/nails — >300 ppm or >100 mg As/100 g specimen → diagnostic.</li>
+            <li>Liver: ↑ alkaline phosphatase, ↑ bilirubin, urobilinogen in urine.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title" style="color:var(--accent-rose)">💊 Treatment</div>
+          <ul>
+            <li><strong>Supportive care</strong> — hydration, electrolyte replacement.</li>
+            <li><strong>GI decontamination:</strong> Gastric lavage (1% sodium thiosulfate), whole bowel irrigation, demulcents (ghee, barley water), purgatives (castor oil, MgSO₄).</li>
+            <li><strong>Chelation therapy:</strong>
+              <ul>
+                <li><a href="https://www.rxlist.com/bal-in-oil-drug.htm" target="_blank" class="term">BAL (dimercaprol)</a> 3–5 mg/kg every 4 hrs</li>
+                <li><a href="https://www.rxlist.com/chemet-drug.htm" target="_blank" class="term">DMSA</a> 10 mg/kg PO for 5 days</li>
+                <li>Penicillamine 100 mg/kg in 4 divided doses for 4–8 days after initial BAL</li>
+              </ul>
+            </li>
+            <li>Morphine for pain; hemodialysis for renal failure.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="big-divider"></div>
+
+    <!-- ─── MERCURY ─── -->
+    <div class="section" id="mercury">
+      <div class="section-header">
+        <div class="section-icon" style="background:rgba(245,166,35,0.1);">🌡️</div>
+        <div>
+          <div class="section-title" style="color:var(--accent-amber)">Mercury (Hg)</div>
+          <div class="section-subtitle">Hydrargyria / Mercurialism · Heavy Metal</div>
+        </div>
+      </div>
+      <div class="divider" style="background:linear-gradient(90deg,var(--accent-amber),transparent)"></div>
+
+      <!-- 3 Forms -->
+      <div class="hbox hbox-amber">
+        <div class="hbox-title" style="color:var(--accent-amber)">⚠️ Key Principle: Form Determines Toxicity</div>
+        <p>Mercury exists in three distinct chemical forms, each with different routes of entry, distribution, and toxicological profile.</p>
+      </div>
+
+      <div class="grid3" style="margin-bottom:20px">
+        <div class="card">
+          <div class="card-title"><span class="metal-tag" style="color:var(--accent-teal);border-color:rgba(0,212,180,0.3)">Hg⁰</span> Elemental</div>
+          <ul>
+            <li>Most volatile form; liquid or vapour at room temperature.</li>
+            <li>Absorbed mainly via <strong>lungs (80%)</strong>; GI absorption negligible (0.01%).</li>
+            <li>Crosses <a href="https://www.healthline.com/health/blood-brain-barrier" target="_blank" class="term">blood-brain barrier (BBB)</a> and placenta.</li>
+            <li>Common source: dental amalgam (most common form of clinical exposure), thermometers, barometers.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="metal-tag" style="color:var(--accent-amber);border-color:rgba(245,166,35,0.3)">Hg⁺</span> Inorganic</div>
+          <ul>
+            <li>Main entry: lungs (80%).</li>
+            <li><span class="warn">Cannot</span> cross BBB or placental barrier → accumulates in <strong>kidneys</strong>.</li>
+            <li>Forms glutathione/cysteine complexes in liver → excreted in bile.</li>
+            <li>Historical uses: laxatives, skin-lightening creams, latex paint.</li>
+            <li>Found in neonatal brains (absent fully formed BBB).</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="metal-tag" style="color:var(--accent-rose);border-color:rgba(255,107,138,0.3)">CH₃Hg</span> Organic</div>
+          <ul>
+            <li>Mainly <strong>methylmercury</strong> — highly toxic, lipophilic.</li>
+            <li>Absorbed excellently via GI tract; crosses <strong>BBB and placenta</strong>.</li>
+            <li>Accumulates in <strong>brain and kidney</strong>.</li>
+            <li>Source: contaminated fish, fungicides, pesticides.</li>
+            <li>Cooking does <span class="warn">not</span> reduce methylmercury in fish.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Mechanism -->
+      <div class="card">
+        <div class="card-title" style="color:var(--accent-amber)">⚡ Mechanism of Toxicity</div>
+        <div class="grid2">
+          <ul>
+            <li>High-affinity binding to <a href="https://www.britannica.com/science/sulfhydryl-group" target="_blank" class="term">sulfhydryl (SH) groups</a> of cellular proteins → non-specific cell injury / cell death.</li>
+            <li>Disrupts <a href="https://www.ncbi.nlm.nih.gov/books/NBK21742/" target="_blank" class="term">microtubule</a> formation.</li>
+            <li>Inhibits key enzymes; induces oxidative stress.</li>
+          </ul>
+          <ul>
+            <li>Disrupts protein and DNA synthesis.</li>
+            <li>Triggers <a href="https://www.immunology.org/public-information/bitesized-immunology/responses/autoimmunity" target="_blank" class="term">autoimmune responses</a>.</li>
+            <li>Overexpresses metallothionein and glutathione-related genes in tissues.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Acute + Chronic presentations -->
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title" style="color:var(--accent-rose)">⚡ Acute Poisoning</div>
+          <p style="margin-bottom:8px"><span class="badge badge-teal">Inhalation of vapour</span></p>
+          <ul>
+            <li>Chemical pneumonia, pulmonary oedema</li>
+            <li>Gingivostomatitis, hypersalivation</li>
+            <li>CNS: <a href="https://www.healthline.com/health/ataxia" target="_blank" class="term">ataxia</a>, restricted visual field, <a href="https://my.clevelandclinic.org/health/diseases/17847-paresis" target="_blank" class="term">paresis</a>, delirium, polyneuropathy</li>
+          </ul>
+          <p style="margin-top:12px; margin-bottom:8px"><span class="badge badge-rose">Ingestion of Hg salts</span></p>
+          <ul>
+            <li>Acrid metallic taste, corrosion of mouth and tongue (grey-white coating)</li>
+            <li>Burning pain in mouth, stomach, abdomen</li>
+            <li>Blood-stained stools, suppressed urine with albumin and blood</li>
+            <li>Rapid, irregular pulse → <a href="https://my.clevelandclinic.org/health/diseases/22288-circulatory-failure" target="_blank" class="term">circulatory failure</a></li>
+            <li>After 1–3 days: renal tubular necrosis → polyuria, albuminuria, <a href="https://www.webmd.com/a-to-z-guides/what-is-uremia" target="_blank" class="term">uraemia</a>, acidosis</li>
+            <li>Thrombocytopenia, bone marrow depression</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title" style="color:var(--accent-purple)">🕰️ Chronic Poisoning (Hydrargyria)</div>
+          <ul>
+            <li>Symptomatic at blood Hg >100 mg/mL or urinary excretion >300 mg/mL/day.</li>
+            <li><strong>Excessive salivation</strong>, swollen salivary glands, foul breath, inflamed/ulcerated gums, brownish-blue gum line, tooth loosening.</li>
+            <li><strong>Mercura lentis:</strong> Brownish anterior lens capsule reflex (bilateral; no effect on visual acuity) — pathognomonic sign.</li>
+            <li><strong>Acrodynia (Pink Disease):</strong> Generalised erythematous, eczematous rash, thickened skin on hands and feet.</li>
+            <li><strong>Mercurial tremors (Danbury Tremors / Hatter's Shake):</strong> Coarse tremors starting in hands → lips, tongue, arms, legs. Excited by voluntary movement, absent during sleep. Must be differentiated from thyrotoxicosis.</li>
+            <li><strong>Erethism (Mad Hatter Syndrome):</strong> Shyness, timidity, irritability, loss of memory, insomnia, hallucinations, suicidal melancholia.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Minamata Disease -->
+      <div class="hbox hbox-amber">
+        <div class="hbox-title" style="color:var(--accent-amber)">📌 Minamata Disease — Classic Case Study</div>
+        <p>Chronic methylmercury poisoning from contaminated fish consumption (Minamata Bay, Japan, 1932–1968). Features: disturbance in hand coordination, gait, speech, chewing/swallowing difficulty, tremors, rigidity, seizures, and clouding of consciousness. Over 1,000 deaths; thousands permanently disabled.</p>
+      </div>
+
+      <!-- Diagnosis & Treatment -->
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title" style="color:var(--accent-green)">🔬 Diagnosis</div>
+          <ul>
+            <li>Fatal dose (FD): 1–4 g mercuric chloride; 10–60 mg/kg methylmercury; 10 mg/m³ vapour.</li>
+            <li>Blood Hg: <strong>&gt;3.6 µg/dL</strong> (toxic).</li>
+            <li>24-hr urinary Hg: <strong>&gt;15 µg/dL</strong>.</li>
+            <li>Measured by <a href="https://chem.libretexts.org/Bookshelves/Analytical_Chemistry/Analytical_Chemistry_2.1_(Harvey)/10%3A_Spectroscopic_Methods/10.04%3A_Atomic_Absorption_Spectroscopy" target="_blank" class="term">atomic absorption spectrophotometry</a>.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title" style="color:var(--accent-rose)">💊 Treatment</div>
+          <ul>
+            <li>Remove from exposure source.</li>
+            <li>Gastric lavage: 250 mL sodium formaldehyde sulphoxylate (reduces Hg perchloride to metallic Hg).</li>
+            <li>Milk, eggs (albumin) to precipitate Hg.</li>
+            <li><a href="https://www.rxlist.com/bal-in-oil-drug.htm" target="_blank" class="term">BAL (dimercaprol)</a>: 3–5 mg/kg 4-hrly for 2 days → 2.5 mg/kg 6-hrly for 1 day → taper.</li>
+            <li>5–10% glucose in normal saline for diuresis.</li>
+            <li>Periodic medical checkup for occupationally exposed workers.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="big-divider"></div>
+
+    <!-- ─── LEAD ─── -->
+    <div class="section" id="lead">
+      <div class="section-header">
+        <div class="section-icon" style="background:rgba(77,166,255,0.1);">🔩</div>
+        <div>
+          <div class="section-title" style="color:var(--accent-blue)">Lead (Pb)</div>
+          <div class="section-subtitle">Plumbism · The Most Toxic Metal · No Safe Level</div>
+        </div>
+      </div>
+      <div class="divider" style="background:linear-gradient(90deg,var(--accent-blue),transparent)"></div>
+
+      <div class="hbox hbox-blue">
+        <div class="hbox-title" style="color:var(--accent-blue)">⚠️ Key Principle: Zero Safe Level</div>
+        <p>Lead has <strong>no biological role</strong> in the human body. <strong>Any measurable amount may have negative health effects.</strong> It is not biodegradable and cannot be metabolized — only redistributed. The most susceptible populations are children, infants, and neonates.</p>
+      </div>
+
+      <!-- Exposures -->
+      <div class="card">
+        <div class="card-title" style="color:var(--accent-blue)">🌐 Routes & Sources of Exposure</div>
+        <div class="grid2">
+          <div>
+            <p><span class="badge badge-rose">Ingestion (Primary)</span></p>
+            <ul style="margin-top:8px">
+              <li><strong>Lead paint</strong> — major source in children (peeling/chipping paint).</li>
+              <li>Contaminated food, water, alcohol.</li>
+              <li>Children absorb <strong>50% of ingested lead after meals</strong>, up to 100% on empty stomachs vs 20% in adults.</li>
+            </ul>
+          </div>
+          <div>
+            <p><span class="badge badge-amber">Inhalation (Secondary)</span></p>
+            <ul style="margin-top:8px">
+              <li>Almost all inhaled lead is absorbed.</li>
+              <li>Leaded gasoline emissions (historical + ongoing in some countries).</li>
+              <li>Occupational: smelting, soldering, home renovation, stained glass making.</li>
+              <li>Tobacco and secondhand smoke.</li>
+            </ul>
+          </div>
+          <div style="margin-top:12px">
+            <p><span class="badge badge-teal">Dermal (Occupational)</span></p>
+            <ul style="margin-top:8px">
+              <li><a href="https://www.toxnet.nlm.nih.gov/" target="_blank" class="term">Organic lead (tetraethyl lead)</a> absorbed through skin — more than inorganic forms.</li>
+            </ul>
+          </div>
+          <div style="margin-top:12px">
+            <p><span class="badge badge-purple">Endogenous / Transplacental</span></p>
+            <ul style="margin-top:8px">
+              <li>Lead stored in bone is continuously recycled.</li>
+              <li>Crosses placenta — matches maternal blood levels in fetus.</li>
+              <li>Half-life of lead in blood: <strong>20 years.</strong></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Toxicokinetics -->
+      <div class="card">
+        <div class="card-title" style="color:var(--accent-blue)">🔄 Toxicokinetics</div>
+        <div class="grid3">
+          <div>
+            <p><span class="badge badge-teal">Distribution</span></p>
+            <ul style="margin-top:8px">
+              <li>Adults: <strong>95%+ of total body lead</strong> stored in bone.</li>
+              <li>Children: ~70% stored in bone — but bone is actively remodelling → continuous release.</li>
+            </ul>
+          </div>
+          <div>
+            <p><span class="badge badge-amber">Metabolism</span></p>
+            <ul style="margin-top:8px">
+              <li>Inorganic lead: <span class="warn">not metabolized</span> in the liver.</li>
+              <li>Organic lead: metabolized in the liver.</li>
+              <li><strong>Cannot be destroyed or changed</strong> within the body.</li>
+            </ul>
+          </div>
+          <div>
+            <p><span class="badge badge-rose">Excretion</span></p>
+            <ul style="margin-top:8px">
+              <li>Primary: urine (glomerular filtration with partial tubular resorption).</li>
+              <li>Secondary: feces via biliary tract (~⅓ of total excreted).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Organ System Effects -->
+      <div class="card">
+        <div class="card-title" style="color:var(--accent-rose)">🧠 Organ System Effects</div>
+        <table class="tox-table">
+          <thead>
+            <tr><th>System</th><th>Key Toxic Effects</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Nervous System</strong></td>
+              <td>Lead mimics calcium (both are divalent cations) → inappropriate neurotransmitter release, inhibits evoked release. Causes cognition problems, poor executive function, abnormal social behaviour, fine motor difficulty. Children: reduced IQ, learning failure, behaviour problems, developmental delays.</td>
+            </tr>
+            <tr>
+              <td><strong>Haematopoietic</strong></td>
+              <td>Inhibits 3 enzymes in <a href="https://www.ncbi.nlm.nih.gov/books/NBK20/s86e7/" target="_blank" class="term">haem biosynthesis</a> — most profound effect on <a href="https://www.genome.gov/genetics-glossary/Enzyme" target="_blank" class="term">δ-ALAD</a>. Results in microcytic anaemia. <strong>Basophilic stippling</strong> of RBCs is a classic finding.</td>
+            </tr>
+            <tr>
+              <td><strong>Renal System</strong></td>
+              <td>Proximal tubular nephropathy, <a href="https://www.healthline.com/health/fanconi-syndrome" target="_blank" class="term">Fanconi-like syndrome</a>, chronic lead nephropathy (tubulointerstitial nephritis), glomerular sclerosis, interstitial fibrosis. Often associated with hypertension and gout (lead-induced hyperuricaemia).</td>
+            </tr>
+            <tr>
+              <td><strong>Cardiovascular</strong></td>
+              <td>Hypertension (↑ vascular reactivity), ECG changes, atherosclerosis, ischaemic coronary heart disease, myocarditis, cerebrovascular accidents.</td>
+            </tr>
+            <tr>
+              <td><strong>Reproductive</strong></td>
+              <td>Reduced sperm count, increased abnormal sperm. Adverse pregnancy outcomes at high exposure — miscarriages, preterm birth. Transplacental transfer causes serious fetal nervous system damage.</td>
+            </tr>
+            <tr>
+              <td><strong>Carcinogenesis</strong></td>
+              <td>Classified as <a href="https://www.cancer.gov/about-cancer/causes-prevention/risk/substances" target="_blank" class="term">Group 2B carcinogen</a> in animals (insufficient human data). Possible role in renal cancer.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Treatment -->
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title" style="color:var(--accent-green)">💊 Treatment</div>
+          <ul>
+            <li><strong>Primary:</strong> Remove from exposure source — critical first step.</li>
+            <li>Chelation therapy warranted when <strong>BLL &gt;60 µg/dL</strong> in workers.</li>
+            <li>Severe symptoms (usually BLL &gt;100 µg/dL): Chelation reduces lead in blood and soft tissues.</li>
+            <li><a href="https://www.rxlist.com/edta-drug.htm" target="_blank" class="term">EDTA</a> (oral or IV) — standard chelator.</li>
+            <li><a href="https://www.rxlist.com/chemet-drug.htm" target="_blank" class="term">DMSA (Dimercaptosuccinic acid)</a> — advantages over EDTA; effective in temporarily reducing BLL. Note: does not improve long-term BLL in children.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title" style="color:var(--accent-teal)">🛡️ Prevention</div>
+          <ul>
+            <li>Regular wet-dusting of surfaces; wash fruits and vegetables.</li>
+            <li>Ensure adequate dietary calcium and iron (reduces lead absorption).</li>
+            <li>Never give children access to peeling lead paint or old painted toys.</li>
+            <li>Frequent handwashing especially before meals.</li>
+            <li>Avoid high-fat diets (increase lead absorption).</li>
+            <li>Regular meals — more lead absorbed on empty stomach.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="big-divider"></div>
+
+    <!-- ─── THALLIUM ─── -->
+    <div class="section" id="thallium">
+      <div class="section-header">
+        <div class="section-icon" style="background:rgba(180,125,255,0.1);">☠️</div>
+        <div>
+          <div class="section-title" style="color:var(--accent-purple)">Thallium (Tl)</div>
+          <div class="section-subtitle">"The Poisoner's Poison" · "Inheritance Powder" · MW 204.38 g/mol</div>
+        </div>
+      </div>
+      <div class="divider" style="background:linear-gradient(90deg,var(--accent-purple),transparent)"></div>
+
+      <div class="hbox hbox-purple">
+        <div class="hbox-title" style="color:var(--accent-purple)">🔑 Key Facts</div>
+        <p>Thallium sulphate is the most toxic, freely water-soluble salt. It is <strong>odourless, tasteless</strong>, and <strong>freely soluble</strong> — making it historically ideal for homicidal poisoning. <a href="https://en.wikipedia.org/wiki/Thallium-201" target="_blank" class="term">Thallium-201</a> is used clinically in myocardial perfusion imaging.</p>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title" style="color:var(--accent-purple)">⚡ Mechanism of Toxicity</div>
+          <ul>
+            <li>Tl⁺ mimics K⁺ ions (similar ionic radius) → competes with potassium in vital cellular processes.</li>
+            <li>Substitutes for K⁺ in <a href="https://www.khanacademy.org/science/ap-biology/cell-communication-and-cell-cycle/cell-communication/a/receptor-proteins" target="_blank" class="term">Na⁺/K⁺-ATPase</a> with <strong>10x greater affinity than potassium</strong> → inhibition of the pump → membrane depolarization.</li>
+            <li>Inactivates <a href="https://www.britannica.com/science/sulfhydryl-group" target="_blank" class="term">sulphydryl (SH) groups</a> → increases mitochondrial permeability → water influx and swelling.</li>
+            <li>Inhibits protein synthesis, particularly incorporation of cysteine → <strong>prevents keratinization → alopecia</strong>.</li>
+            <li>Interacts with <a href="https://www.healthline.com/nutrition/vitamin-b2" target="_blank" class="term">riboflavin</a> (Vitamin B2) → forms insoluble compound → disrupts energy production (similar to riboflavin deficiency: peripheral neuropathy + hair loss).</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title" style="color:var(--accent-amber)">🩺 Clinical Features</div>
+          <p style="margin-bottom:8px"><span class="badge badge-rose">Acute Poisoning</span></p>
+          <ul>
+            <li>Onset insidious — maximum effects at <strong>2nd–3rd week</strong>.</li>
+            <li>Initial: GI disturbances, <a href="https://www.healthline.com/health/hyperesthesia" target="_blank" class="term">hyperaesthesia</a> of soles of feet, <a href="https://www.healthline.com/health/peripheral-neuropathy" target="_blank" class="term">polyneuritis</a>, tachycardia.</li>
+            <li><strong>Alopecia (hair loss)</strong> — hallmark sign, appears ~15 days after exposure.</li>
+            <li>Nail changes (<a href="https://www.dermnetnz.org/topics/mees-lines/" target="_blank" class="term">Mees lines</a>), skin atrophy.</li>
+            <li>Psychotic behaviour, hallucinations, dementia.</li>
+          </ul>
+          <p style="margin-top:12px; margin-bottom:8px"><span class="badge badge-purple">Chronic Poisoning</span></p>
+          <ul>
+            <li>Polyneuritic symptoms, sleep disorders, headache, fatigue.</li>
+            <li>Pain especially in joints (ankles, knees, thoracic spine).</li>
+            <li>Hair loss, skin abnormalities, GI dysfunction.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="color:var(--accent-green)">💊 Management of Thallium Poisoning</div>
+        <div class="grid2">
+          <div>
+            <p><span class="badge badge-rose">Decontamination</span></p>
+            <ul style="margin-top:8px">
+              <li>Induce emesis → gastric aspiration → lavage.</li>
+              <li>Activated charcoal (if Prussian Blue unavailable).</li>
+            </ul>
+            <p style="margin-top:12px"><span class="badge badge-teal">Enhanced Elimination</span></p>
+            <ul style="margin-top:8px">
+              <li>Forced diuresis — important; combined with charcoal perfusion → half-life ~1.4 days.</li>
+              <li>Charcoal haemoperfusion — effective within 48 hrs of ingestion.</li>
+            </ul>
+          </div>
+          <div>
+            <p><span class="badge badge-amber">Antidote — Prussian Blue</span></p>
+            <ul style="margin-top:8px">
+              <li><a href="https://www.rxlist.com/radiogardase-drug.htm" target="_blank" class="term">Prussian Blue</a> (potassium ferric hexacyanoferrate): <strong>10 g dissolved in 100 mL 1.5% mannitol, twice daily</strong> — given orally or intraduodenally.</li>
+              <li>Traps Tl⁺ in the gut by exchanging it for K⁺ in the molecule's lattice → insoluble complex, not absorbed.</li>
+              <li>Continue until urinary Tl excretion &lt;0.6 mg/24 hrs.</li>
+            </ul>
+            <p style="margin-top:10px; font-size:0.82rem; color:var(--text-muted)"><strong>Note:</strong> BAL, EDTA, and penicillamine do <span class="warn">NOT</span> accelerate Tl excretion. KCl supplementation may help excretion.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="color:var(--accent-blue)">🔬 Diagnosis of Thallium Poisoning</div>
+        <div class="grid2">
+          <ul>
+            <li>Opacities in GI tract / liver on imaging.</li>
+            <li>Decreased colour sensitivity, optic neuropathy.</li>
+            <li>ECG changes.</li>
+          </ul>
+          <ul>
+            <li>Decreased nerve conduction velocity.</li>
+            <li><strong>Hair microscopy: dark pigment at roots</strong> — highly characteristic.</li>
+            <li>Urine Tl elevated (may persist weeks to months).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="big-divider"></div>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!--       PART II — PESTICIDE TOXICOLOGY      -->
+    <!-- ══════════════════════════════════════════ -->
+
+    <div class="section" id="pest-intro">
+      <div class="section-header">
+        <div class="section-icon" style="background:rgba(93,217,140,0.1);">🌿</div>
+        <div>
+          <div class="section-title" style="color:var(--accent-green)">Pesticide Toxicology</div>
+          <div class="section-subtitle">Biocides · Over 1,000 Compounds Worldwide</div>
+        </div>
+      </div>
+      <div class="divider" style="background:linear-gradient(90deg,var(--accent-green),transparent)"></div>
+
+      <div class="hbox hbox-green">
+        <div class="hbox-title" style="color:var(--accent-green)">📌 Why Study Pesticides?</div>
+        <p>Pesticides are <strong>toxic by design</strong> — they target biological systems in pests that are often identical or similar to those in humans. Despite developing countries using only <strong>25% of global pesticide production</strong>, they account for <span class="warn">99% of pesticide-related deaths</span> due to unsafe use and weaker regulatory systems.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="color:var(--accent-green)">📋 Classification by Use</div>
+        <table class="tox-table">
+          <thead>
+            <tr><th>Class</th><th>Target</th><th>Examples</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Insecticides</strong></td><td>Insects</td><td>Organophosphates (chlorpyrifos, parathion), carbamates, organochlorines (lindane), pyrethroids (permethrin, deltamethrin)</td></tr>
+            <tr><td><strong>Herbicides / Weedkillers</strong></td><td>Weeds</td><td>Paraquat, glyphosate, 2,4-D, simazine, atrazine</td></tr>
+            <tr><td><strong>Fungicides</strong></td><td>Moulds/fungi</td><td>Dithiocarbamates, triazoles, dicarboximides, cupric salts</td></tr>
+            <tr><td><strong>Rodenticides</strong></td><td>Rats, mice, moles</td><td>Warfarin, brodifacoum, diphacinone (anticoagulants)</td></tr>
+            <tr><td><strong>Fumigants</strong></td><td>All organisms (enclosed spaces)</td><td>Cyanide, aluminium/zinc phosphide, methyl bromide — <span class="warn">extremely toxic</span></td></tr>
+            <tr><td><strong>Insect repellents</strong></td><td>Insects (repellent)</td><td>DEET, citronella</td></tr>
+          </tbody>
+        </table>
+        <p style="color:var(--text-muted);font-size:0.8rem;margin-top:8px">Global use 2016: Herbicides 46% · Fungicides 29% · Insecticides 17% · Others 8%</p>
+      </div>
+
+      <!-- POPs -->
+      <div class="card">
+        <div class="card-title" style="color:var(--accent-rose)">☣️ Persistent Organic Pollutants (POPs)</div>
+        <div class="grid2">
+          <div>
+            <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:10px">Nine of the 12 POPs listed under the <a href="https://www.pops.int/" target="_blank" class="term">Stockholm Convention (2004)</a> are pesticides.</p>
+            <ul>
+              <li>Low water solubility, lipophilic</li>
+              <li>Resist environmental breakdown</li>
+              <li>Accumulate in <a href="https://www.cdc.gov/biomonitoring/pdf/adiposetissue_factsheet.pdf" target="_blank" class="term">adipose tissue</a> and food chain</li>
+              <li>Travel long distances; highest levels in marine mammals</li>
+              <li>Concern for endocrine and developmental effects</li>
+              <li>Arctic persistence: <strong>3–8× longer</strong> than in temperate climates</li>
+            </ul>
+          </div>
+          <div>
+            <p style="font-size:0.82rem; font-weight:600; color:var(--text-muted); margin-bottom:8px">BANNED POP Pesticides:</p>
+            <div style="display:flex;flex-wrap:wrap;gap:6px">
+              <span class="badge badge-rose">Aldrin</span>
+              <span class="badge badge-rose">Dieldrin</span>
+              <span class="badge badge-rose">Chlordane</span>
+              <span class="badge badge-rose">DDT*</span>
+              <span class="badge badge-rose">Endrin</span>
+              <span class="badge badge-rose">Heptachlor</span>
+              <span class="badge badge-rose">Mirex</span>
+              <span class="badge badge-rose">Toxaphene</span>
+              <span class="badge badge-rose">HCB</span>
+            </div>
+            <p style="font-size:0.78rem; color:var(--text-muted); margin-top:10px">*DDT still used for malaria control in some developing countries.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── EXPOSURE ─── -->
+    <div class="section" id="pest-exposure">
+      <div class="section-header">
+        <div class="section-icon" style="background:rgba(255,107,138,0.1);">🌫️</div>
+        <div>
+          <div class="section-title" style="color:var(--accent-rose)">Pesticide Exposure & Fate</div>
+          <div class="section-subtitle">Routes, Settings, and Environmental Distribution</div>
+        </div>
+      </div>
+      <div class="divider" style="background:linear-gradient(90deg,var(--accent-rose),transparent)"></div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title" style="color:var(--accent-rose)">🚪 Routes of Exposure</div>
+          <ul>
+            <li><strong>Ingestion:</strong> Breastfeeding, accidental ingestion, residues in food, mouthing behaviour (children).</li>
+            <li><strong>Inhalation:</strong> Indoor/outdoor spraying, occupational exposure.</li>
+            <li><strong>Dermal absorption:</strong> Accidental contact, occupational, contaminated clothing, medical use (scabies, head lice treatment).</li>
+            <li><strong>Transplacental:</strong> Detected in <a href="https://www.healthline.com/health/pregnancy/amniotic-fluid" target="_blank" class="term">amniotic fluid</a> and fetal tissues from early pregnancy. <a href="https://www.healthline.com/health/meconium" target="_blank" class="term">Meconium</a> OP metabolites are a validated biomarker of prenatal exposure (accumulates from week 16).</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title" style="color:var(--accent-amber)">📍 Key Exposure Settings</div>
+          <ul>
+            <li>Agricultural use — spraying fields, seed treatment, cattle dips.</li>
+            <li>Home use — 74% of US households use ≥1 pesticide; 47% store it in reach of children.</li>
+            <li>Topical pharmaceuticals for head lice / scabies (lindane, malathion).</li>
+            <li>Pet products (flea/tick treatment) — often concentrated as agricultural products.</li>
+            <li>Residues on floors, carpets, furniture, toys, house dust for weeks after application.</li>
+            <li>Playgrounds, lawns, recreational waters.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="hbox hbox-rose">
+        <div class="hbox-title" style="color:var(--accent-rose)">👶 Why Children Are More Vulnerable</div>
+        <ul>
+          <li>Larger skin area relative to body weight → more dermal absorption per kg.</li>
+          <li>Higher respiratory rate → inhale more per kg body weight.</li>
+          <li>Hand-to-mouth behaviour increases ingestion.</li>
+          <li>Immature metabolic pathways (may activate or fail to detoxify pesticides appropriately).</li>
+          <li>Critical windows of development (prenatal, early childhood) — pesticide exposure during brain growth can cause permanent structural/functional changes.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ─── KINETICS ─── -->
+    <div class="section" id="pest-kinetics">
+      <div class="section-header">
+        <div class="section-icon" style="background:rgba(0,212,180,0.1);">🔬</div>
+        <div>
+          <div class="section-title" style="color:var(--accent-teal)">Pesticide Toxicokinetics</div>
+          <div class="section-subtitle">Absorption, Metabolism, Distribution, Elimination</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title" style="color:var(--accent-teal)">🔄 Metabolic Phase I-II-III</div>
+          <p style="margin-bottom:8px"><span class="badge badge-teal">Phase I</span> — Oxidation, Reduction, Hydrolysis. Generally produces more water-soluble, less toxic products.</p>
+          <p style="margin-bottom:8px"><span class="badge badge-amber">Phase II</span> — Conjugation with sugars, amino acids, or <a href="https://www.healthline.com/nutrition/glutathione" target="_blank" class="term">glutathione</a>. Increases water solubility, reduces toxicity. Facilitates excretion.</p>
+          <p><span class="badge badge-purple">Phase III</span> (plants only) — Plants sequester conjugated metabolites into vacuoles or cell walls. Cannot excrete xenobiotics like animals.</p>
+        </div>
+        <div class="card">
+          <div class="card-title" style="color:var(--accent-amber)">⚡ Organophosphate Metabolism</div>
+          <p style="margin-bottom:8px">OPs undergo <strong>oxidative activation</strong>:</p>
+          <ul>
+            <li><strong>Oxones (active):</strong> The toxic metabolite. E.g., parathion → <strong>paraoxon</strong>.</li>
+            <li><strong>DAPs — Dialkylphosphates (non-specific):</strong> Used as <a href="https://www.cdc.gov/biomonitoring/OrganophosphatePesticides.html" target="_blank" class="term">biomarkers</a> of OP exposure for all OP classes.</li>
+            <li><strong>ME — Specific inactive metabolites.</strong></li>
+          </ul>
+          <p style="margin-top:8px; color:var(--text-muted); font-size:0.83rem">Fat-soluble pesticides accumulate in <strong>adipose tissue</strong>. Elimination: urine, bile, feces, milk.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── ACUTE TOXICITY ─── -->
+    <div class="section" id="pest-toxicity">
+      <div class="section-header">
+        <div class="section-icon" style="background:rgba(245,166,35,0.1);">⚡</div>
+        <div>
+          <div class="section-title" style="color:var(--accent-amber)">Acute Toxicity & Toxindromes</div>
+          <div class="section-subtitle">Mechanisms, Clinical Syndromes, Diagnosis & Treatment</div>
+        </div>
+      </div>
+      <div class="divider" style="background:linear-gradient(90deg,var(--accent-amber),transparent)"></div>
+
+      <div class="card">
+        <div class="card-title" style="color:var(--accent-amber)">⚡ Key Acute Mechanisms</div>
+        <div class="grid2">
+          <ul>
+            <li><strong>Irritation:</strong> Local contact with skin, eyes, mucosa → redness, pain. Most herbicides and fungicides are strong irritants.</li>
+            <li><strong>Allergic sensitization:</strong> Common with fungicides.</li>
+            <li><strong>Enzyme inhibition:</strong> Cholinesterase inhibited by OPs and carbamates.</li>
+          </ul>
+          <ul>
+            <li><strong>Oxidative damage:</strong> Paraquat promotes superoxide radicals → pulmonary fibrosis.</li>
+            <li><strong>Neurotransmission inhibition:</strong> Organochlorines block <a href="https://www.healthline.com/health/gaba" target="_blank" class="term">GABA</a> system, alter calcium homeostasis.</li>
+            <li><strong>Uncoupling of oxidative phosphorylation:</strong> Glyphosate.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Toxindrome Table -->
+      <div class="card">
+        <div class="card-title" style="color:var(--accent-rose)">🩺 Acute Toxindromes — Pesticide-Specific</div>
+        <table class="tox-table">
+          <thead>
+            <tr><th>Pesticide Class</th><th>Examples</th><th>Acute Symptoms</th><th>Diagnosis</th><th>Treatment</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Organophosphates (OPs)</strong></td>
+              <td>Chlorpyrifos, diazinon, azinphos, parathion</td>
+              <td>"Irreversible" <a href="https://www.healthline.com/health/cholinesterase-inhibitors" target="_blank" class="term">cholinesterase</a> inhibition → <a href="https://my.clevelandclinic.org/health/diseases/cholinergic-crisis" target="_blank" class="term">cholinergic crisis</a>: nausea, vomiting, hypersecretion, <a href="https://www.webmd.com/eye-health/miosis-causes-symptoms-treatments" target="_blank" class="term">miosis</a>, fasciculations, coma</td>
+              <td>↓ Cholinesterase in RBCs</td>
+              <td>Supportive care, Atropine IV, Oximes, Decontamination</td>
+            </tr>
+            <tr>
+              <td><strong>Carbamates</strong></td>
+              <td>Carbaryl, aldicarb</td>
+              <td><strong>Reversible</strong> cholinesterase inhibition (same syndrome as OPs but self-limiting)</td>
+              <td>↓ Cholinesterase in RBCs</td>
+              <td>Supportive care, Atropine IV, Decontamination</td>
+            </tr>
+            <tr>
+              <td><strong>Pyrethroids Type I</strong></td>
+              <td>Allethrin, permethrin, tetramethrin</td>
+              <td>Tremor, ataxia (impaired balance), irritability</td>
+              <td>Urinary 3-phenoxybenzoic acid (research)</td>
+              <td>Supportive, symptomatic, decontamination</td>
+            </tr>
+            <tr>
+              <td><strong>Pyrethroids Type II</strong></td>
+              <td>Deltamethrin, cypermethrin, fenvalerate</td>
+              <td>Salivation, temporary <a href="https://www.healthline.com/health/paresthesia" target="_blank" class="term">paraesthesias</a>, seizures</td>
+              <td>Urinary 3-phenoxybenzoic acid (research)</td>
+              <td>Supportive, symptomatic, decontamination</td>
+            </tr>
+            <tr>
+              <td><strong>Organochlorines</strong></td>
+              <td>Lindane, endosulfan</td>
+              <td>GABA blockade → tremors, dizziness, seizures</td>
+              <td>Detectable in blood</td>
+              <td>Supportive, symptomatic, decontamination</td>
+            </tr>
+            <tr>
+              <td><strong>Chlorophenoxy (e.g., 2,4-D)</strong></td>
+              <td>2,4-D</td>
+              <td>Nausea, vomiting, acidosis, <a href="https://www.healthline.com/health/myalgia" target="_blank" class="term">myalgia</a>, fever, myopathy, neuropathy</td>
+              <td>Detectable in urine and blood</td>
+              <td>Decontamination + urine alkalinization (counteracts acidosis)</td>
+            </tr>
+            <tr>
+              <td><strong>Paraquat (Bipyridyl)</strong></td>
+              <td>Paraquat</td>
+              <td>Vomiting, corrosive lesions, hepatotoxicity, acute tubular necrosis, <span class="warn">pulmonary fibrosis</span></td>
+              <td>Dithionite test in urine</td>
+              <td>Decontamination; <span class="warn">avoid O₂</span> (worsens fibrosis); haemoperfusion; possibly corticosteroids + cyclophosphamide</td>
+            </tr>
+            <tr>
+              <td><strong>Anticoagulant Rodenticides</strong></td>
+              <td>Warfarin, brodifacoum, diphacinone</td>
+              <td>Haemorrhage (Vitamin K antagonism)</td>
+              <td>Elevated <a href="https://www.healthline.com/health/prothrombin-time" target="_blank" class="term">prothrombin time (PT)</a></td>
+              <td>Vitamin K1 (Fitomenadione)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="hbox hbox-amber">
+        <div class="hbox-title" style="color:var(--accent-amber)">🔍 Diagnosis of Pesticide Exposure</div>
+        <p>Diagnosis requires <strong>high index of suspicion</strong> — pesticide poisoning is commonly misdiagnosed as viral illness (e.g., OP poisoning misdiagnosed as infectious diarrhoea). Confirm using: <strong>history of exposure + clinical features + laboratory</strong> (pesticides/metabolites in blood, urine, breast milk, amniotic fluid, or meconium). Tests available for OPs, organochlorines, carbamates, paraquat, and pyrethroids.</p>
+      </div>
+    </div>
+
+    <!-- ─── CHRONIC EFFECTS ─── -->
+    <div class="section" id="pest-chronic">
+      <div class="section-header">
+        <div class="section-icon" style="background:rgba(180,125,255,0.1);">🕰️</div>
+        <div>
+          <div class="section-title" style="color:var(--accent-purple)">Chronic Effects of Pesticides</div>
+          <div class="section-subtitle">Neurodevelopment · Cancer · Endocrine Disruption · Immunotoxicity</div>
+        </div>
+      </div>
+      <div class="divider" style="background:linear-gradient(90deg,var(--accent-purple),transparent)"></div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title" style="color:var(--accent-purple)">🧠 Neurodevelopmental Effects</div>
+          <ul>
+            <li>Exposure during brain growth causes permanent structural/functional changes: altered <a href="https://www.verywellhealth.com/synaptogenesis-5220700" target="_blank" class="term">synaptogenesis</a>, axonal differentiation, serotonergic system alteration.</li>
+            <li><strong>Chlorpyrifos and diazinon</strong> specifically alter axonogenesis and synaptic programming — at doses <span class="warn">too low</span> to cause overt cholinesterase inhibition.</li>
+            <li>Chronic OP exposure → memory/concentration problems, unusual fatigue, irritability, depression, delayed <a href="https://www.healthline.com/health/polyneuropathy" target="_blank" class="term">polyneuropathy</a>.</li>
+            <li>Acetylcholinesterase has a direct role in axonal outgrowth — OP inhibition may interfere with neurodevelopment, not just cholinergic function.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title" style="color:var(--accent-rose)">🧬 Cancer Associations</div>
+          <ul>
+            <li>Domestic pesticide exposure associated with:</li>
+            <ul>
+              <li><a href="https://www.cancer.gov/types/brain" target="_blank" class="term">Brain tumours</a></li>
+              <li><a href="https://www.lls.org/leukemia/acute-lymphoblastic-leukemia" target="_blank" class="term">Acute lymphocytic leukaemia (ALL)</a></li>
+              <li><a href="https://www.cancer.gov/types/lymphoma/patient/adult-nhl-treatment-pdq" target="_blank" class="term">Non-Hodgkin lymphoma</a></li>
+            </ul>
+            <li>Prenatal permethrin exposure → leukaemia in newborns.</li>
+            <li>Children with certain enzyme polymorphisms (e.g., <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PON1/" target="_blank" class="term">PON1</a> genotype) have ↑ risk of ALL with in-utero pesticide exposure (especially 2,4-D).</li>
+            <li>Brain cancer linked to maternal agricultural exposure.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title" style="color:var(--accent-amber)">🔁 Endocrine Disruption</div>
+          <ul>
+            <li>Pesticides can mimic, block, or trigger inappropriate hormone activity at <strong>low doses</strong>.</li>
+            <li>Linked to: infertility, low sperm count, early puberty, hormone-dependent cancers (testicular, breast, prostate), altered sex ratio.</li>
+            <li>Can disrupt all steps of hormonal regulation — synthesis, release, transport, receptor binding, post-receptor activation, thyroid function, CNS.</li>
+            <li>Examples: DDT, dieldrin, endosulfan → estrogenic; DDT, vinclozolin → anti-androgenic; ETU, maneb metabolites → anti-thyroid.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title" style="color:var(--accent-blue)">🛡️ Immunotoxicity</div>
+          <ul>
+            <li>Four potential outcomes to pesticide-immune interaction:</li>
+            <ol>
+              <li>No alteration (most common)</li>
+              <li>Immune hyperactivation → <a href="https://www.healthline.com/health/autoimmune-disorders" target="_blank" class="term">autoimmune disease</a></li>
+              <li>Immunosuppression (decreased neutrophil/macrophage function, ↓ thymocytes, ↓ cytokine secretion)</li>
+              <li>Hypersensitivity</li>
+            </ol>
+            <li>Arctic Inuit infants exposed to p,p'-DDE, HCB, dieldrin → elevated risk of <a href="https://www.healthline.com/health/ear-infections" target="_blank" class="term">otitis media</a>.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="hbox hbox-rose">
+        <div class="hbox-title" style="color:var(--accent-rose)">⚠️ Prenatal & Perinatal Concerns</div>
+        <ul>
+          <li>Pre-conception parental exposure associated with: fetal death, spontaneous abortion, early childhood cancer.</li>
+          <li>In-utero exposure increases risk of: <strong>growth retardation</strong> (small for gestational age, low birth weight, reduced length, small head circumference), congenital anomalies (eye, limb, CNS, heart defects).</li>
+          <li>Organochlorine residues detected in <strong>breast milk</strong> (DDT, HCB, HCH isomers) — breastfed babies are at the top of the food chain.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ─── PREVENTION ─── -->
+    <div class="section" id="pest-prevention">
+      <div class="section-header">
+        <div class="section-icon" style="background:rgba(93,217,140,0.1);">🛡️</div>
+        <div>
+          <div class="section-title" style="color:var(--accent-green)">Prevention & Management</div>
+          <div class="section-subtitle">Local · National · International</div>
+        </div>
+      </div>
+      <div class="divider" style="background:linear-gradient(90deg,var(--accent-green),transparent)"></div>
+
+      <div class="grid3">
+        <div class="card">
+          <div class="card-title" style="color:var(--accent-green)">🏠 Local Level</div>
+          <ul>
+            <li>Use pesticides only when benefits outweigh risks; try non-chemical pest control first (<a href="https://www.epa.gov/ipm" target="_blank" class="term">Integrated Pest Management — IPM</a>).</li>
+            <li>Store only in original containers with child-proof seals, in locked cabinets out of children's reach.</li>
+            <li>Always follow manufacturer safety precautions (gloves, masks, re-entry times).</li>
+            <li>Pregnant women must <span class="warn">not</span> apply pesticides. Re-entry times may be considerably longer for pregnant women and infants.</li>
+            <li>Use least hazardous chemical; prefer bait stations over sprays.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title" style="color:var(--accent-teal)">🏛️ National Level</div>
+          <ul>
+            <li>Education and licensing of pesticide applicators.</li>
+            <li>Bans and restrictions on highly toxic/persistent pesticides (e.g., organochlorine poisoning now rare in countries with domestic use bans).</li>
+            <li>US Food Quality Protection Act (1996): sets residue limits to protect most vulnerable populations (infants, children, fetuses).</li>
+            <li>Voluntary withdrawal of some pesticides (e.g., chlorpyrifos, diazinon) from domestic use.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title" style="color:var(--accent-purple)">🌍 International Level</div>
+          <ul>
+            <li><a href="https://www.pops.int/" target="_blank" class="term">Stockholm Convention</a> (2004): controls 9 POP pesticides; signed by 50+ countries.</li>
+            <li><a href="https://www.pic.int/" target="_blank" class="term">Rotterdam Convention</a> (1998): Prior Informed Consent — countries can refuse hazardous chemicals; covers 22 pesticides.</li>
+            <li>FAO, WHO, ILO promoting safer use and non-chemical alternatives globally.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end content-wrap -->
+
+  <!-- CTA BAR -->
+  <div class="cta-bar" id="questions">
+    <div class="cta-text">
+      <h3>🧪 Test Your Knowledge</h3>
+      <p>Ready to consolidate what you've studied? Attempt practice questions covering metal toxicology and pesticide toxicology — from mechanisms to clinical management.</p>
+    </div>
+    <a href="toxicology_questions.html" class="cta-btn">
+      📝 Take Practice Questions →
+    </a>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div>
+      <strong>Toxicology Study Notes</strong> · MLS Programme<br>
+      Compiled from lecture materials — Metal Toxicology &amp; Pesticide Toxicology.<br>
+      Hyperlinked medical terms direct to external reference sources for deeper reading.
+    </div>
+    <div style="text-align:right">
+      Content sourced from academic lecture notes.<br>
+      External links for educational reference only.<br>
+      <a href="https://www.who.int/news-room/fact-sheets/detail/pesticides" target="_blank">WHO Pesticides Fact Sheet</a> ·
+      <a href="https://www.atsdr.cdc.gov/toxfaqs/index.asp" target="_blank">ATSDR ToxFAQs</a>
+    </div>
+  </footer>
+
+</div><!-- end main -->
+
+<script>
+  let sidebarVisible = true;
+
+  function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const main = document.getElementById('main');
+    const btn = document.getElementById('toggle-btn');
+
+    // mobile detection
+    const isMobile = window.innerWidth <= 900;
+
+    if (isMobile) {
+      sidebar.classList.toggle('open');
+      const isOpen = sidebar.classList.contains('open');
+      btn.textContent = isOpen ? '✕' : '☰';
+    } else {
+      sidebarVisible = !sidebarVisible;
+      sidebar.classList.toggle('hidden', !sidebarVisible);
+      main.classList.toggle('full', !sidebarVisible);
+      btn.classList.toggle('shifted', sidebarVisible);
+      btn.textContent = sidebarVisible ? '☰' : '»';
+    }
+  }
+
+  function setActive(el) {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  // Scroll spy
+  const sections = ['arsenic','mercury','lead','thallium','pest-intro','pest-exposure','pest-kinetics','pest-toxicity','pest-chronic','pest-prevention'];
+  const navLinks = {};
+  sections.forEach(id => {
+    const link = document.querySelector(`.nav-item[href="#${id}"]`);
+    if (link) navLinks[id] = link;
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        if (navLinks[id]) navLinks[id].classList.add('active');
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el);
+  });
+
+  // Init toggle button position
+  document.getElementById('toggle-btn').classList.add('shifted');
+
+  // Theme toggle
+  function toggleTheme() {
+    const isLight = document.body.classList.toggle('light');
+    document.getElementById('theme-btn').textContent = isLight ? '☀️' : '🌙';
+    localStorage.setItem('tox-theme', isLight ? 'light' : 'dark');
+  }
+  // Restore saved theme
+  if (localStorage.getItem('tox-theme') === 'light') {
+    document.body.classList.add('light');
+    document.getElementById('theme-btn').textContent = '☀️';
+  }
+
+  // Close mobile sidebar on nav click
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      if (window.innerWidth <= 900) {
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('toggle-btn').textContent = '☰';
+      }
+    });
+  });
+
+  // Close sidebar when clicking outside on mobile
+  document.getElementById('main').addEventListener('click', () => {
+    if (window.innerWidth <= 900 && document.getElementById('sidebar').classList.contains('open')) {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('toggle-btn').textContent = '☰';
+    }
+  });
+</script>
+
+</body>
+</html>

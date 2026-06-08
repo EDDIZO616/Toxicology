@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Environmental Pollution — Practice Questions</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+<style>
+  :root,[data-theme="light"]{
+    --air:#1a6b8a;--water:#0d7c66;--odour:#7b3fa0;--indoor:#b5560a;
+    --coral:#c0392b;--gold:#d4a017;--green:#2e7d32;
+    --bg:#f7f4ef;--card:#ffffff;--text:#1e1e1e;--muted:#555;
+    --radius:12px;--table-even:#f7f4ef;--table-hover:#eef5fb;
+    --dash-bg:#ffffff;--dash-nav-hover:#f0f7fb;--dash-border:#f0f0f0;
+    --intro-bg:linear-gradient(120deg,#e8f4f8,#e6f5f0);--intro-text:#333;
+    --hr-color:#ddd;--callout-info-bg:#e8f4f8;--callout-warn-bg:#fdf3e3;
+    --callout-danger-bg:#fdecea;--callout-green-bg:#e6f5f0;
+    --toggle-bg:#1a6b8a;--toggle-knob:#ffffff;
+    --shadow:0 2px 12px rgba(0,0,0,.07);--dash-shadow:0 8px 32px rgba(0,0,0,.18);
+    --correct-bg:#e6f4ea;--correct-border:#2e7d32;--correct-text:#1b5e20;
+    --wrong-bg:#fdecea;--wrong-border:#c0392b;--wrong-text:#7f1d1d;
+    --option-hover:#f0f7fb;--option-border:#ddd;
+    --progress-bg:#e0e0e0;--section-num-bg:#0d3b52;
+  }
+  [data-theme="dark"]{
+    --air:#4db8e8;--water:#26c99e;--odour:#c07fe0;--indoor:#f0934a;
+    --coral:#e86b61;--gold:#f0bc3a;--green:#5cd87c;
+    --bg:#121620;--card:#1e2535;--text:#e4e8f0;--muted:#9aa3b5;
+    --table-even:#171e2e;--table-hover:#243048;
+    --dash-bg:#1a2030;--dash-nav-hover:#243050;--dash-border:#2a3348;
+    --intro-bg:linear-gradient(120deg,#162535,#152a28);--intro-text:#cfd8e8;
+    --hr-color:#2e3a50;--callout-info-bg:#162535;--callout-warn-bg:#2a2010;
+    --callout-danger-bg:#2a1518;--callout-green-bg:#122a22;
+    --toggle-bg:#4db8e8;--toggle-knob:#121620;
+    --shadow:0 2px 12px rgba(0,0,0,.35);--dash-shadow:0 8px 32px rgba(0,0,0,.55);
+    --correct-bg:#0d2e18;--correct-border:#26c99e;--correct-text:#a7f3d0;
+    --wrong-bg:#2a1518;--wrong-border:#e86b61;--wrong-text:#fca5a5;
+    --option-hover:#243048;--option-border:#2a3348;
+    --progress-bg:#2a3348;--section-num-bg:#091e2b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Source Serif 4',serif;background:var(--bg);color:var(--text);font-size:17px;line-height:1.8;transition:background .3s,color .3s;}
+
+  /* THEME TOGGLE */
+  .theme-toggle{position:fixed;top:20px;right:20px;z-index:1000;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--hr-color);border-radius:30px;padding:6px 12px 6px 8px;box-shadow:var(--shadow);cursor:pointer;transition:all .3s;font-family:'Source Serif 4',serif;font-size:.82rem;color:var(--text);}
+  .theme-toggle:hover{box-shadow:0 4px 16px rgba(0,0,0,.2);transform:translateY(-1px);}
+  .toggle-track{width:38px;height:20px;background:var(--toggle-bg);border-radius:20px;position:relative;transition:background .3s;flex-shrink:0;}
+  .toggle-knob{position:absolute;top:2px;left:2px;width:16px;height:16px;background:var(--toggle-knob);border-radius:50%;transition:transform .3s;}
+  [data-theme="dark"] .toggle-knob{transform:translateX(18px);}
+  [data-theme="light"] .toggle-moon{display:none;}
+  [data-theme="dark"] .toggle-sun{display:none;}
+
+  /* HEADER */
+  header{background:linear-gradient(135deg,#0d3b52 0%,#1a6b8a 45%,#0d7c66 100%);color:#fff;padding:52px 32px 40px;text-align:center;position:relative;overflow:hidden;}
+  [data-theme="dark"] header{background:linear-gradient(135deg,#091e2b 0%,#0e4a64 45%,#0a5244 100%);}
+  header::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");}
+  header h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.2rem);letter-spacing:1px;position:relative;}
+  header p{margin-top:10px;font-size:1rem;opacity:.85;position:relative;font-style:italic;}
+  .back-link{display:inline-block;margin-top:18px;padding:8px 22px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.4);border-radius:30px;color:#fff;text-decoration:none;font-size:.9rem;letter-spacing:.5px;transition:background .2s;position:relative;}
+  .back-link:hover{background:rgba(255,255,255,0.28);}
+
+  /* PROGRESS BAR */
+  .progress-wrap{background:var(--card);padding:16px 24px;border-bottom:1px solid var(--hr-color);position:sticky;top:0;z-index:100;box-shadow:var(--shadow);}
+  .progress-label{display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted);margin-bottom:6px;}
+  .progress-bar{height:8px;background:var(--progress-bg);border-radius:8px;overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--air),var(--water));border-radius:8px;transition:width .4s ease;}
+
+  /* SCORE DASHBOARD */
+  .score-dash{background:var(--card);border-radius:var(--radius);padding:20px 24px;margin-bottom:24px;box-shadow:var(--shadow);display:grid;grid-template-columns:repeat(3,1fr);gap:12px;text-align:center;}
+  .score-item{padding:12px;border-radius:8px;}
+  .score-item.mcq{background:var(--callout-info-bg);border:1px solid var(--air);}
+  .score-item.short{background:var(--callout-warn-bg);border:1px solid var(--gold);}
+  .score-item.case{background:var(--callout-green-bg);border:1px solid var(--water);}
+  .score-num{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;}
+  .score-num.air{color:var(--air);}
+  .score-num.gold{color:var(--gold);}
+  .score-num.water{color:var(--water);}
+  .score-label{font-size:.78rem;color:var(--muted);margin-top:2px;}
+  @media(max-width:500px){.score-dash{grid-template-columns:1fr;}}
+
+  /* MAIN */
+  main{max-width:900px;margin:0 auto;padding:40px 24px 60px;}
+
+  /* SECTION TITLES */
+  .section-title{display:flex;align-items:center;gap:12px;font-family:'Playfair Display',serif;font-size:1.7rem;padding:12px 20px;border-radius:var(--radius);color:#fff;margin-bottom:24px;}
+  .section-title.air{background:linear-gradient(90deg,var(--air),#2a9fc9);}
+  .section-title.gold{background:linear-gradient(90deg,#b8860b,var(--gold));}
+  .section-title.green{background:linear-gradient(90deg,#1b5e20,var(--green));}
+  [data-theme="dark"] .section-title.air{background:linear-gradient(90deg,#0e4a64,#1a7a9a);}
+  [data-theme="dark"] .section-title.gold{background:linear-gradient(90deg,#7a5e00,#b8920a);}
+  [data-theme="dark"] .section-title.green{background:linear-gradient(90deg,#0d3018,#1a6030);}
+
+  /* SECTION NUMBER BADGE */
+  .sec-num{background:var(--section-num-bg);color:#fff;border-radius:50%;width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:700;flex-shrink:0;}
+
+  /* CARDS */
+  .card{background:var(--card);border-radius:var(--radius);padding:22px 26px;margin-bottom:20px;box-shadow:var(--shadow);transition:background .3s,box-shadow .3s;}
+  hr.fancy{border:none;height:2px;background:linear-gradient(90deg,transparent,var(--hr-color),transparent);margin:40px 0;}
+
+  /* MCQ QUESTION */
+  .q-card{background:var(--card);border-radius:var(--radius);padding:22px 26px;margin-bottom:18px;box-shadow:var(--shadow);border-left:4px solid transparent;transition:border-color .3s,background .3s;}
+  .q-card.correct{border-left-color:var(--correct-border);}
+  .q-card.wrong{border-left-color:var(--wrong-border);}
+  .q-num{font-family:'Playfair Display',serif;font-size:.82rem;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+  .q-text{font-size:1rem;font-weight:600;color:var(--text);margin-bottom:14px;line-height:1.6;}
+  .options{display:flex;flex-direction:column;gap:8px;}
+  .option{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border:1.5px solid var(--option-border);border-radius:8px;cursor:pointer;transition:background .18s,border-color .18s;font-size:.93rem;line-height:1.5;}
+  .option:hover:not(.locked){background:var(--option-hover);border-color:var(--air);}
+  .option input[type=radio]{accent-color:var(--air);margin-top:3px;flex-shrink:0;}
+  .option.correct-ans{background:var(--correct-bg);border-color:var(--correct-border);color:var(--correct-text);}
+  .option.wrong-ans{background:var(--wrong-bg);border-color:var(--wrong-border);color:var(--wrong-text);}
+  .option.locked{cursor:default;}
+  .feedback{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.9rem;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:var(--correct-bg);color:var(--correct-text);border:1px solid var(--correct-border);}
+  .feedback.wrong{background:var(--wrong-bg);color:var(--wrong-text);border:1px solid var(--wrong-border);}
+  .feedback-icon{font-size:1.1rem;margin-right:6px;}
+
+  /* SHORT ANSWER */
+  .short-card{background:var(--card);border-radius:var(--radius);padding:24px 26px;margin-bottom:20px;box-shadow:var(--shadow);border-left:4px solid var(--gold);}
+  .short-marks{display:inline-block;background:var(--callout-warn-bg);color:var(--gold);font-size:.78rem;font-weight:700;padding:2px 8px;border-radius:12px;margin-bottom:8px;border:1px solid var(--gold);}
+  .short-card textarea{width:100%;min-height:100px;padding:10px 14px;border:1.5px solid var(--option-border);border-radius:8px;font-family:'Source Serif 4',serif;font-size:.92rem;background:var(--bg);color:var(--text);resize:vertical;margin-top:10px;transition:border-color .2s;}
+  .short-card textarea:focus{outline:none;border-color:var(--gold);}
+  .reveal-btn{margin-top:10px;padding:8px 20px;background:var(--gold);color:#fff;border:none;border-radius:30px;font-family:'Source Serif 4',serif;font-size:.88rem;font-weight:600;cursor:pointer;transition:opacity .2s;}
+  .reveal-btn:hover{opacity:.85;}
+  .model-ans{margin-top:12px;padding:14px 16px;background:var(--callout-warn-bg);border:1px solid var(--gold);border-radius:8px;font-size:.92rem;display:none;line-height:1.7;}
+  .model-ans.show{display:block;}
+  .model-ans strong{display:block;color:var(--gold);margin-bottom:6px;font-size:.85rem;text-transform:uppercase;letter-spacing:.5px;}
+
+  /* CASE STUDY */
+  .case-card{background:var(--card);border-radius:var(--radius);padding:24px 26px;margin-bottom:20px;box-shadow:var(--shadow);border-left:4px solid var(--water);}
+  .case-marks{display:inline-block;background:var(--callout-green-bg);color:var(--water);font-size:.78rem;font-weight:700;padding:2px 8px;border-radius:12px;margin-bottom:8px;border:1px solid var(--water);}
+  .case-scenario{background:var(--callout-green-bg);border:1px solid var(--water);border-radius:8px;padding:14px 16px;margin-bottom:14px;font-style:italic;font-size:.95rem;line-height:1.7;}
+  .case-card textarea{width:100%;min-height:130px;padding:10px 14px;border:1.5px solid var(--option-border);border-radius:8px;font-family:'Source Serif 4',serif;font-size:.92rem;background:var(--bg);color:var(--text);resize:vertical;margin-top:10px;transition:border-color .2s;}
+  .case-card textarea:focus{outline:none;border-color:var(--water);}
+  .reveal-btn.water{background:var(--water);}
+  .model-ans.water{background:var(--callout-green-bg);border-color:var(--water);}
+  .model-ans.water strong{color:var(--water);}
+
+  /* MCQ SUBMIT */
+  .mcq-submit-wrap{text-align:center;margin:28px 0;}
+  .submit-btn{padding:14px 40px;background:linear-gradient(90deg,var(--air),var(--water));color:#fff;border:none;border-radius:40px;font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.2);transition:transform .2s,box-shadow .2s;}
+  .submit-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.3);}
+
+  /* RESULTS BANNER */
+  .results-banner{display:none;background:linear-gradient(120deg,#0d3b52,#1a6b8a,#0d7c66);border-radius:var(--radius);padding:28px;text-align:center;color:#fff;margin:20px 0;}
+  [data-theme="dark"] .results-banner{background:linear-gradient(120deg,#091e2b,#0e4a64,#0a5244);}
+  .results-banner.show{display:block;}
+  .results-banner h3{font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:8px;}
+  .results-score{font-size:3rem;font-family:'Playfair Display',serif;font-weight:900;margin:10px 0;}
+  .results-banner p{opacity:.88;font-size:.95rem;}
+
+  /* BACK TO TOP */
+  .back-top{display:block;text-align:center;margin:30px auto 0;padding:10px 28px;background:var(--card);border:1.5px solid var(--air);color:var(--air);border-radius:30px;text-decoration:none;font-size:.9rem;font-weight:600;width:fit-content;transition:background .2s;}
+  .back-top:hover{background:var(--callout-info-bg);}
+
+  /* DOT LIST */
+  .dot-list{list-style:none;padding:0;}
+  .dot-list li{padding:4px 0 4px 22px;position:relative;color:var(--text);font-size:.95rem;}
+  .dot-list li::before{content:'◉';position:absolute;left:0;font-size:.65rem;top:8px;color:var(--gold);}
+
+  /* FOOTER */
+  footer{background:#0d3b52;color:#ccc;text-align:center;padding:28px 20px;font-size:.85rem;line-height:1.8;}
+  [data-theme="dark"] footer{background:#060f18;}
+  footer strong{color:#fff;}
+  footer a{color:#88d4e8;text-decoration:none;}
+
+  /* INTRO CARD */
+  .intro-card{background:var(--intro-bg);border-left:5px solid var(--air);border-radius:var(--radius);padding:24px 28px;margin-bottom:40px;}
+  .intro-card h2{font-family:'Playfair Display',serif;font-size:1.4rem;color:#0d3b52;margin-bottom:10px;}
+  [data-theme="dark"] .intro-card h2{color:var(--air);}
+  .intro-card p{color:var(--intro-text);}
+
+  @media(max-width:600px){
+    .section-title{font-size:1.3rem;padding:10px 14px;}
+    .q-card,.short-card,.case-card{padding:16px 16px;}
+    main{padding:24px 14px 50px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- THEME TOGGLE -->
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+  <div class="toggle-track"><div class="toggle-knob"></div></div>
+  <span class="toggle-sun">☀️</span>
+  <span class="toggle-moon">🌙</span>
+  <span id="toggleLabel">Light</span>
+</button>
+
+<!-- HEADER -->
+<header>
+  <h1>🎯 Practice Questions</h1>
+  <p>Environmental Pollution &nbsp;|&nbsp; 30 MCQs · 5 Short Answer · 5 Case Studies</p>
+  <a class="back-link" href="environmental-pollution.html">← Back to Study Notes</a>
+</header>
+
+<!-- STICKY PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-label">
+    <span>MCQ Progress</span>
+    <span id="progressText">0 / 30 answered</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+</div>
+
+<main>
+
+  <!-- INTRO -->
+  <div class="intro-card">
+    <h2>How to Use This Paper</h2>
+    <p>This practice paper contains <strong>three sections</strong>. Section A has 30 multiple-choice questions — select an answer for instant feedback. Sections B and C have written questions; type your response then click <em>Reveal Model Answer</em> to compare. Submit Section A at the end for a full score.</p>
+  </div>
+
+  <!-- SCORE DASHBOARD -->
+  <div class="score-dash" id="scoreDash" style="display:none;">
+    <div class="score-item mcq">
+      <div class="score-num air" id="mcqScore">0/30</div>
+      <div class="score-label">MCQ Score</div>
+    </div>
+    <div class="score-item short">
+      <div class="score-num gold">25</div>
+      <div class="score-label">Short Ans. (max)</div>
+    </div>
+    <div class="score-item case">
+      <div class="score-num water">25</div>
+      <div class="score-label">Case Studies (max)</div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION A: MCQs ===== -->
+  <section id="mcq-section">
+    <div class="section-title air">
+      <span class="sec-num">A</span>
+      Section A — Multiple Choice Questions
+      <span style="font-size:.85rem;opacity:.85;font-family:'Source Serif 4',serif;font-style:italic;">(30 × 1 mark)</span>
+    </div>
+
+    <div id="mcq-container">
+
+      <!-- Q1 -->
+      <div class="q-card" id="q1">
+        <div class="q-num">Question 1</div>
+        <div class="q-text">The word "environment" is derived from the French word meaning:</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q1" value="A"> A. To pollute</label>
+          <label class="option"><input type="radio" name="q1" value="B"> B. To surround</label>
+          <label class="option"><input type="radio" name="q1" value="C"> C. To protect</label>
+          <label class="option"><input type="radio" name="q1" value="D"> D. To breathe</label>
+        </div>
+        <div class="feedback" id="fb1"></div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="q-card" id="q2">
+        <div class="q-num">Question 2</div>
+        <div class="q-text">Which of the following is an abiotic component of the environment?</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q2" value="A"> A. Bacteria</label>
+          <label class="option"><input type="radio" name="q2" value="B"> B. Fungi</label>
+          <label class="option"><input type="radio" name="q2" value="C"> C. Soil</label>
+          <label class="option"><input type="radio" name="q2" value="D"> D. Algae</label>
+        </div>
+        <div class="feedback" id="fb2"></div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="q-card" id="q3">
+        <div class="q-num">Question 3</div>
+        <div class="q-text">Environmental pollution is defined as any undesirable change in the physical, chemical, or biological characteristics of:</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q3" value="A"> A. Air only</label>
+          <label class="option"><input type="radio" name="q3" value="B"> B. Water only</label>
+          <label class="option"><input type="radio" name="q3" value="C"> C. Air, water, or soil</label>
+          <label class="option"><input type="radio" name="q3" value="D"> D. Soil and water only</label>
+        </div>
+        <div class="feedback" id="fb3"></div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="q-card" id="q4">
+        <div class="q-num">Question 4</div>
+        <div class="q-text">Primary pollutants are:</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q4" value="A"> A. Formed by reactions between secondary pollutants</label>
+          <label class="option"><input type="radio" name="q4" value="B"> B. Emitted directly from a source into the atmosphere</label>
+          <label class="option"><input type="radio" name="q4" value="C"> C. Only found indoors</label>
+          <label class="option"><input type="radio" name="q4" value="D"> D. Produced by natural sources only</label>
+        </div>
+        <div class="feedback" id="fb4"></div>
+      </div>
+
+      <!-- Q5 -->
+      <div class="q-card" id="q5">
+        <div class="q-num">Question 5</div>
+        <div class="q-text">Which of the following is an example of a secondary pollutant?</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q5" value="A"> A. Carbon monoxide (CO)</label>
+          <label class="option"><input type="radio" name="q5" value="B"> B. Sulphur dioxide (SO₂)</label>
+          <label class="option"><input type="radio" name="q5" value="C"> C. Peroxyacetyl nitrate (PAN)</label>
+          <label class="option"><input type="radio" name="q5" value="D"> D. Suspended particulate matter (SPM)</label>
+        </div>
+        <div class="feedback" id="fb5"></div>
+      </div>
+
+      <!-- Q6 -->
+      <div class="q-card" id="q6">
+        <div class="q-num">Question 6</div>
+        <div class="q-text">Carbon monoxide (CO) is dangerous because it binds to haemoglobin with approximately how many times greater affinity than oxygen?</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q6" value="A"> A. 25 times</label>
+          <label class="option"><input type="radio" name="q6" value="B"> B. 100 times</label>
+          <label class="option"><input type="radio" name="q6" value="C"> C. 250 times</label>
+          <label class="option"><input type="radio" name="q6" value="D"> D. 500 times</label>
+        </div>
+        <div class="feedback" id="fb6"></div>
+      </div>
+
+      <!-- Q7 -->
+      <div class="q-card" id="q7">
+        <div class="q-num">Question 7</div>
+        <div class="q-text">Which natural source releases radioactive Radon gas into the environment?</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q7" value="A"> A. Forest fires</label>
+          <label class="option"><input type="radio" name="q7" value="B"> B. Pollen grains</label>
+          <label class="option"><input type="radio" name="q7" value="C"> C. Soil and rock</label>
+          <label class="option"><input type="radio" name="q7" value="D"> D. Volcanic eruptions only</label>
+        </div>
+        <div class="feedback" id="fb7"></div>
+      </div>
+
+      <!-- Q8 -->
+      <div class="q-card" id="q8">
+        <div class="q-num">Question 8</div>
+        <div class="q-text">Indoor air pollution from building materials, fuel combustion, and tobacco smoke is most accurately described as:</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q8" value="A"> A. Point-source pollution</label>
+          <label class="option"><input type="radio" name="q8" value="B"> B. Secondary pollution</label>
+          <label class="option"><input type="radio" name="q8" value="C"> C. The presence of contaminants inside enclosed spaces</label>
+          <label class="option"><input type="radio" name="q8" value="D"> D. Eutrophication</label>
+        </div>
+        <div class="feedback" id="fb8"></div>
+      </div>
+
+      <!-- Q9 -->
+      <div class="q-card" id="q9">
+        <div class="q-num">Question 9</div>
+        <div class="q-text">Which indoor pollutant is closely linked to the development of lung cancer and is found in pipe insulation and ceiling tiles?</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q9" value="A"> A. Styrene</label>
+          <label class="option"><input type="radio" name="q9" value="B"> B. Tetrachloroethylene</label>
+          <label class="option"><input type="radio" name="q9" value="C"> C. Asbestos</label>
+          <label class="option"><input type="radio" name="q9" value="D"> D. 1,1,1-Trichloroethane</label>
+        </div>
+        <div class="feedback" id="fb9"></div>
+      </div>
+
+      <!-- Q10 -->
+      <div class="q-card" id="q10">
+        <div class="q-num">Question 10</div>
+        <div class="q-text">Formaldehyde found in carpets and particle boards primarily causes:</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q10" value="A"> A. Liver and kidney damage</label>
+          <label class="option"><input type="radio" name="q10" value="B"> B. Allergic reactions</label>
+          <label class="option"><input type="radio" name="q10" value="C"> C. Dizziness and breathing irregularities</label>
+          <label class="option"><input type="radio" name="q10" value="D"> D. Nerve disorders</label>
+        </div>
+        <div class="feedback" id="fb10"></div>
+      </div>
+
+      <!-- Q11 -->
+      <div class="q-card" id="q11">
+        <div class="q-num">Question 11</div>
+        <div class="q-text">Which of the following is NOT an effective solution to indoor air pollution?</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q11" value="A"> A. Using adjustable fresh air vents</label>
+          <label class="option"><input type="radio" name="q11" value="B"> B. Restricting smoking to well-ventilated areas</label>
+          <label class="option"><input type="radio" name="q11" value="C"> C. Sealing all windows to prevent outdoor air entry</label>
+          <label class="option"><input type="radio" name="q11" value="D"> D. Installing efficient chimneys for wood-burning stoves</label>
+        </div>
+        <div class="feedback" id="fb11"></div>
+      </div>
+
+      <!-- Q12 -->
+      <div class="q-card" id="q12">
+        <div class="q-num">Question 12</div>
+        <div class="q-text">Odour pollution is defined as the release of offensive odours of objectionable proportions into the environment. Which of the following is a major industrial source?</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q12" value="A"> A. Aquariums</label>
+          <label class="option"><input type="radio" name="q12" value="B"> B. Tanneries and slaughterhouses</label>
+          <label class="option"><input type="radio" name="q12" value="C"> C. Solar power plants</label>
+          <label class="option"><input type="radio" name="q12" value="D"> D. Wind turbines</label>
+        </div>
+        <div class="feedback" id="fb12"></div>
+      </div>
+
+      <!-- Q13 -->
+      <div class="q-card" id="q13">
+        <div class="q-num">Question 13</div>
+        <div class="q-text">Which health effect is specifically associated with odour pollution?</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q13" value="A"> A. Asbestosis</label>
+          <label class="option"><input type="radio" name="q13" value="B"> B. Eutrophication</label>
+          <label class="option"><input type="radio" name="q13" value="C"> C. Insomnia</label>
+          <label class="option"><input type="radio" name="q13" value="D"> D. Leaf drop in plants</label>
+        </div>
+        <div class="feedback" id="fb13"></div>
+      </div>
+
+      <!-- Q14 -->
+      <div class="q-card" id="q14">
+        <div class="q-num">Question 14</div>
+        <div class="q-text">Water pollution that originates from a single identifiable source such as a factory discharge pipe is called:</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q14" value="A"> A. Non-point-source pollution</label>
+          <label class="option"><input type="radio" name="q14" value="B"> B. Diffuse pollution</label>
+          <label class="option"><input type="radio" name="q14" value="C"> C. Point-source pollution</label>
+          <label class="option"><input type="radio" name="q14" value="D"> D. Thermal pollution</label>
+        </div>
+        <div class="feedback" id="fb14"></div>
+      </div>
+
+      <!-- Q15 -->
+      <div class="q-card" id="q15">
+        <div class="q-num">Question 15</div>
+        <div class="q-text">Eutrophication in water bodies is primarily caused by excess:</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q15" value="A"> A. Heavy metals</label>
+          <label class="option"><input type="radio" name="q15" value="B"> B. Nitrogen and phosphorus</label>
+          <label class="option"><input type="radio" name="q15" value="C"> C. Carbon dioxide</label>
+          <label class="option"><input type="radio" name="q15" value="D"> D. Suspended solids</label>
+        </div>
+        <div class="feedback" id="fb15"></div>
+      </div>
+
+      <!-- Q16 -->
+      <div class="q-card" id="q16">
+        <div class="q-num">Question 16</div>
+        <div class="q-text">An average person breathes approximately how many times per day?</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q16" value="A"> A. 8,000 times</label>
+          <label class="option"><input type="radio" name="q16" value="B"> B. 15,000 times</label>
+          <label class="option"><input type="radio" name="q16" value="C"> C. 22,000 times</label>
+          <label class="option"><input type="radio" name="q16" value="D"> D. 30,000 times</label>
+        </div>
+        <div class="feedback" id="fb16"></div>
+      </div>
+
+      <!-- Q17 -->
+      <div class="q-card" id="q17">
+        <div class="q-num">Question 17</div>
+        <div class="q-text">SO₂ reacts with oxygen and moisture to produce which highly corrosive acid?</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q17" value="A"> A. Hydrochloric acid (HCl)</label>
+          <label class="option"><input type="radio" name="q17" value="B"> B. Nitric acid (HNO₃)</label>
+          <label class="option"><input type="radio" name="q17" value="C"> C. Sulphuric acid (H₂SO₄)</label>
+          <label class="option"><input type="radio" name="q17" value="D"> D. Carbonic acid (H₂CO₃)</label>
+        </div>
+        <div class="feedback" id="fb17"></div>
+      </div>
+
+      <!-- Q18 -->
+      <div class="q-card" id="q18">
+        <div class="q-num">Question 18</div>
+        <div class="q-text">Which plant symptom is characteristic of SO₂ damage?</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q18" value="A"> A. Mottled yellow and black spots on leaves</label>
+          <label class="option"><input type="radio" name="q18" value="B"> B. Leaf tissue turning white, brown, or yellow</label>
+          <label class="option"><input type="radio" name="q18" value="C"> C. Cracking of stems</label>
+          <label class="option"><input type="radio" name="q18" value="D"> D. Root rot</label>
+        </div>
+        <div class="feedback" id="fb18"></div>
+      </div>
+
+      <!-- Q19 -->
+      <div class="q-card" id="q19">
+        <div class="q-num">Question 19</div>
+        <div class="q-text">Which pollutant causes cracking of rubber and electrical insulations?</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q19" value="A"> A. Suspended particulate matter (SPM)</label>
+          <label class="option"><input type="radio" name="q19" value="B"> B. Carbon monoxide (CO)</label>
+          <label class="option"><input type="radio" name="q19" value="C"> C. Ozone (O₃) and PAN</label>
+          <label class="option"><input type="radio" name="q19" value="D"> D. Hydrogen sulphide (H₂S)</label>
+        </div>
+        <div class="feedback" id="fb19"></div>
+      </div>
+
+      <!-- Q20 -->
+      <div class="q-card" id="q20">
+        <div class="q-num">Question 20</div>
+        <div class="q-text">A Gravitational Settling Chamber is used to remove particles of what size?</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q20" value="A"> A. Less than 1 µm</label>
+          <label class="option"><input type="radio" name="q20" value="B"> B. Greater than 50 µm</label>
+          <label class="option"><input type="radio" name="q20" value="C"> C. Between 10–20 µm</label>
+          <label class="option"><input type="radio" name="q20" value="D"> D. All particle sizes equally</label>
+        </div>
+        <div class="feedback" id="fb20"></div>
+      </div>
+
+      <!-- Q21 -->
+      <div class="q-card" id="q21">
+        <div class="q-num">Question 21</div>
+        <div class="q-text">What is a key advantage of scrubbers as air pollution control equipment?</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q21" value="A"> A. They require no water</label>
+          <label class="option"><input type="radio" name="q21" value="B"> B. They can remove both particulates and gaseous pollutants simultaneously</label>
+          <label class="option"><input type="radio" name="q21" value="C"> C. They work best in cold climates</label>
+          <label class="option"><input type="radio" name="q21" value="D"> D. They are effective for all particle sizes without any disadvantage</label>
+        </div>
+        <div class="feedback" id="fb21"></div>
+      </div>
+
+      <!-- Q22 -->
+      <div class="q-card" id="q22">
+        <div class="q-num">Question 22</div>
+        <div class="q-text">Which branch of science studies chemical and biochemical phenomena in natural environments including sources, reactions, transport, and effects of chemical species?</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q22" value="A"> A. Geochemistry</label>
+          <label class="option"><input type="radio" name="q22" value="B"> B. Environmental Chemistry</label>
+          <label class="option"><input type="radio" name="q22" value="C"> C. Biochemistry</label>
+          <label class="option"><input type="radio" name="q22" value="D"> D. Industrial Chemistry</label>
+        </div>
+        <div class="feedback" id="fb22"></div>
+      </div>
+
+      <!-- Q23 -->
+      <div class="q-card" id="q23">
+        <div class="q-num">Question 23</div>
+        <div class="q-text">Which of the following is a biological indoor air pollutant?</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q23" value="A"> A. Styrene from carpets</label>
+          <label class="option"><input type="radio" name="q23" value="B"> B. 1,1,1-Trichloroethane from aerosols</label>
+          <label class="option"><input type="radio" name="q23" value="C"> C. Dust mites and pet dander</label>
+          <label class="option"><input type="radio" name="q23" value="D"> D. Tetrachloroethylene from dry-cleaning</label>
+        </div>
+        <div class="feedback" id="fb23"></div>
+      </div>
+
+      <!-- Q24 -->
+      <div class="q-card" id="q24">
+        <div class="q-num">Question 24</div>
+        <div class="q-text">Agricultural runoff containing fertilisers that enters rivers and lakes represents which type of water pollution?</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q24" value="A"> A. Point-source pollution</label>
+          <label class="option"><input type="radio" name="q24" value="B"> B. Thermal pollution</label>
+          <label class="option"><input type="radio" name="q24" value="C"> C. Non-point-source pollution</label>
+          <label class="option"><input type="radio" name="q24" value="D"> D. Marine pollution</label>
+        </div>
+        <div class="feedback" id="fb24"></div>
+      </div>
+
+      <!-- Q25 -->
+      <div class="q-card" id="q25">
+        <div class="q-num">Question 25</div>
+        <div class="q-text">Chronic (long-term) exposure to high levels of suspended particulate matter (SPM) and SO₂ primarily aggravates which diseases?</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q25" value="A"> A. Diabetes and hypertension</label>
+          <label class="option"><input type="radio" name="q25" value="B"> B. Bronchitis and asthma</label>
+          <label class="option"><input type="radio" name="q25" value="C"> C. Kidney stones and arthritis</label>
+          <label class="option"><input type="radio" name="q25" value="D"> D. Malaria and typhoid</label>
+        </div>
+        <div class="feedback" id="fb25"></div>
+      </div>
+
+      <!-- Q26 -->
+      <div class="q-card" id="q26">
+        <div class="q-num">Question 26</div>
+        <div class="q-text">The atmosphere, hydrosphere, lithosphere, and biosphere are the four basic components of the environment. The hydrosphere refers to:</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q26" value="A"> A. All living organisms</label>
+          <label class="option"><input type="radio" name="q26" value="B"> B. Rock and soil</label>
+          <label class="option"><input type="radio" name="q26" value="C"> C. The gaseous envelope around Earth</label>
+          <label class="option"><input type="radio" name="q26" value="D"> D. All water on Earth</label>
+        </div>
+        <div class="feedback" id="fb26"></div>
+      </div>
+
+      <!-- Q27 -->
+      <div class="q-card" id="q27">
+        <div class="q-num">Question 27</div>
+        <div class="q-text">Which measure is recommended for controlling water pollution in coastal and marine environments?</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q27" value="A"> A. Releasing untreated wastewater after dilution with seawater</label>
+          <label class="option"><input type="radio" name="q27" value="B"> B. Periodic analysis of coastal waste to detect pollution levels</label>
+          <label class="option"><input type="radio" name="q27" value="C"> C. Increasing the use of chemical fertilisers near coastlines</label>
+          <label class="option"><input type="radio" name="q27" value="D"> D. Encouraging unrestricted recreational use of beaches</label>
+        </div>
+        <div class="feedback" id="fb27"></div>
+      </div>
+
+      <!-- Q28 -->
+      <div class="q-card" id="q28">
+        <div class="q-num">Question 28</div>
+        <div class="q-text">Tetrachloroethylene, commonly used in dry-cleaning fluid, is associated with which health effects?</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q28" value="A"> A. Lung cancer and heart disease only</label>
+          <label class="option"><input type="radio" name="q28" value="B"> B. Kidney and liver damage, nerve disorders, and cancer</label>
+          <label class="option"><input type="radio" name="q28" value="C"> C. Allergic reactions and eye irritation only</label>
+          <label class="option"><input type="radio" name="q28" value="D"> D. Dizziness and breathing irregularities only</label>
+        </div>
+        <div class="feedback" id="fb28"></div>
+      </div>
+
+      <!-- Q29 -->
+      <div class="q-card" id="q29">
+        <div class="q-num">Question 29</div>
+        <div class="q-text">Ozone (O₃) damage to plants appears as:</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q29" value="A"> A. Uniform yellowing of entire leaf surface</label>
+          <label class="option"><input type="radio" name="q29" value="B"> B. White or brown streaks along leaf veins</label>
+          <label class="option"><input type="radio" name="q29" value="C"> C. Mottled yellow, black, or brown spots and eventual leaf drop</label>
+          <label class="option"><input type="radio" name="q29" value="D"> D. Wilting of stems at ground level</label>
+        </div>
+        <div class="feedback" id="fb29"></div>
+      </div>
+
+      <!-- Q30 -->
+      <div class="q-card" id="q30">
+        <div class="q-num">Question 30</div>
+        <div class="q-text">The use of Compressed Natural Gas (CNG) as a fuel is recommended as a pollution control measure because:</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="q30" value="A"> A. It produces more energy per unit than coal</label>
+          <label class="option"><input type="radio" name="q30" value="B"> B. It is a cleaner fuel that reduces emissions compared to petrol and diesel</label>
+          <label class="option"><input type="radio" name="q30" value="C"> C. It is cheaper to produce than all other fuels</label>
+          <label class="option"><input type="radio" name="q30" value="D"> D. It eliminates the need for any exhaust treatment systems</label>
+        </div>
+        <div class="feedback" id="fb30"></div>
+      </div>
+
+    </div><!-- end mcq-container -->
+
+    <!-- RESULTS BANNER -->
+    <div class="results-banner" id="resultsBanner">
+      <h3>📊 Section A Results</h3>
+      <div class="results-score" id="resultsScore">–</div>
+      <p id="resultsMsg"></p>
+    </div>
+
+    <div class="mcq-submit-wrap">
+      <button class="submit-btn" id="submitMCQ">Submit Section A &amp; See Score →</button>
+    </div>
+
+  </section>
+
+  <hr class="fancy"/>
+
+  <!-- ===== SECTION B: SHORT ANSWER ===== -->
+  <section id="short-section">
+    <div class="section-title gold">
+      <span class="sec-num">B</span>
+      Section B — Short Answer Questions
+      <span style="font-size:.85rem;opacity:.85;font-family:'Source Serif 4',serif;font-style:italic;">(5 × 5 marks)</span>
+    </div>
+
+    <!-- SQ1 -->
+    <div class="short-card">
+      <div class="short-marks">5 Marks</div>
+      <div class="q-num">Short Answer Question 1</div>
+      <div class="q-text">Distinguish between primary and secondary air pollutants. Give two examples of each and explain how secondary pollutants are formed. <em>(5 marks)</em></div>
+      <textarea placeholder="Write your answer here…"></textarea>
+      <button class="reveal-btn" onclick="revealAnswer(this)">Reveal Model Answer</button>
+      <div class="model-ans">
+        <strong>Model Answer</strong>
+        <strong>Primary pollutants</strong> are emitted <em>directly</em> from a source into the atmosphere without any transformation. Examples include carbon monoxide (CO) emitted from vehicle exhaust, and sulphur dioxide (SO₂) released from burning coal in power stations. <em>(2 marks)</em><br><br>
+        <strong>Secondary pollutants</strong> are <em>not emitted directly</em> but are formed when primary pollutants react with each other or with other atmospheric components (sunlight, moisture, oxygen). Examples include ozone (O₃) and peroxyacetyl nitrate (PAN), both formed in photochemical smog reactions. <em>(2 marks)</em><br><br>
+        Formation of secondary pollutants involves photochemical reactions: for example, NO₂ absorbs ultraviolet sunlight and splits into NO and a reactive oxygen atom, which combines with O₂ to form O₃. PAN forms when reactive hydrocarbons react with NOₓ in sunlight. <em>(1 mark)</em>
+      </div>
+    </div>
+
+    <!-- SQ2 -->
+    <div class="short-card">
+      <div class="short-marks">5 Marks</div>
+      <div class="q-num">Short Answer Question 2</div>
+      <div class="q-text">List and explain FIVE health effects that can result from exposure to indoor air pollutants. <em>(5 marks)</em></div>
+      <textarea placeholder="Write your answer here…"></textarea>
+      <button class="reveal-btn" onclick="revealAnswer(this)">Reveal Model Answer</button>
+      <div class="model-ans">
+        <strong>Model Answer</strong>
+        Any five of the following, 1 mark each:<br><br>
+        1. <strong>Lung cancer</strong> — from exposure to asbestos fibres, radon-222 gas, tobacco smoke, and benzo-a-pyrene from woodstoves.<br>
+        2. <strong>Cardiovascular / heart disease</strong> — carbon monoxide from faulty furnaces displaces oxygen in the blood, stressing the heart; tobacco smoke also contributes.<br>
+        3. <strong>Nerve disorders</strong> — tetrachloroethylene (dry-cleaning fluid) and styrene cause damage to the central nervous system.<br>
+        4. <strong>Liver and kidney damage</strong> — styrene (carpets, plastics) and tetrachloroethylene damage these organs with chronic exposure.<br>
+        5. <strong>Allergic reactions, sneezing, and breathing difficulty</strong> — biological pollutants such as dust mites, fungal spores, pet dander, and formaldehyde from carpets trigger these responses.<br>
+        6. <strong>Carbon monoxide poisoning (headache and death)</strong> — CO binds haemoglobin 250× more strongly than O₂, preventing oxygen delivery to tissues.<br>
+        7. <strong>Asbestosis</strong> — scarring of lung tissue due to prolonged asbestos inhalation.
+      </div>
+    </div>
+
+    <!-- SQ3 -->
+    <div class="short-card">
+      <div class="short-marks">5 Marks</div>
+      <div class="q-num">Short Answer Question 3</div>
+      <div class="q-text">Explain the process of eutrophication in water bodies. Include the causes, the sequence of events, and the ultimate ecological impact. <em>(5 marks)</em></div>
+      <textarea placeholder="Write your answer here…"></textarea>
+      <button class="reveal-btn" onclick="revealAnswer(this)">Reveal Model Answer</button>
+      <div class="model-ans">
+        <strong>Model Answer</strong>
+        <strong>Cause (1 mark):</strong> Eutrophication is triggered by excessive input of plant nutrients — mainly <em>nitrogen and phosphorus</em> — into water bodies through agricultural fertiliser runoff and discharge of untreated wastewater/sewage.<br><br>
+        <strong>Sequence of events (3 marks):</strong><br>
+        Step 1 — Over-enrichment of the water with nutrients stimulates explosive and uncontrolled growth of algae and aquatic plants (algal bloom).<br>
+        Step 2 — As the dense algal layer blocks sunlight, submerged plants die. The dead algae and plants are decomposed by bacteria, a process that consumes large amounts of dissolved oxygen (DO).<br>
+        Step 3 — Dissolved oxygen levels drop dramatically, creating hypoxic or anoxic (oxygen-depleted) zones known as <em>dead zones</em>.<br><br>
+        <strong>Ecological impact (1 mark):</strong> Fish, invertebrates, and other aquatic organisms cannot survive in dead zones and die en masse, resulting in a catastrophic loss of aquatic biodiversity and collapse of the local ecosystem.
+      </div>
+    </div>
+
+    <!-- SQ4 -->
+    <div class="short-card">
+      <div class="short-marks">5 Marks</div>
+      <div class="q-num">Short Answer Question 4</div>
+      <div class="q-text">Describe the effects of air pollution on materials and structures. Mention at least four specific pollutants and the damage each causes. <em>(5 marks)</em></div>
+      <textarea placeholder="Write your answer here…"></textarea>
+      <button class="reveal-btn" onclick="revealAnswer(this)">Reveal Model Answer</button>
+      <div class="model-ans">
+        <strong>Model Answer</strong>
+        1. <strong>SO₂</strong> — in the presence of oxygen and moisture, converts to sulphuric acid (H₂SO₄). This acid corrodes metals such as iron and steel, and reacts with limestone, marble, and concrete, causing significant deterioration of buildings and monuments (acid rain effect). <em>(1.5 marks)</em><br><br>
+        2. <strong>Ozone (O₃) and PAN</strong> — these powerful oxidants cause cracking and brittleness in rubber products and electrical insulation materials, compromising their function. They also damage protective surface coatings and paints. <em>(1.5 marks)</em><br><br>
+        3. <strong>H₂S and aerosols</strong> — hydrogen sulphide tarnishes metals and discolours paints; aerosols deposit on surfaces and damage protective coatings. <em>(1 mark)</em><br><br>
+        4. <strong>Suspended Particulate Matter (SPM)</strong> — soils building facades and surfaces, physically erodes stonework over time, and damages artwork and cultural heritage objects. <em>(1 mark)</em>
+      </div>
+    </div>
+
+    <!-- SQ5 -->
+    <div class="short-card">
+      <div class="short-marks">5 Marks</div>
+      <div class="q-num">Short Answer Question 5</div>
+      <div class="q-text">Outline FIVE preventative (source control) measures that can be used to reduce outdoor air pollution. <em>(5 marks)</em></div>
+      <textarea placeholder="Write your answer here…"></textarea>
+      <button class="reveal-btn" onclick="revealAnswer(this)">Reveal Model Answer</button>
+      <div class="model-ans">
+        <strong>Model Answer</strong>
+        1 mark for each clearly explained measure:<br><br>
+        1. <strong>Selection of cleaner fuels</strong> — switching to low-sulphur coal in power plants and adopting Compressed Natural Gas (CNG) for vehicles significantly reduces SO₂ and NOₓ emissions.<br>
+        2. <strong>Modification of industrial processes</strong> — redesigning combustion systems, using catalytic converters, and improving process efficiency to minimise pollutant generation at source.<br>
+        3. <strong>Industrial zoning and site selection</strong> — locating factories, power plants, and industrial units away from densely populated residential areas to reduce human exposure.<br>
+        4. <strong>Removal of leaded petrol</strong> — phasing out leaded petrol eliminates lead as an airborne pollutant, preventing the neurological damage associated with lead exposure.<br>
+        5. <strong>Legislative and regulatory controls</strong> — implementing and enforcing industrial emission standards and environmental acts that set legal limits on the release of harmful gases from factories and vehicles.
+      </div>
+    </div>
+
+  </section>
+
+  <hr class="fancy"/>
+
+  <!-- ===== SECTION C: CASE STUDIES ===== -->
+  <section id="case-section">
+    <div class="section-title green">
+      <span class="sec-num">C</span>
+      Section C — Case Study Questions
+      <span style="font-size:.85rem;opacity:.85;font-family:'Source Serif 4',serif;font-style:italic;">(5 × 5 marks)</span>
+    </div>
+
+    <!-- CS1 -->
+    <div class="case-card">
+      <div class="case-marks">5 Marks — Case Study</div>
+      <div class="q-num">Case Study Question 1</div>
+      <div class="q-text" style="margin-bottom:12px;">Read the scenario and answer the question that follows.</div>
+      <div class="case-scenario">
+        A factory located near a river discharges its untreated wastewater containing high levels of nitrogen and phosphorus compounds directly into the river. Within a few months, residents downstream notice that the river has turned green and murky, fish are dying, and there is a foul smell. Environmental officers collect water samples and find dissolved oxygen levels near zero.
+      </div>
+      <strong style="font-size:.95rem;">Question:</strong> Using your knowledge of water pollution, explain what process has occurred in this river, the mechanism behind it, and recommend THREE measures the factory should adopt to prevent this situation. <em>(5 marks)</em>
+      <textarea placeholder="Write your answer here…"></textarea>
+      <button class="reveal-btn water" onclick="revealAnswer(this)">Reveal Model Answer</button>
+      <div class="model-ans water">
+        <strong>Model Answer</strong>
+        <strong>Process identified — Eutrophication (1 mark):</strong> The discharge of nitrogen and phosphorus-rich wastewater has caused eutrophication of the river.<br><br>
+        <strong>Mechanism (2 marks):</strong> The excess nutrients caused an explosive algal bloom (the green, murky appearance). As algae died and decomposed, bacteria consumed large amounts of dissolved oxygen, driving DO levels to near zero. This created a dead zone, explaining the mass fish death and foul smell from anaerobic decomposition.<br><br>
+        <strong>Three recommended control measures (2 marks — any two well-explained earn full marks):</strong><br>
+        1. Install a wastewater treatment plant to remove nutrients (nitrogen and phosphorus) through biological and chemical treatment before discharge.<br>
+        2. Reduce use of phosphorus-based chemicals in industrial processes and substitute with less harmful alternatives.<br>
+        3. Comply with discharge standards set by environmental regulators and regularly analyse discharged water for pollutant levels.<br>
+        4. Implement constructed wetlands as a natural tertiary treatment system to absorb excess nutrients before water enters the river.
+      </div>
+    </div>
+
+    <!-- CS2 -->
+    <div class="case-card">
+      <div class="case-marks">5 Marks — Case Study</div>
+      <div class="q-num">Case Study Question 2</div>
+      <div class="q-text" style="margin-bottom:12px;">Read the scenario and answer the question that follows.</div>
+      <div class="case-scenario">
+        A newly renovated office building in the city is fitted with wall-to-wall carpets, particle board furniture, and an energy-efficient sealed ventilation system. Within weeks of occupation, workers begin reporting persistent headaches, eye irritation, difficulty breathing, and one employee is diagnosed with an allergic respiratory condition. The building manager insists the building is "brand new and clean."
+      </div>
+      <strong style="font-size:.95rem;">Question:</strong> Identify the likely indoor pollutants responsible for these health effects. Explain the sources of each pollutant and suggest THREE practical solutions the building manager should implement. <em>(5 marks)</em>
+      <textarea placeholder="Write your answer here…"></textarea>
+      <button class="reveal-btn water" onclick="revealAnswer(this)">Reveal Model Answer</button>
+      <div class="model-ans water">
+        <strong>Model Answer</strong>
+        <strong>Likely pollutants and sources (2 marks):</strong><br>
+        1. <strong>Formaldehyde</strong> — released from new carpets, particle board furniture and adhesives. Causes allergic reactions, eye irritation, and respiratory problems.<br>
+        2. <strong>Styrene</strong> — from carpets and plastic components; can cause kidney and liver damage with prolonged exposure.<br>
+        3. <strong>Volatile Organic Compounds (VOCs)</strong> from paints, glues, and wood preservatives used in renovation — cause headaches and breathing difficulty.<br><br>
+        <strong>Compounding factor (1 mark):</strong> The sealed, energy-efficient ventilation system prevents dilution of indoor pollutants with fresh outdoor air, concentrating all contaminants at harmful levels (this phenomenon is called Sick Building Syndrome).<br><br>
+        <strong>Three practical solutions (2 marks):</strong><br>
+        1. Increase ventilation — install adjustable fresh air vents and increase the rate of outdoor air intake to dilute and flush out indoor contaminants.<br>
+        2. Set emission standards — specify low-formaldehyde and low-VOC materials for carpets, furniture, paints, and adhesives in future procurement.<br>
+        3. Allow the building to "off-gas" — after renovation, ventilate the building intensively for several weeks before occupation to allow volatile chemicals to dissipate.
+      </div>
+    </div>
+
+    <!-- CS3 -->
+    <div class="case-card">
+      <div class="case-marks">5 Marks — Case Study</div>
+      <div class="q-num">Case Study Question 3</div>
+      <div class="q-text" style="margin-bottom:12px;">Read the scenario and answer the question that follows.</div>
+      <div class="case-scenario">
+        A city's traffic authority reports that vehicle numbers have doubled over the past five years. Air quality monitoring stations record increasing levels of carbon monoxide (CO), nitrogen oxides (NOₓ), and suspended particulate matter (SPM). Hospitals report a rise in emergency admissions for respiratory and cardiovascular complaints, especially during morning and evening rush hours.
+      </div>
+      <strong style="font-size:.95rem;">Question:</strong> Explain the specific health mechanisms by which CO and NOₓ from vehicle emissions harm the human body. Propose FOUR measures the city authority could implement to reduce air pollution from vehicles. <em>(5 marks)</em>
+      <textarea placeholder="Write your answer here…"></textarea>
+      <button class="reveal-btn water" onclick="revealAnswer(this)">Reveal Model Answer</button>
+      <div class="model-ans water">
+        <strong>Model Answer</strong>
+        <strong>Health mechanism of CO (1.5 marks):</strong> Carbon monoxide (CO) binds to haemoglobin with 250 times greater affinity than oxygen, forming carboxyhaemoglobin. This prevents haemoglobin from carrying oxygen to body tissues, causing tissue hypoxia (oxygen starvation). Symptoms include headaches, dizziness, irregular heartbeat, and at high concentrations, death. People with existing heart conditions are especially vulnerable because the heart compensates by working harder.<br><br>
+        <strong>Health mechanism of NOₓ (1.5 marks):</strong> Nitrogen oxides (NO₂) irritate the respiratory tract, causing inflammation of the airways. Chronic exposure aggravates bronchitis and asthma. NOₓ also reacts in sunlight to produce secondary pollutants such as ozone (O₃) and PAN, which further irritate the eyes and airways and contribute to photochemical smog.<br><br>
+        <strong>Four measures for the city authority (2 marks — 0.5 each):</strong><br>
+        1. Mandate the use of CNG or electric vehicles for public transport and city fleets.<br>
+        2. Introduce and enforce vehicle emission standards requiring catalytic converters on all petrol and diesel vehicles.<br>
+        3. Implement congestion pricing or traffic demand management to reduce vehicle numbers during peak hours.<br>
+        4. Expand urban tree cover and green corridors to absorb CO₂ and particulate matter naturally.
+      </div>
+    </div>
+
+    <!-- CS4 -->
+    <div class="case-card">
+      <div class="case-marks">5 Marks — Case Study</div>
+      <div class="q-num">Case Study Question 4</div>
+      <div class="q-text" style="margin-bottom:12px;">Read the scenario and answer the question that follows.</div>
+      <div class="case-scenario">
+        A farmer in a rural area burns crop residues after harvest to clear fields quickly. At the same time, a nearby industrial estate releases SO₂ and particulate matter into the atmosphere. Several kilometres away, a limestone cathedral and metal sculptures in the town square are showing rapid deterioration — the stone is crumbling and the metal is heavily corroded. Local trees show signs of leaf discolouration and reduced fruit yield.
+      </div>
+      <strong style="font-size:.95rem;">Question:</strong> Explain the chemical processes responsible for the damage observed on the cathedral, metal sculptures, and trees. Identify the specific pollutants involved and suggest TWO source-control measures for each of the two pollution sources described. <em>(5 marks)</em>
+      <textarea placeholder="Write your answer here…"></textarea>
+      <button class="reveal-btn water" onclick="revealAnswer(this)">Reveal Model Answer</button>
+      <div class="model-ans water">
+        <strong>Model Answer</strong>
+        <strong>Damage to cathedral — acid rain mechanism (1.5 marks):</strong> SO₂ emitted by the industrial estate reacts with atmospheric oxygen and moisture to form sulphuric acid (H₂SO₄): SO₂ + O → SO₃; SO₃ + H₂O → H₂SO₄. Acid rain containing H₂SO₄ reacts with the calcium carbonate (CaCO₃) in limestone, converting it to calcium sulphate which is soluble and washes away, causing the stone to crumble. Metals are directly corroded by the acid.<br><br>
+        <strong>Damage to trees (1 mark):</strong> SO₂ causes leaf tissue to turn white, brown, or yellow (bleaching of chlorophyll), reducing photosynthesis and hence suppressing growth and fruit yield. Particulate matter depositing on leaves also blocks stomata and reduces light absorption.<br><br>
+        <strong>Source-control for the industrial estate (1.5 marks — any two):</strong><br>
+        1. Install scrubbers or flue gas desulphurisation (FGD) systems to remove SO₂ before discharge.<br>
+        2. Switch to low-sulphur fuels or natural gas in industrial furnaces.<br>
+        3. Install gravitational settling chambers or bag filters to capture particulate matter.<br><br>
+        <strong>Source-control for agricultural burning (1 mark — any two):</strong><br>
+        1. Ban open burning of crop residues and provide alternative disposal methods such as composting or incorporation into soil.<br>
+        2. Provide incentives for farmers to use crop residue as animal feed or bioenergy feedstock rather than burning.
+      </div>
+    </div>
+
+    <!-- CS5 -->
+    <div class="case-card">
+      <div class="case-marks">5 Marks — Case Study</div>
+      <div class="q-num">Case Study Question 5</div>
+      <div class="q-text" style="margin-bottom:12px;">Read the scenario and answer the question that follows.</div>
+      <div class="case-scenario">
+        Residents living near a large poultry farm and a municipal sewage treatment plant have lodged complaints with local authorities. They report persistent foul smells, difficulty sleeping, nausea, and general irritability. A government health inspector visits the site and records high concentrations of hydrogen sulphide (H₂S) and methane. The farm owner argues that the smells are natural and harmless.
+      </div>
+      <strong style="font-size:.95rem;">Question:</strong> Is the farm owner correct? Justify your answer by explaining what odour pollution is, identifying the specific pollutants present, their health effects on the residents, and recommending THREE control measures the authorities could enforce. <em>(5 marks)</em>
+      <textarea placeholder="Write your answer here…"></textarea>
+      <button class="reveal-btn water" onclick="revealAnswer(this)">Reveal Model Answer</button>
+      <div class="model-ans water">
+        <strong>Model Answer</strong>
+        <strong>The farm owner is incorrect (0.5 marks).</strong><br><br>
+        <strong>Definition and justification (1 mark):</strong> Odour pollution is defined as the release of offensive, unpleasant, and undesirable odours of objectionable proportions into the environment. Even if the substances are naturally occurring, once they are released in concentrations that cause harm to surrounding communities, they constitute pollution. Both poultry farms and sewage treatment plants are recognised sources of odour pollution.<br><br>
+        <strong>Pollutants and health effects (2 marks):</strong><br>
+        — <strong>Hydrogen sulphide (H₂S)</strong>: produced by the anaerobic decomposition of organic matter. Even at low concentrations it causes respiratory irritation; at higher concentrations it is toxic to the nervous system.<br>
+        — <strong>Methane</strong>: produced from decomposing organic waste; contributes to odour and is an asphyxiant at high concentrations.<br>
+        — Residents' reported symptoms (nausea, insomnia, respiratory problems, and annoyance) are all recognised health effects of odour pollution, confirming the harm.<br><br>
+        <strong>Three control measures (1.5 marks):</strong><br>
+        1. Require installation of biofilters or activated carbon filtration systems at the farm and sewage plant to trap and neutralise odorous gases before release.<br>
+        2. Enforce setback (buffer zone) regulations that prohibit poultry farms and waste facilities from operating within a specified distance of residential areas.<br>
+        3. Mandate proper covering and sealing of manure storage facilities and sewage digesters to prevent escape of H₂S and methane into the surrounding atmosphere.
+      </div>
+    </div>
+
+  </section>
+
+  <a class="back-top" href="#">↑ Back to Top</a>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <p><strong>Environmental Pollution — Practice Questions</strong></p>
+  <p>Compiled from lecture materials by <strong>Royronald Ongong'a</strong>. For academic use only.</p>
+  <p style="margin-top:8px;opacity:.6;"><a href="environmental_pollution_notes.html">← Return to Study Notes</a></p>
+</footer>
+
+<script>
+  // ---- Correct answers ----
+  const answers = {
+    q1:'B', q2:'C', q3:'C', q4:'B', q5:'C', q6:'C',
+    q7:'C', q8:'C', q9:'C', q10:'B', q11:'C', q12:'B',
+    q13:'C', q14:'C', q15:'B', q16:'C', q17:'C', q18:'B',
+    q19:'C', q20:'B', q21:'B', q22:'B', q23:'C', q24:'C',
+    q25:'B', q26:'D', q27:'B', q28:'B', q29:'C', q30:'B'
+  };
+
+  const explanations = {
+    q1:'Correct! "Environ" in French means "to surround" — reflecting that the environment is everything that surrounds living organisms.',
+    q2:'Correct! Soil is abiotic (non-living). Bacteria, fungi, and algae are biotic (living) components.',
+    q3:'Correct! Environmental pollution involves undesirable changes in air, water, or soil that harm living organisms or property.',
+    q4:'Correct! Primary pollutants are emitted directly from a source e.g. CO from vehicles, SO₂ from factories.',
+    q5:'Correct! PAN (Peroxyacetyl Nitrate) is a secondary pollutant formed from photochemical reactions between hydrocarbons and NOₓ. CO, SO₂, and SPM are primary pollutants.',
+    q6:'Correct! CO has approximately 250 times greater affinity for haemoglobin than oxygen, making it extremely dangerous even at low concentrations.',
+    q7:'Correct! Radon-222 is a naturally occurring radioactive gas released from soil and rock beneath buildings and structures.',
+    q8:'Correct! Indoor air pollution is defined as the presence of contaminants inside buildings or enclosed spaces from sources like fuel combustion, tobacco smoke, and building materials.',
+    q9:'Correct! Asbestos found in pipe insulation, ceiling tiles, and floor tiles is a major cause of lung cancer and asbestosis.',
+    q10:'Correct! Formaldehyde from carpets and particle boards is a common allergen that triggers allergic reactions, including respiratory issues.',
+    q11:'Correct! Sealing all windows would WORSEN indoor air pollution by preventing dilution and removal of pollutants. Proper ventilation is the key solution.',
+    q12:'Correct! Tanneries, slaughterhouses, and food processing units are major industrial sources of odour pollution.',
+    q13:'Correct! Insomnia (difficulty sleeping) is a specific health effect associated with odour pollution alongside nausea, respiratory problems, and annoyance.',
+    q14:'Correct! Point-source pollution comes from a single, identifiable, traceable source like a factory pipe or sewage outlet.',
+    q15:'Correct! Eutrophication is caused by excess nitrogen and phosphorus, primarily from agricultural fertiliser runoff and untreated sewage.',
+    q16:'Correct! An average person breathes approximately 22,000 times a day, taking in about 16 kg of air.',
+    q17:'Correct! SO₂ + O → SO₃; SO₃ + H₂O → H₂SO₄ (sulphuric acid). This is the primary mechanism behind acid rain damage.',
+    q18:'Correct! SO₂ damage to plants causes leaf tissue to turn white, brown, or yellow — characteristic bleaching of chlorophyll.',
+    q19:'Correct! Ozone (O₃) and PAN are strong oxidising agents that attack the polymer chains in rubber and electrical insulation, causing cracking.',
+    q20:'Correct! Gravitational Settling Chambers are effective for large particles (>50 µm) but cannot collect fine particulate matter.',
+    q21:'Correct! A major advantage of scrubbers is their ability to simultaneously remove both particulate matter and gaseous pollutants (e.g. SO₂) in a single process.',
+    q22:'Correct! Environmental Chemistry is the scientific discipline covering sources, reactions, transport, effects, and fates of chemical species in natural environments.',
+    q23:'Correct! Dust mites and pet dander are biological indoor air pollutants that cause allergies and respiratory problems. The others are chemical/organic compound pollutants.',
+    q24:'Correct! Agricultural runoff comes from many dispersed, diffuse sources across a landscape — this is the definition of non-point-source pollution.',
+    q25:'Correct! High concentrations of SO₂, NO₂, SPM, and photochemical smog specifically aggravate chronic pulmonary diseases: bronchitis and asthma.',
+    q26:'Correct! The hydrosphere encompasses all water on Earth — oceans, rivers, lakes, groundwater, and ice caps.',
+    q27:'Correct! Periodic analysis of coastal waste to detect pollution levels is a recommended control measure for marine and coastal water pollution.',
+    q28:'Correct! Tetrachloroethylene causes nerve disorders, liver and kidney damage, and cancer — a broad spectrum of serious health effects.',
+    q29:'Correct! Ozone damage appears as mottled yellow, black, or brown spots on leaves, eventually causing early leaf drop and reduced photosynthesis.',
+    q30:'Correct! CNG burns more cleanly than petrol or diesel, producing significantly lower emissions of CO, NOₓ, and particulate matter, making it a preferred fuel in pollution control strategies.'
+  };
+
+  const wrongMessages = {
+    q1:'Incorrect. The correct answer is B — "Environ" means "to surround."',
+    q2:'Incorrect. The correct answer is C — Soil is abiotic (non-living). Bacteria, fungi, and algae are all biotic components.',
+    q3:'Incorrect. The correct answer is C — Environmental pollution affects air, water, or soil.',
+    q4:'Incorrect. The correct answer is B — Primary pollutants are emitted directly from sources.',
+    q5:'Incorrect. The correct answer is C — PAN is a secondary pollutant formed from photochemical reactions.',
+    q6:'Incorrect. The correct answer is C — CO binds to haemoglobin 250 times more strongly than oxygen.',
+    q7:'Incorrect. The correct answer is C — Radon gas is released from soil and rock.',
+    q8:'Incorrect. The correct answer is C — Indoor air pollution is defined as contaminants inside enclosed spaces.',
+    q9:'Incorrect. The correct answer is C — Asbestos in insulation and tiles is linked to lung cancer and asbestosis.',
+    q10:'Incorrect. The correct answer is B — Formaldehyde from carpets and particle boards primarily causes allergic reactions.',
+    q11:'Incorrect. The correct answer is C — Sealing all windows would trap pollutants and worsen indoor air quality.',
+    q12:'Incorrect. The correct answer is B — Tanneries and slaughterhouses are major industrial odour sources.',
+    q13:'Incorrect. The correct answer is C — Insomnia is a specific health effect listed under odour pollution.',
+    q14:'Incorrect. The correct answer is C — A single, identifiable source is the definition of point-source pollution.',
+    q15:'Incorrect. The correct answer is B — Eutrophication is driven by excess nitrogen and phosphorus.',
+    q16:'Incorrect. The correct answer is C — An average person breathes approximately 22,000 times per day.',
+    q17:'Incorrect. The correct answer is C — SO₂ oxidises in the presence of moisture to form H₂SO₄ (sulphuric acid).',
+    q18:'Incorrect. The correct answer is B — SO₂ causes leaf tissue to turn white, brown, or yellow.',
+    q19:'Incorrect. The correct answer is C — Ozone and PAN cause cracking of rubber and electrical insulations.',
+    q20:'Incorrect. The correct answer is B — Gravitational Settling Chambers collect particles larger than 50 µm.',
+    q21:'Incorrect. The correct answer is B — Scrubbers can simultaneously remove particulates and gaseous pollutants.',
+    q22:'Incorrect. The correct answer is B — Environmental Chemistry is the study of chemical phenomena in natural environments.',
+    q23:'Incorrect. The correct answer is C — Dust mites and pet dander are biological indoor pollutants.',
+    q24:'Incorrect. The correct answer is C — Agricultural runoff from many dispersed areas is non-point-source pollution.',
+    q25:'Incorrect. The correct answer is B — SO₂, SPM, and NOₓ aggravate bronchitis and asthma.',
+    q26:'Incorrect. The correct answer is D — The hydrosphere refers to all water on Earth.',
+    q27:'Incorrect. The correct answer is B — Periodic analysis of coastal waste helps detect and monitor marine pollution.',
+    q28:'Incorrect. The correct answer is B — Tetrachloroethylene causes nerve disorders, liver/kidney damage, and cancer.',
+    q29:'Incorrect. The correct answer is C — Ozone damage appears as mottled yellow, black, or brown spots on leaves.',
+    q30:'Incorrect. The correct answer is B — CNG is a cleaner fuel that reduces vehicle emissions significantly.'
+  };
+
+  let answered = {};
+  let submitted = false;
+
+  // Track answer selection and provide instant feedback
+  document.querySelectorAll('.options input[type=radio]').forEach(radio => {
+    radio.addEventListener('change', function() {
+      if (submitted) return;
+      const name = this.name;
+      answered[name] = this.value;
+      updateProgress();
+    });
+  });
+
+  function updateProgress() {
+    const total = 30;
+    const done = Object.keys(answered).length;
+    document.getElementById('progressText').textContent = done + ' / ' + total + ' answered';
+    document.getElementById('progressFill').style.width = (done / total * 100) + '%';
+  }
+
+  // Submit MCQ
+  document.getElementById('submitMCQ').addEventListener('click', function() {
+    if (submitted) return;
+    submitted = true;
+    let score = 0;
+
+    for (let q in answers) {
+      const correct = answers[q];
+      const selected = answered[q];
+      const card = document.getElementById(q);
+      const fb = document.getElementById('fb' + q.slice(1));
+      const options = card.querySelectorAll('.option');
+
+      // Lock all options
+      options.forEach(opt => opt.classList.add('locked'));
+
+      // Highlight correct answer
+      options.forEach(opt => {
+        const val = opt.querySelector('input').value;
+        if (val === correct) opt.classList.add('correct-ans');
+      });
+
+      if (selected === correct) {
+        score++;
+        card.classList.add('correct');
+        if (selected) {
+          options.forEach(opt => {
+            if (opt.querySelector('input').value === selected) opt.classList.add('correct-ans');
+          });
+        }
+        fb.className = 'feedback show correct';
+        fb.innerHTML = '<span class="feedback-icon">✅</span>' + explanations[q];
+      } else {
+        card.classList.add('wrong');
+        if (selected) {
+          options.forEach(opt => {
+            if (opt.querySelector('input').value === selected) opt.classList.add('wrong-ans');
+          });
+        }
+        fb.className = 'feedback show wrong';
+        fb.innerHTML = '<span class="feedback-icon">❌</span>' + wrongMessages[q];
+      }
+    }
+
+    // Show results
+    const banner = document.getElementById('resultsBanner');
+    banner.classList.add('show');
+    document.getElementById('resultsScore').textContent = score + ' / 30';
+    const pct = Math.round(score / 30 * 100);
+    let msg = '';
+    if (pct >= 80) msg = '🎉 Excellent work! You have a strong grasp of Environmental Pollution concepts.';
+    else if (pct >= 60) msg = '👍 Good effort! Review the questions you missed, then revisit the study notes.';
+    else msg = '📚 Keep studying! Go back to the study notes and focus on the sections you found difficult.';
+    document.getElementById('resultsMsg').textContent = msg + ' (' + pct + '%)';
+
+    // Show score dashboard
+    document.getElementById('scoreDash').style.display = 'grid';
+    document.getElementById('mcqScore').textContent = score + '/30';
+
+    this.textContent = '✓ Submitted';
+    this.style.opacity = '0.6';
+    this.style.cursor = 'default';
+
+    // Scroll to results
+    banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  // Reveal model answer
+  function revealAnswer(btn) {
+    const ans = btn.nextElementSibling;
+    if (ans.classList.contains('show')) {
+      ans.classList.remove('show');
+      btn.textContent = 'Reveal Model Answer';
+    } else {
+      ans.classList.add('show');
+      btn.textContent = 'Hide Model Answer';
+    }
+  }
+
+  // Dark mode
+  const html = document.documentElement;
+  const themeToggle = document.getElementById('themeToggle');
+  const toggleLabel = document.getElementById('toggleLabel');
+  const saved = localStorage.getItem('theme');
+  if (saved) { html.setAttribute('data-theme', saved); toggleLabel.textContent = saved === 'dark' ? 'Dark' : 'Light'; }
+  themeToggle.addEventListener('click', () => {
+    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    toggleLabel.textContent = next === 'dark' ? 'Dark' : 'Light';
+    localStorage.setItem('theme', next);
+  });
+</script>
+</body>
+</html>
